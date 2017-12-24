@@ -4,10 +4,10 @@ import com.codetaylor.mc.athenaeum.module.ModuleBase;
 import net.minecraftforge.fml.common.event.FMLLoadCompleteEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 
-public class ModuleIntegrationCraftTweaker
+public class ModuleIntegration
     extends ModuleBase {
 
-  public ModuleIntegrationCraftTweaker() {
+  public ModuleIntegration() {
 
     super(Integer.MAX_VALUE);
   }
@@ -15,12 +15,12 @@ public class ModuleIntegrationCraftTweaker
   @Override
   public void onPreInitializationEvent(FMLPreInitializationEvent event) {
 
-    PluginDelegateCraftTweaker.init();
+    PluginDelegate.init();
   }
 
   @Override
   public void onLoadCompleteEvent(FMLLoadCompleteEvent event) {
 
-    PluginDelegateCraftTweaker.apply();
+    PluginDelegate.apply();
   }
 }

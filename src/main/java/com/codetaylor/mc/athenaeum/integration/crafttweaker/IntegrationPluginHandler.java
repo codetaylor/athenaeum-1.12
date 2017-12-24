@@ -5,19 +5,19 @@ import com.codetaylor.mc.athenaeum.module.ModuleBase;
 
 import javax.annotation.Nullable;
 
-public class IntegrationPluginHandlerCraftTweaker
+public class IntegrationPluginHandler
     implements IIntegrationPluginHandler {
 
   @Override
   public void execute(String plugin) throws Exception {
 
-    PluginDelegateCraftTweaker.registerZenClass(Class.forName(plugin));
+    PluginDelegate.registerZenClass(Class.forName(plugin));
   }
 
   @Nullable
   @Override
   public Class<? extends ModuleBase> getModuleClass() {
 
-    return ModuleIntegrationCraftTweaker.class;
+    return ModuleIntegration.class;
   }
 }

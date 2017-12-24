@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
-public class PluginDelegateCraftTweaker {
+public class PluginDelegate {
 
   public static final List<IAction> LATE_REMOVALS = new LinkedList<>();
   public static final List<IAction> LATE_ADDITIONS = new LinkedList<>();

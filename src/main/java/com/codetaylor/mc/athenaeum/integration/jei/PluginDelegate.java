@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @JEIPlugin
-public class PluginDelegateJEI
+public class PluginDelegate
     implements IModPlugin {
 
   private static final List<IModPlugin> PLUGIN_LIST;

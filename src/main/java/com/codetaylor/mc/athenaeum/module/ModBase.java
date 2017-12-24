@@ -27,12 +27,12 @@ public abstract class ModBase {
 
     this.registerIntegrationHandler(
         "jei",
-        "com.codetaylor.mc.athenaeum.integration.jei.IntegrationPluginHandlerJEI"
+        "com.codetaylor.mc.athenaeum.integration.jei.IntegrationPluginHandler"
     );
 
     this.registerIntegrationHandler(
         "crafttweaker",
-        "com.codetaylor.mc.athenaeum.lib.integration.crafttweaker.IntegrationPluginHandlerCraftTweaker"
+        "com.codetaylor.mc.athenaeum.integration.crafttweaker.IntegrationPluginHandler"
     );
 
   }
