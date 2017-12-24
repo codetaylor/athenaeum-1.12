@@ -28,10 +28,6 @@ public class IntegrationPluginHandlerRegistry {
 
   public void registerIntegrationHandler(String modId, String handler) {
 
-    if (this.integrationHandlerPluginMap.get(modId) != null) {
-      throw new RuntimeException("Integration handler already registered for: " + modId);
-    }
-
     this.integrationHandlerPluginMap.put(modId, handler);
   }
 
@@ -50,7 +46,7 @@ public class IntegrationPluginHandlerRegistry {
               instance
           );
 
-          if (instance.hasModule()) {
+          if (instance.getModuleClass() != null) {
             this.moduleRegistry.registerModules(instance.getModuleClass());
           }
 

@@ -8,11 +8,13 @@ public interface IIntegrationPluginHandler {
 
   void execute(String plugin) throws Exception;
 
-  default boolean hasModule() {
-
-    return false;
-  }
-
+  /**
+   * Override and return a module class here if this integration handler requires a module
+   * to be registered. Providing a module can allow an integration handler to hook into
+   * FML lifecycle events.
+   *
+   * @return module class or null
+   */
   @Nullable
   default Class<? extends ModuleBase> getModuleClass() {
 

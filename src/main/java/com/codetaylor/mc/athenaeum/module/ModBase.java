@@ -24,6 +24,17 @@ public abstract class ModBase {
     this.integrationPluginHandlerRegistry = new IntegrationPluginHandlerRegistry(modId, this.moduleRegistry);
 
     MinecraftForge.EVENT_BUS.register(this.moduleEventRouter);
+
+    this.registerIntegrationHandler(
+        "jei",
+        "com.codetaylor.mc.athenaeum.integration.jei.IntegrationPluginHandlerJEI"
+    );
+
+    this.registerIntegrationHandler(
+        "crafttweaker",
+        "com.codetaylor.mc.athenaeum.lib.integration.crafttweaker.IntegrationPluginHandlerCraftTweaker"
+    );
+
   }
 
   public String getModId() {

@@ -14,12 +14,6 @@ public class IntegrationPluginHandlerCraftTweaker
     PluginDelegateCraftTweaker.registerZenClass(Class.forName(plugin));
   }
 
-  @Override
-  public boolean hasModule() {
-
-    return true;
-  }
-
   @Nullable
   @Override
   public Class<? extends ModuleBase> getModuleClass() {
