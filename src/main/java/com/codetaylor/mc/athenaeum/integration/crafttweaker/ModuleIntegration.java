@@ -2,6 +2,7 @@ package com.codetaylor.mc.athenaeum.integration.crafttweaker;
 
 import com.codetaylor.mc.athenaeum.module.ModuleBase;
 import net.minecraftforge.fml.common.event.FMLLoadCompleteEvent;
+import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 
 public class ModuleIntegration
@@ -19,7 +20,7 @@ public class ModuleIntegration
   }
 
   @Override
-  public void onLoadCompleteEvent(FMLLoadCompleteEvent event) {
+  public void onPostInitializationEvent(FMLPostInitializationEvent event) {
 
     PluginDelegate.apply();
   }
