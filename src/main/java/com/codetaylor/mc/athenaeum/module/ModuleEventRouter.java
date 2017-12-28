@@ -17,23 +17,103 @@ import net.minecraftforge.fml.common.registry.VillagerRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Consumer;
 
 public class ModuleEventRouter {
 
   private final List<ModuleBase> moduleList;
+  private final Map<Class<? extends FMLStateEvent>, IFMLStateEventRoute> routes;
 
-  /* package */ ModuleEventRouter(List<ModuleBase> moduleList) {
+  public ModuleEventRouter(List<ModuleBase> moduleList) {
 
     this.moduleList = moduleList;
+    this.routes = new HashMap<>();
+
+    this.routes.put(
+        FMLConstructionEvent.class,
+        (IFMLStateEventRoute<FMLConstructionEvent>) (event) ->
+            this.fireEvent(moduleBase -> moduleBase.onConstructionEvent(event))
+    );
+    this.routes.put(
+        FMLPreInitializationEvent.class,
+        (IFMLStateEventRoute<FMLPreInitializationEvent>) (event) -> {
+          this.fireEvent(moduleBase -> moduleBase.onPreInitializationEvent(event));
+
+          if (event.getSide() == Side.CLIENT) {
+            this.fireEvent(moduleBase -> moduleBase.onClientPreInitializationEvent(event));
+          }
+        }
+    );
+    this.routes.put(
+        FMLInitializationEvent.class,
+        (IFMLStateEventRoute<FMLInitializationEvent>) (event) -> {
+          this.fireEvent(moduleBase -> moduleBase.onInitializationEvent(event));
+
+          if (event.getSide() == Side.CLIENT) {
+            this.fireEvent(moduleBase -> moduleBase.onClientInitializationEvent(event));
+          }
+        }
+    );
+    this.routes.put(
+        FMLPostInitializationEvent.class,
+        (IFMLStateEventRoute<FMLPostInitializationEvent>) (event) -> {
+          this.fireEvent(moduleBase -> moduleBase.onPostInitializationEvent(event));
+
+          if (event.getSide() == Side.CLIENT) {
+            this.fireEvent(moduleBase -> moduleBase.onClientPostInitializationEvent(event));
+          }
+        }
+    );
+    this.routes.put(
+        FMLLoadCompleteEvent.class,
+        (IFMLStateEventRoute<FMLLoadCompleteEvent>) (event) ->
+            this.fireEvent(moduleBase -> moduleBase.onLoadCompleteEvent(event))
+    );
+    this.routes.put(
+        FMLServerAboutToStartEvent.class,
+        (IFMLStateEventRoute<FMLServerAboutToStartEvent>) (event) ->
+            this.fireEvent(moduleBase -> moduleBase.onServerAboutToStartEvent(event))
+    );
+    this.routes.put(
+        FMLServerStartingEvent.class,
+        (IFMLStateEventRoute<FMLServerStartingEvent>) (event) ->
+            this.fireEvent(moduleBase -> moduleBase.onServerStartingEvent(event))
+    );
+    this.routes.put(
+        FMLServerStartedEvent.class,
+        (IFMLStateEventRoute<FMLServerStartedEvent>) (event) ->
+            this.fireEvent(moduleBase -> moduleBase.onServerStartedEvent(event))
+    );
+    this.routes.put(
+        FMLServerStoppingEvent.class,
+        (IFMLStateEventRoute<FMLServerStoppingEvent>) (event) ->
+            this.fireEvent(moduleBase -> moduleBase.onServerStoppingEvent(event))
+    );
+    this.routes.put(
+        FMLServerStoppedEvent.class,
+        (IFMLStateEventRoute<FMLServerStoppedEvent>) (event) ->
+            this.fireEvent(moduleBase -> moduleBase.onServerStoppedEvent(event))
+    );
+  }
+
+  /* package */ <E extends FMLStateEvent> void routeFMLStateEvent(E event) {
+
+    //noinspection unchecked
+    IFMLStateEventRoute<E> route = this.routes.get(event.getClass());
+
+    if (route == null) {
+      throw new IllegalArgumentException("No route found for event: " + event.getClass());
+    }
+
+    route.routeEvent(event);
   }
 
   // --------------------------------------------------------------------------
-  // - Common
+  // - Registration Events
   // --------------------------------------------------------------------------
-
-  // - Registration
 
   @SubscribeEvent
   public void onRegisterBlockEvent(RegistryEvent.Register<Block> event) {
@@ -101,45 +181,6 @@ public class ModuleEventRouter {
     this.fireEvent(ModuleBase::onRegisterTileEntitiesEvent);
   }
 
-  // - FML State
-
-  /* package */ void onConstructionEvent(FMLConstructionEvent event) {
-
-    this.fireEvent(module -> module.onConstructionEvent(event));
-  }
-
-  /* package */ void onLoadCompleteEvent(FMLLoadCompleteEvent event) {
-
-    this.fireEvent(module -> module.onLoadCompleteEvent(event));
-  }
-
-  /* package */ void onPreInitializationEvent(FMLPreInitializationEvent event) {
-
-    this.fireEvent(module -> module.onPreInitializationEvent(event));
-
-    if (event.getSide() == Side.CLIENT) {
-      this.onClientPreInitializationEvent(event);
-    }
-  }
-
-  /* package */ void onInitializationEvent(FMLInitializationEvent event) {
-
-    this.fireEvent(module -> module.onInitializationEvent(event));
-
-    if (event.getSide() == Side.CLIENT) {
-      this.onClientInitializationEvent(event);
-    }
-  }
-
-  /* package */ void onPostInitializationEvent(FMLPostInitializationEvent event) {
-
-    this.fireEvent(module -> module.onPostInitializationEvent(event));
-
-    if (event.getSide() == Side.CLIENT) {
-      this.onClientPostInitializationEvent(event);
-    }
-  }
-
   // --------------------------------------------------------------------------
   // - Client
   // --------------------------------------------------------------------------
@@ -149,53 +190,6 @@ public class ModuleEventRouter {
   public void onClientRegisterModelsEvent(ModelRegistryEvent event) {
 
     this.fireEvent(module -> module.onClientRegisterModelsEvent(event));
-  }
-
-  @SideOnly(Side.CLIENT)
-  private void onClientPreInitializationEvent(FMLPreInitializationEvent event) {
-
-    this.fireEvent(module -> module.onClientPreInitializationEvent(event));
-  }
-
-  @SideOnly(Side.CLIENT)
-  private void onClientInitializationEvent(FMLInitializationEvent event) {
-
-    this.fireEvent(module -> module.onClientInitializationEvent(event));
-  }
-
-  @SideOnly(Side.CLIENT)
-  private void onClientPostInitializationEvent(FMLPostInitializationEvent event) {
-
-    this.fireEvent(module -> module.onClientPostInitializationEvent(event));
-  }
-
-  // --------------------------------------------------------------------------
-  // - Server
-  // --------------------------------------------------------------------------
-
-  /* package */ void onServerAboutToStartEvent(FMLServerAboutToStartEvent event) {
-
-    this.fireEvent(module -> module.onServerAboutToStartEvent(event));
-  }
-
-  /* package */ void onServerStartingEvent(FMLServerStartingEvent event) {
-
-    this.fireEvent(module -> module.onServerStartingEvent(event));
-  }
-
-  /* package */ void onServerStartedEvent(FMLServerStartedEvent event) {
-
-    this.fireEvent(module -> module.onServerStartedEvent(event));
-  }
-
-  /* package */ void onServerStoppingEvent(FMLServerStoppingEvent event) {
-
-    this.fireEvent(module -> module.onServerStoppingEvent(event));
-  }
-
-  /* package */ void onServerStoppedEvent(FMLServerStoppedEvent event) {
-
-    this.fireEvent(module -> module.onServerStoppedEvent(event));
   }
 
   // --------------------------------------------------------------------------
