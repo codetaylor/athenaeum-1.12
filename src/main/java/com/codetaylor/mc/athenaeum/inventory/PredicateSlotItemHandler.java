@@ -14,10 +14,10 @@ import java.util.function.Predicate;
 public class PredicateSlotItemHandler
     extends SlotItemHandler {
 
-  private final Predicate<ItemStack> toolValidationPredicate;
+  private final Predicate<ItemStack> predicate;
 
   public PredicateSlotItemHandler(
-      Predicate<ItemStack> toolValidationPredicate,
+      Predicate<ItemStack> predicate,
       IItemHandler itemHandler,
       int index,
       int xPosition,
@@ -25,12 +25,12 @@ public class PredicateSlotItemHandler
   ) {
 
     super(itemHandler, index, xPosition, yPosition);
-    this.toolValidationPredicate = toolValidationPredicate;
+    this.predicate = predicate;
   }
 
   @Override
   public boolean isItemValid(@Nonnull ItemStack stack) {
 
-    return this.toolValidationPredicate.test(stack);
+    return this.predicate.test(stack);
   }
 }
