@@ -1,5 +1,9 @@
 package com.codetaylor.mc.athenaeum.module;
 
+import com.codetaylor.mc.athenaeum.registry.IRegistryEventHandler;
+import com.codetaylor.mc.athenaeum.registry.Registry;
+import com.codetaylor.mc.athenaeum.registry.RegistryEventHandler;
+import com.codetaylor.mc.athenaeum.registry.RegistryEventHandlerNoOp;
 import net.minecraft.block.Block;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.item.Item;
@@ -28,12 +32,15 @@ public abstract class ModuleBase
   private final String name;
   private final int priority;
   private final Map<String, Set<String>> integrationPluginMap;
+  private Registry registry;
+  private IRegistryEventHandler registryEventHandler;
 
   protected ModuleBase(int priority) {
 
     this.name = this.getClass().getSimpleName();
     this.priority = priority;
     this.integrationPluginMap = new HashMap<>();
+    this.registryEventHandler = RegistryEventHandlerNoOp.INSTANCE;
   }
 
   // --------------------------------------------------------------------------
@@ -46,6 +53,24 @@ public abstract class ModuleBase
   public int getPriority() {
 
     return this.priority;
+  }
+
+  protected void setRegistry(Registry registry) {
+
+    if (this.registry != null) {
+      throw new IllegalStateException("Trying to assign module registry after it has already been assigned");
+    }
+
+    this.registry = registry;
+  }
+
+  protected void enableAutoRegistry() {
+
+    if (this.registry == null) {
+      throw new IllegalStateException("Set module registry before enabling auto registry");
+    }
+
+    this.registryEventHandler = new RegistryEventHandler(this.registry);
   }
 
   // --------------------------------------------------------------------------
@@ -76,53 +101,73 @@ public abstract class ModuleBase
   // - Registration
   // --------------------------------------------------------------------------
 
-  public void onRegisterBlockEvent(RegistryEvent.Register<Block> event) {
+  public void onRegister(Registry registry) {
     //
+  }
+
+  public void onClientRegister(Registry registry) {
+    //
+  }
+
+  public void onRegisterBlockEvent(RegistryEvent.Register<Block> event) {
+
+    this.registryEventHandler.onRegisterBlockEvent(event);
   }
 
   public void onRegisterItemEvent(RegistryEvent.Register<Item> event) {
-    //
+
+    this.registryEventHandler.onRegisterItemEvent(event);
   }
 
   public void onRegisterPotionEvent(RegistryEvent.Register<Potion> event) {
-    //
+
+    this.registryEventHandler.onRegisterPotionEvent(event);
   }
 
   public void onRegisterBiomeEvent(RegistryEvent.Register<Biome> event) {
-    //
+
+    this.registryEventHandler.onRegisterBiomeEvent(event);
   }
 
   public void onRegisterSoundEvent(RegistryEvent.Register<SoundEvent> event) {
-    //
+
+    this.registryEventHandler.onRegisterSoundEvent(event);
   }
 
   public void onRegisterPotionTypeEvent(RegistryEvent.Register<PotionType> event) {
-    //
+
+    this.registryEventHandler.onRegisterPotionTypeEvent(event);
   }
 
   public void onRegisterEnchantmentEvent(RegistryEvent.Register<Enchantment> event) {
-    //
+
+    this.registryEventHandler.onRegisterEnchantmentEvent(event);
   }
 
   public void onRegisterVillagerProfessionEvent(RegistryEvent.Register<VillagerRegistry.VillagerProfession> event) {
-    //
+
+    this.registryEventHandler.onRegisterVillagerProfessionEvent(event);
   }
 
   public void onRegisterEntityEvent(RegistryEvent.Register<EntityEntry> event) {
-    //
+
+    this.registryEventHandler.onRegisterEntityEvent(event);
   }
 
   public void onRegisterRecipesEvent(RegistryEvent.Register<IRecipe> event) {
-    //
+
+    this.registryEventHandler.onRegisterRecipesEvent(event);
   }
 
   public void onRegisterTileEntitiesEvent() {
-    //
+
+    this.registryEventHandler.onRegisterTileEntitiesEvent();
   }
 
   @SideOnly(Side.CLIENT)
   public void onClientRegisterModelsEvent(ModelRegistryEvent event) {
-    //
+
+    this.registryEventHandler.onClientRegisterModelsEvent(event);
   }
 
   // --------------------------------------------------------------------------
@@ -134,7 +179,10 @@ public abstract class ModuleBase
   }
 
   public void onPreInitializationEvent(FMLPreInitializationEvent event) {
-    //
+
+    if (this.registry != null) {
+      this.onRegister(this.registry);
+    }
   }
 
   public void onInitializationEvent(FMLInitializationEvent event) {
@@ -155,7 +203,10 @@ public abstract class ModuleBase
 
   @SideOnly(Side.CLIENT)
   public void onClientPreInitializationEvent(FMLPreInitializationEvent event) {
-    //
+
+    if (this.registry != null) {
+      this.onClientRegister(this.registry);
+    }
   }
 
   @SideOnly(Side.CLIENT)
