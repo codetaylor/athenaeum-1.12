@@ -1,3 +1,6 @@
+1.1.2
+* Fixed: missing setUnlocalizedName() during item registration
+
 1.1.1
 * Module integration of registration helpers
 

@@ -106,6 +106,10 @@ public class Registry {
   public Item registerItem(@Nonnull Item item, @Nonnull ResourceLocation registryName) {
 
     item.setRegistryName(registryName);
+    item.setUnlocalizedName(
+        registryName.getResourceDomain().replaceAll("_", ".") + "."
+            + registryName.getResourcePath().toLowerCase().replace("_", ".")
+    );
 
     if (this.creativeTabs != null) {
       item.setCreativeTab(this.creativeTabs);
