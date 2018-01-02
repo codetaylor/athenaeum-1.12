@@ -83,10 +83,10 @@ repositories {
 }
 
 dependencies {
-    deobfCompile "CraftTweaker2:CraftTweaker2-MC1120-Main:1.12-4.0.10.+"
-    deobfCompile "CraftTweaker2:CraftTweaker2-API:4.0.10.+"
-    deobfCompile "CraftTweaker2:ZenScript:4.0.10.+"
-    deobfCompile "mezz.jei:jei_1.12.2:4.8.0.+"
+    deobfCompile "CraftTweaker2:CraftTweaker2-MC1120-Main:1.12-4.0.10.314"
+    deobfCompile "CraftTweaker2:CraftTweaker2-API:4.0.10.314"
+    deobfCompile "CraftTweaker2:ZenScript:4.0.10.314"
+    deobfCompile "mezz.jei:jei_1.12.2:4.8.5.139"
 }
 
 processResources {

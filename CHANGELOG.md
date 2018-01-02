@@ -1,3 +1,6 @@
+1.1.3
+* Fixed: duplicate calls to CraftTweaker integration plugin delgate which caused log errors and duplicate recipes
+
 1.1.2
 * Fixed: missing setUnlocalizedName() during item registration
 

@@ -1,38 +1,83 @@
 package com.codetaylor.mc.athenaeum.integration.crafttweaker;
 
-import crafttweaker.CraftTweakerAPI;
 import crafttweaker.IAction;
+import net.minecraftforge.fml.common.Loader;
+import net.minecraftforge.fml.common.ModContainer;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
+/**
+ * 2018.1.2:
+ * This class has been refactored to provide a delegate for each mod that requires one.
+ * This ensures that when each mod calls the init and apply methods, only the delegate
+ * for the calling mod will be executed. This prevents a problem with the previous
+ * implementation which caused each mod to execute this delegate, causing recipes and
+ * zen classes to be registered multiple times.
+ *
+ * @author codetaylor
+ */
 public class PluginDelegate {
 
-  public static final List<IAction> LATE_REMOVALS = new LinkedList<>();
-  public static final List<IAction> LATE_ADDITIONS = new LinkedList<>();
-
-  private static final List<Class<?>> CLASS_LIST;
+  private static final Map<String, PluginModDelegate> DELEGATE_MAP;
 
   static {
-    CLASS_LIST = new ArrayList<>();
+    DELEGATE_MAP = new HashMap<>();
   }
 
-  public static void registerZenClass(Class<?> zenClass) {
+  /* package */ static void registerZenClass(Class<?> zenClass) {
 
-    CLASS_LIST.add(zenClass);
+    PluginDelegate.getPluginModDelegate(PluginDelegate.getModId()).registerZenClass(zenClass);
   }
 
-  public static void init() {
+  public static void addAddition(String modId, IAction action) {
 
-    for (Class<?> zenClass : CLASS_LIST) {
-      CraftTweakerAPI.registerClass(zenClass);
+    // The mod id has to be supplied externally here because when this is called,
+    // the active mod container belongs to "crafttweaker".
+
+    PluginDelegate.getPluginModDelegate(modId).addAddition(action);
+  }
+
+  public static void addRemoval(String modId, IAction action) {
+
+    // The mod id has to be supplied externally here because when this is called,
+    // the active mod container belongs to "crafttweaker".
+
+    PluginDelegate.getPluginModDelegate(modId).addRemoval(action);
+  }
+
+  /* package */ static void init() {
+
+    PluginModDelegate delegate = DELEGATE_MAP.get(PluginDelegate.getModId());
+
+    if (delegate != null) {
+      delegate.init();
     }
   }
 
-  public static void apply() {
+  /* package */ static void apply() {
 
-    LATE_REMOVALS.forEach(CraftTweakerAPI::apply);
-    LATE_ADDITIONS.forEach(CraftTweakerAPI::apply);
+    PluginModDelegate delegate = DELEGATE_MAP.get(PluginDelegate.getModId());
+
+    if (delegate != null) {
+      delegate.apply();
+    }
   }
+
+  private static PluginModDelegate getPluginModDelegate(String modId) {
+
+    return DELEGATE_MAP.computeIfAbsent(modId, s -> new PluginModDelegate());
+  }
+
+  private static String getModId() {
+
+    ModContainer modContainer = Loader.instance().activeModContainer();
+
+    if (modContainer == null) {
+      throw new RuntimeException("Active mod container is null");
+    }
+
+    return modContainer.getModId();
+  }
+
 }
