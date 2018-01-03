@@ -1,5 +1,6 @@
 package com.codetaylor.mc.athenaeum.integration.crafttweaker;
 
+import com.codetaylor.mc.athenaeum.ModAthenaeum;
 import com.codetaylor.mc.athenaeum.module.ModuleBase;
 import net.minecraftforge.fml.common.event.FMLLoadCompleteEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
@@ -10,7 +11,7 @@ public class ModuleIntegration
 
   public ModuleIntegration() {
 
-    super(Integer.MAX_VALUE);
+    super(Integer.MAX_VALUE, ModAthenaeum.MOD_ID);
   }
 
   @Override

@@ -1,5 +1,6 @@
 package com.codetaylor.mc.athenaeum.module;
 
+import com.codetaylor.mc.athenaeum.network.*;
 import com.codetaylor.mc.athenaeum.registry.IRegistryEventHandler;
 import com.codetaylor.mc.athenaeum.registry.Registry;
 import com.codetaylor.mc.athenaeum.registry.RegistryEventHandler;
@@ -31,14 +32,30 @@ public abstract class ModuleBase
 
   private final String name;
   private final int priority;
+  private final String modId;
   private final Map<String, Set<String>> integrationPluginMap;
   private Registry registry;
   private IRegistryEventHandler registryEventHandler;
 
-  protected ModuleBase(int priority) {
+  /**
+   * Stores a network wrapper for each mod id.
+   */
+  private static Map<String, ThreadedNetworkWrapper> NETWORK_WRAPPER_MAP = new HashMap<>();
 
-    this.name = this.getClass().getSimpleName();
+  /**
+   * Stores a packet registry for each mod id.
+   */
+  private static Map<String, IPacketRegistry> PACKET_REGISTRY_MAP = new HashMap<>();
+
+  private ThreadedNetworkWrapper threadedNetworkWrapper;
+  private IPacketRegistry packetRegistry;
+  private IPacketService packetService;
+
+  protected ModuleBase(int priority, String modId) {
+
     this.priority = priority;
+    this.modId = modId;
+    this.name = this.getClass().getSimpleName();
     this.integrationPluginMap = new HashMap<>();
     this.registryEventHandler = RegistryEventHandlerNoOp.INSTANCE;
   }
@@ -70,7 +87,35 @@ public abstract class ModuleBase
       throw new IllegalStateException("Set module registry before enabling auto registry");
     }
 
-    this.registryEventHandler = new RegistryEventHandler(this.registry);
+    if (this.registryEventHandler == RegistryEventHandlerNoOp.INSTANCE) {
+      this.registryEventHandler = new RegistryEventHandler(this.registry);
+    }
+  }
+
+  /**
+   * Call this in the constructor to enable network functionality for this module.
+   * <p>
+   * This will create a new network wrapper and packet registry for this module's
+   * mod id if they don't already exist. If they do already exist, the existing
+   * network wrapper and packet registry will be used.
+   *
+   * @return a reference to the module's packet service
+   */
+  protected IPacketService enableNetwork() {
+
+    if (this.threadedNetworkWrapper == null) {
+      this.threadedNetworkWrapper = NETWORK_WRAPPER_MAP.computeIfAbsent(
+          this.modId,
+          ThreadedNetworkWrapper::new
+      );
+      this.packetRegistry = PACKET_REGISTRY_MAP.computeIfAbsent(
+          this.modId,
+          s -> new PacketRegistry(this.threadedNetworkWrapper)
+      );
+      this.packetService = new PacketService(this.threadedNetworkWrapper);
+    }
+
+    return this.packetService;
   }
 
   // --------------------------------------------------------------------------
@@ -101,12 +146,37 @@ public abstract class ModuleBase
   // - Registration
   // --------------------------------------------------------------------------
 
+  /**
+   * This is called to allow the module to register blocks, items, etc.
+   * <p>
+   * Only called if {@link ModuleBase#enableAutoRegistry()} has been called in the module's constructor.
+   *
+   * @param registry the registry
+   */
   public void onRegister(Registry registry) {
-    //
+    // Override to use.
   }
 
+  /**
+   * This is called to allow the module to register client only things like models.
+   * <p>
+   * Only called if {@link ModuleBase#enableAutoRegistry()} has been called in the module's constructor.
+   *
+   * @param registry the registry
+   */
   public void onClientRegister(Registry registry) {
-    //
+    // Override to use.
+  }
+
+  /**
+   * This is called to allow the module to register network packets.
+   * <p>
+   * Only called if {@link ModuleBase#enableNetwork()} has been called in the module's constructor.
+   *
+   * @param registry the packet registry
+   */
+  public void onNetworkRegister(IPacketRegistry registry) {
+    // Override to use.
   }
 
   public void onRegisterBlockEvent(RegistryEvent.Register<Block> event) {
@@ -175,7 +245,10 @@ public abstract class ModuleBase
   // --------------------------------------------------------------------------
 
   public void onConstructionEvent(FMLConstructionEvent event) {
-    //
+
+    if (this.packetRegistry != null) {
+      this.onNetworkRegister(this.packetRegistry);
+    }
   }
 
   public void onPreInitializationEvent(FMLPreInitializationEvent event) {

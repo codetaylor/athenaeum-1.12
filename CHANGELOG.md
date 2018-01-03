@@ -1,3 +1,6 @@
+1.2.3
+* Added: network wrapper, packet registry, and packet service
+
 1.1.3
 * Fixed: duplicate calls to CraftTweaker integration plugin delgate which caused log errors and duplicate recipes
 
