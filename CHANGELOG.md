@@ -1,3 +1,6 @@
+1.3.3
+* Added: SimplePluginHandler and plugin handler registration for GameStages mod
+
 1.2.3
 * Added: network wrapper, packet registry, and packet service
 

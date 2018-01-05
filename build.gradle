@@ -69,12 +69,17 @@ repositories {
 
     maven {
         // location of the maven that hosts JEI files
-        url = "http://dvs1.progwml6.com/files/maven"
+        url "http://dvs1.progwml6.com/files/maven"
     }
 
     maven {
         // CraftTweaker
         url "http://maven.blamejared.com/"
+    }
+
+    maven {
+        // gamestages
+        url "https://maven.mcmoddev.com"
     }
 
     flatDir {
@@ -87,6 +92,7 @@ dependencies {
     deobfCompile "CraftTweaker2:CraftTweaker2-API:4.0.10.314"
     deobfCompile "CraftTweaker2:ZenScript:4.0.10.314"
     deobfCompile "mezz.jei:jei_1.12.2:4.8.5.139"
+    deobfCompile "net.darkhax.gamestages:GameStages-1.12.2:1.0.72"
 }
 
 processResources {

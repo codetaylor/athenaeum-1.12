@@ -34,6 +34,11 @@ public class ModuleManager {
         "crafttweaker",
         "com.codetaylor.mc.athenaeum.integration.crafttweaker.IntegrationPluginHandler"
     );
+
+    this.registerIntegrationHandler(
+        "gamestages",
+        "com.codetaylor.mc.athenaeum.integration.SimplePluginHandler"
+    );
   }
 
   @SafeVarargs
