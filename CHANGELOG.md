@@ -1,3 +1,6 @@
+1.4.3:
+* Added: WeightedPicker util
+
 1.3.3
 * Added: SimplePluginHandler and plugin handler registration for GameStages mod
 
