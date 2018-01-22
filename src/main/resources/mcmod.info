@@ -1,0 +1,16 @@
+[
+{
+  "modid": "athenaeum",
+  "name": "Athenaeum",
+  "description": "My modding lib.",
+  "version": "${version}",
+  "mcversion": "${mcversion}",
+  "url": "",
+  "updateUrl": "",
+  "authorList": ["codetaylor"],
+  "credits": "",
+  "logoFile": "",
+  "screenshots": [],
+  "dependencies": []
+}
+]

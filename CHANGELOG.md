@@ -1,3 +1,7 @@
+1.5.3:
+* Added: moved all reference materials from Artisan Worktables into lib
+* Added: bone material
+
 1.4.3:
 * Added: WeightedPicker util
 
