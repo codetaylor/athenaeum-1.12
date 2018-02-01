@@ -1,3 +1,8 @@
+1.6.3:
+* Added: BlockHelper
+* Added: BottleHelper
+* Added: GuiHelper#drawVerticalScaledTexturedModalRectFromIconAnchorBottomLeft
+
 1.5.3:
 * Added: moved all reference materials from Artisan Worktables into lib
 * Added: bone material
