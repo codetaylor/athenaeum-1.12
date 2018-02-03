@@ -376,7 +376,11 @@ public class CTInputHelper {
         return itemStack == null || itemStack.isEmpty();
       }
 
-      return itemStack != null && this.ingredient.matches(CTInputHelper.toIItemStack(itemStack));
+      if (itemStack == null || itemStack.isEmpty()) {
+        return this.ingredient == null;
+      }
+
+      return this.ingredient.matches(CTInputHelper.toIItemStack(itemStack));
     }
 
   }

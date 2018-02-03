@@ -1,3 +1,7 @@
+1.6.4:
+* Fixed: Crash - Updating Screen Events (codetaylor/artisan-worktables #47)
+* Changed: updated project to build against latest CraftTweaker builds
+
 1.6.3:
 * Added: BlockHelper
 * Added: BottleHelper
