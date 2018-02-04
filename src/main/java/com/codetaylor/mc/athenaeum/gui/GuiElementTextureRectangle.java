@@ -47,8 +47,8 @@ public class GuiElementTextureRectangle
     Gui.drawModalRectWithCustomSizedTexture(
         this.elementXModifiedGet(),
         this.elementYModifiedGet(),
-        this.texturePositionXModifiedGet(texture) / (float) texture.getWidth(),
-        this.texturePositionYModifiedGet(texture) / (float) texture.getHeight(),
+        this.texturePositionXModifiedGet(texture),
+        this.texturePositionYModifiedGet(texture),
         this.elementWidthModifiedGet(),
         this.elementHeightModifiedGet(),
         texture.getWidth(),
