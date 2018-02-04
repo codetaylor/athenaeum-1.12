@@ -10,6 +10,8 @@ import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;
 
+import java.awt.*;
+
 public class GuiHelper {
 
   public static void drawTexturedRect(
@@ -105,11 +107,13 @@ public class GuiHelper {
   public static void drawVerticalScaledTexturedModalRectFromIconAnchorBottomLeft(
       int x,
       int y,
-      int z,
+      float z,
       TextureAtlasSprite icon,
       int width,
       int height
   ) {
+
+    // TODO: this only handles tiling vertically, need to implement horizontal tiling as well
 
     if (icon == null) {
       return;
@@ -203,6 +207,183 @@ public class GuiHelper {
     float fluidHeightScalar = GuiHelper.getFluidHeightScalar(fluidAmount, fluidCapacity, displayHeight);
     int elementHeightModified = (int) (fluidHeightScalar * displayHeight);
     return displayHeight - Math.max(0, Math.min(elementHeightModified, displayHeight)) + offsetY;
+  }
+
+  // https://github.com/TheCBProject/CoFHLib/blob/master/src/main/java/cofh/lib/gui/GuiBase.java
+  public static void drawScaledTexturedModalRectFromIcon(int x, int y, float z, TextureAtlasSprite icon, int width, int height) {
+
+    if (icon == null) {
+      return;
+    }
+
+    int iconHeight = icon.getIconHeight();
+    int iconWidth = icon.getIconWidth();
+
+    double minU = icon.getMinU();
+    double maxU = icon.getMaxU();
+    double minV = icon.getMinV();
+    double maxV = icon.getMaxV();
+
+    BufferBuilder buffer = Tessellator.getInstance().getBuffer();
+    buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
+    buffer
+        .pos(x, y + height, z)
+        .tex(minU, minV + (maxV - minV) * height / (float) iconHeight)
+        .endVertex();
+    buffer
+        .pos(x + width, y + height, z)
+        .tex(minU + (maxU - minU) * width / (float) iconWidth, minV + (maxV - minV) * height / (float) iconHeight)
+        .endVertex();
+    buffer
+        .pos(x + width, y, z)
+        .tex(minU + (maxU - minU) * width / (float) iconWidth, minV)
+        .endVertex();
+    buffer
+        .pos(x, y, z)
+        .tex(minU, minV)
+        .endVertex();
+    Tessellator.getInstance().draw();
+
+  }
+
+  // https://github.com/TheCBProject/CoFHLib/blob/master/src/main/java/cofh/lib/gui/GuiBase.java
+  public static void drawSizedModalRect(int x1, int y1, int x2, int y2, float z, Color color) {
+
+    int temp;
+
+    if (x1 < x2) {
+      temp = x1;
+      x1 = x2;
+      x2 = temp;
+    }
+
+    if (y1 < y2) {
+      temp = y1;
+      y1 = y2;
+      y2 = temp;
+    }
+
+    GlStateManager.enableBlend();
+    GlStateManager.disableTexture2D();
+    GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
+
+    float a = color.getAlpha() / 255f;
+    float r = color.getRed() / 255f;
+    float g = color.getGreen() / 255f;
+    float b = color.getBlue() / 255f;
+    GlStateManager.color(r, g, b, a);
+
+    BufferBuilder buffer = Tessellator.getInstance().getBuffer();
+    buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION);
+    buffer.pos(x1, y2, z).endVertex();
+    buffer.pos(x2, y2, z).endVertex();
+    buffer.pos(x2, y1, z).endVertex();
+    buffer.pos(x1, y1, z).endVertex();
+    Tessellator.getInstance().draw();
+
+    GlStateManager.enableTexture2D();
+    GlStateManager.disableBlend();
+
+  }
+
+  /**
+   * Draws a textured square with an optionally rotated texture.
+   *
+   * @param x        the x
+   * @param y        the y
+   * @param textureX the texture x
+   * @param textureY the texture y
+   * @param size     the size
+   * @param rotation (clockwise) 0 = 0 degrees, 1 = 90 degrees, 2 = 180 degrees, 3 = 270 degrees
+   */
+  public static void drawRotatedTexturedModalSquare(int x, int y, float z, int textureX, int textureY, int size, int rotation) {
+
+    // TODO: these magic numbers tho...
+
+    Tessellator tessellator = Tessellator.getInstance();
+    BufferBuilder vertexbuffer = tessellator.getBuffer();
+    vertexbuffer.begin(7, DefaultVertexFormats.POSITION_TEX);
+
+    if (rotation == 1) {
+
+      vertexbuffer
+          .pos(x, y + size, z)
+          .tex((textureX + size) * 0.00390625F, (textureY + size) * 0.00390625F)
+          .endVertex();
+      vertexbuffer
+          .pos(x + size, (y + size), z)
+          .tex((textureX + size) * 0.00390625F, textureY * 0.00390625F)
+          .endVertex();
+      vertexbuffer
+          .pos(x + size, y, z)
+          .tex(textureX * 0.00390625F, textureY * 0.00390625F)
+          .endVertex();
+      vertexbuffer
+          .pos(x, y, z)
+          .tex(textureX * 0.00390625F, (textureY + size) * 0.00390625F)
+          .endVertex();
+
+    } else if (rotation == 2) {
+
+      vertexbuffer
+          .pos(x, y + size, z)
+          .tex((textureX + size) * 0.00390625F, textureY * 0.00390625F)
+          .endVertex();
+      vertexbuffer
+          .pos(x + size, (y + size), z)
+          .tex(textureX * 0.00390625F, textureY * 0.00390625F)
+          .endVertex();
+      vertexbuffer
+          .pos(x + size, y, z)
+          .tex(textureX * 0.00390625F, (textureY + size) * 0.00390625F)
+          .endVertex();
+      vertexbuffer
+          .pos(x, y, z)
+          .tex((textureX + size) * 0.00390625F, (textureY + size) * 0.00390625F)
+          .endVertex();
+
+    } else if (rotation == 3) {
+
+      vertexbuffer
+          .pos(x, y + size, z)
+          .tex(textureX * 0.00390625F, textureY * 0.00390625F)
+          .endVertex();
+      vertexbuffer
+          .pos(x + size, (y + size), z)
+          .tex(textureX * 0.00390625F, (textureY + size) * 0.00390625F)
+          .endVertex();
+      vertexbuffer
+          .pos(x + size, y, z)
+          .tex((textureX + size) * 0.00390625F, (textureY + size) * 0.00390625F)
+          .endVertex();
+      vertexbuffer
+          .pos(x, y, z)
+          .tex((textureX + size) * 0.00390625F, textureY * 0.00390625F)
+          .endVertex();
+
+    } else { // rotation 0 is default
+
+      vertexbuffer
+          .pos(x, y + size, z)
+          .tex(textureX * 0.00390625F, (textureY + size) * 0.00390625F)
+          .endVertex();
+      vertexbuffer
+          .pos(x + size, (y + size), z)
+          .tex((textureX + size) * 0.00390625F, (textureY + size) * 0.00390625F)
+          .endVertex();
+      vertexbuffer
+          .pos(x + size, y, z)
+          .tex((textureX + size) * 0.00390625F, textureY * 0.00390625F)
+          .endVertex();
+      vertexbuffer
+          .pos(x, y, z)
+          .tex(textureX * 0.00390625F, textureY * 0.00390625F)
+          .endVertex();
+
+    }
+
+    tessellator.draw();
+
   }
 
   private GuiHelper() {
