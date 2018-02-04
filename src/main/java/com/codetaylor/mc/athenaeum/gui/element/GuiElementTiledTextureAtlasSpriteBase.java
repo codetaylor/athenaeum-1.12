@@ -1,5 +1,6 @@
-package com.codetaylor.mc.athenaeum.gui;
+package com.codetaylor.mc.athenaeum.gui.element;
 
+import com.codetaylor.mc.athenaeum.gui.GuiContainerBase;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureMap;
 

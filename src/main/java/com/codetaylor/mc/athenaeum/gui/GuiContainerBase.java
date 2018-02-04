@@ -1,11 +1,16 @@
 package com.codetaylor.mc.athenaeum.gui;
 
+import com.codetaylor.mc.athenaeum.gui.element.GuiElementBase;
+import com.codetaylor.mc.athenaeum.gui.element.IGuiElementClickable;
+import com.codetaylor.mc.athenaeum.gui.element.IGuiElementTooltipExtendedProvider;
+import com.codetaylor.mc.athenaeum.gui.element.IGuiElementTooltipProvider;
 import com.codetaylor.mc.athenaeum.util.TooltipHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.RenderItem;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
@@ -40,6 +45,11 @@ public abstract class GuiContainerBase
   public FontRenderer getFontRenderer() {
 
     return this.fontRenderer;
+  }
+
+  public RenderItem getItemRender() {
+
+    return this.itemRender;
   }
 
   protected void guiContainerElementAdd(GuiElementBase... elements) {
@@ -157,6 +167,8 @@ public abstract class GuiContainerBase
     super.mouseClicked(mouseX, mouseY, mouseButton);
 
     for (IGuiElementClickable element : this.guiElementClickableList) {
+
+      element.mouseClicked(mouseX, mouseY, mouseButton);
 
       if (((GuiElementBase) element).elementIsMouseInside(mouseX, mouseY)
           && ((GuiElementBase) element).elementIsVisible(mouseX, mouseY)) {

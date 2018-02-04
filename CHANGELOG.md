@@ -1,17 +1,20 @@
-1.6.4:
+1.7.4
+* Added: gui / container framework
+
+1.6.4
 * Fixed: Crash - Updating Screen Events (codetaylor/artisan-worktables #47)
 * Changed: updated project to build against latest CraftTweaker builds
 
-1.6.3:
+1.6.3
 * Added: BlockHelper
 * Added: BottleHelper
 * Added: GuiHelper#drawVerticalScaledTexturedModalRectFromIconAnchorBottomLeft
 
-1.5.3:
+1.5.3
 * Added: moved all reference materials from Artisan Worktables into lib
 * Added: bone material
 
-1.4.3:
+1.4.3
 * Added: WeightedPicker util
 
 1.3.3

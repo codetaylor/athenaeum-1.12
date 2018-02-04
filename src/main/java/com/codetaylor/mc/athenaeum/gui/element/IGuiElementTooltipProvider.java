@@ -1,4 +1,4 @@
-package com.codetaylor.mc.athenaeum.gui;
+package com.codetaylor.mc.athenaeum.gui.element;
 
 import java.util.List;
 

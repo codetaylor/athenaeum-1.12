@@ -1,18 +1,43 @@
 package com.codetaylor.mc.athenaeum.gui;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;
 
 import java.awt.*;
 
 public class GuiHelper {
+
+  public static void drawStringOutlined(
+      String translateKey,
+      int x,
+      int y,
+      FontRenderer fontRenderer,
+      int textShadowColor
+  ) {
+
+    String displayText = I18n.format(translateKey);
+
+    fontRenderer.drawString(displayText, x + 0, y + 1, textShadowColor);
+    fontRenderer.drawString(displayText, x + 1, y + 1, textShadowColor);
+    fontRenderer.drawString(displayText, x + 1, y - 1, textShadowColor);
+    fontRenderer.drawString(displayText, x + 1, y + 0, textShadowColor);
+
+    fontRenderer.drawString(displayText, x - 0, y - 1, textShadowColor);
+    fontRenderer.drawString(displayText, x - 1, y - 1, textShadowColor);
+    fontRenderer.drawString(displayText, x - 1, y + 1, textShadowColor);
+    fontRenderer.drawString(displayText, x - 1, y - 0, textShadowColor);
+
+    fontRenderer.drawString(displayText, x, y, Color.BLACK.getRGB());
+  }
 
   public static void drawTexturedRect(
       Minecraft minecraft,
@@ -210,7 +235,14 @@ public class GuiHelper {
   }
 
   // https://github.com/TheCBProject/CoFHLib/blob/master/src/main/java/cofh/lib/gui/GuiBase.java
-  public static void drawScaledTexturedModalRectFromIcon(int x, int y, float z, TextureAtlasSprite icon, int width, int height) {
+  public static void drawScaledTexturedModalRectFromIcon(
+      int x,
+      int y,
+      float z,
+      TextureAtlasSprite icon,
+      int width,
+      int height
+  ) {
 
     if (icon == null) {
       return;
@@ -296,7 +328,15 @@ public class GuiHelper {
    * @param size     the size
    * @param rotation (clockwise) 0 = 0 degrees, 1 = 90 degrees, 2 = 180 degrees, 3 = 270 degrees
    */
-  public static void drawRotatedTexturedModalSquare(int x, int y, float z, int textureX, int textureY, int size, int rotation) {
+  public static void drawRotatedTexturedModalSquare(
+      int x,
+      int y,
+      float z,
+      int textureX,
+      int textureY,
+      int size,
+      int rotation
+  ) {
 
     // TODO: these magic numbers tho...
 

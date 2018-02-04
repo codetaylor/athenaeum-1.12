@@ -1,4 +1,7 @@
-package com.codetaylor.mc.athenaeum.gui;
+package com.codetaylor.mc.athenaeum.gui.element;
+
+import com.codetaylor.mc.athenaeum.gui.GuiContainerBase;
+import com.codetaylor.mc.athenaeum.gui.Texture;
 
 /**
  * Created by codetaylor on 5/28/2017.
