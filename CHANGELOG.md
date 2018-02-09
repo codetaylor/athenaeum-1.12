@@ -1,3 +1,7 @@
+1.8.4
+* Added: new ingredient conversion helper methods
+* Added: fr_fr.lang (Okii35)
+
 1.7.4
 * Added: gui / container framework
 

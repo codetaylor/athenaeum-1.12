@@ -32,6 +32,7 @@ import crafttweaker.mc1120.item.MCItemStack;
 import crafttweaker.mc1120.liquid.MCLiquidStack;
 import gnu.trove.set.TCharSet;
 import gnu.trove.set.hash.TCharHashSet;
+import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.Ingredient;
@@ -39,11 +40,13 @@ import net.minecraft.util.NonNullList;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.oredict.OreDictionary;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -343,6 +346,56 @@ public class CTInputHelper {
     return result;
   }
 
+  public static List<ItemStack> getMatchingStacks(List<ItemStack> itemStackList, int amount, List<ItemStack> result) {
+
+    NonNullList<ItemStack> internalList = NonNullList.create();
+
+    for (ItemStack itemStack : itemStackList) {
+
+      if (itemStack.isEmpty()) {
+        continue;
+      }
+
+      if (itemStack.getMetadata() == OreDictionary.WILDCARD_VALUE) {
+
+        itemStack.getItem().getSubItems(CreativeTabs.SEARCH, internalList);
+
+      } else {
+        internalList.add(itemStack);
+      }
+    }
+
+    for (ItemStack itemStack : internalList) {
+      itemStack.setCount(amount);
+    }
+
+    result.addAll(internalList);
+    return result;
+  }
+
+  public static List<ItemStack> getMatchingStacks(IIngredient ingredient, List<ItemStack> result) {
+
+    if (ingredient instanceof IOreDictEntry) {
+      NonNullList<ItemStack> ores = OreDictionary.getOres(((IOreDictEntry) ingredient).getName());
+      CTInputHelper.getMatchingStacks(ores, ingredient.getAmount(), result);
+
+    } else if (ingredient instanceof IItemStack) {
+      ItemStack itemStack = CTInputHelper.toStack((IItemStack) ingredient);
+      itemStack.setCount(ingredient.getAmount());
+      result.add(itemStack);
+
+    } else if (ingredient instanceof IngredientStack) { // ingredient with quantity
+      List<IItemStack> items = ingredient.getItems();
+
+      for (IItemStack item : items) {
+        ItemStack itemStack = CTInputHelper.toStack(item);
+        CTInputHelper.getMatchingStacks(Collections.singletonList(itemStack), ingredient.getAmount(), result);
+      }
+    }
+
+    return result;
+  }
+
   /**
    * Wraps an {@link IIngredient} as an {@link Ingredient}.
    */
@@ -365,8 +418,8 @@ public class CTInputHelper {
     @Override
     public ItemStack[] getMatchingStacks() {
 
-      List<IItemStack> stacks = this.ingredient != null ? this.ingredient.getItems() : Collections.emptyList();
-      return CTInputHelper.toStacks(stacks.toArray(new IItemStack[stacks.size()]));
+      List<ItemStack> matchingStacks = CTInputHelper.getMatchingStacks(this.ingredient, new ArrayList<>());
+      return matchingStacks.toArray(new ItemStack[matchingStacks.size()]);
     }
 
     @Override
