@@ -1,3 +1,6 @@
+1.8.5
+* Changed: updated zh_cn.lang (PR#3 DYColdWind)
+
 1.8.4
 * Added: new ingredient conversion helper methods
 * Added: fr_fr.lang (Okii35)
