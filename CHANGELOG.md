@@ -1,3 +1,6 @@
+1.9.5
+* Added: EnchantingHelper utility class
+
 1.8.5
 * Changed: updated zh_cn.lang (PR#3 DYColdWind)
 

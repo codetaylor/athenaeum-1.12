@@ -95,6 +95,8 @@ dependencies {
     deobfCompile "mezz.jei:jei_1.12.2:4.8.5.150"
     deobfCompile "net.darkhax.gamestages:GameStages-1.12.2:1.0.80"
     deobfCompile "net.darkhax.bookshelf:Bookshelf-1.12.2:2.3.523"
+
+    testCompile 'junit:junit:4.12'
 }
 
 processResources {
