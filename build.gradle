@@ -19,7 +19,7 @@ def getVersionName = { String workTree ->
 }
 
 project.ext.mcversion = "1.12.2"
-project.ext.forgeversion = "14.23.1.2601"
+project.ext.forgeversion = "14.23.2.2613"
 version = project.ext.mcversion + "-" + getVersionName("${project.projectDir}")
 group = "com.codetaylor.mc"
 archivesBaseName = "athenaeum"
