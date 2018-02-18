@@ -1,4 +1,5 @@
 1.10.5
+* Added: recipe item parser classes from Dropt
 * Added: FileHelper utility class
 * Changed: material names to use Athenaeum mod id
 
