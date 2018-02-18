@@ -1,3 +1,7 @@
+1.10.5
+* Added: FileHelper utility class
+* Changed: material names to use Athenaeum mod id
+
 1.9.5
 * Added: EnchantingHelper utility class
 
