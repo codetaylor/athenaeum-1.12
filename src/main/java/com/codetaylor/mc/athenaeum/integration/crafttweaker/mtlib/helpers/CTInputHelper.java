@@ -25,6 +25,7 @@ package com.codetaylor.mc.athenaeum.integration.crafttweaker.mtlib.helpers;
 
 import crafttweaker.api.item.IIngredient;
 import crafttweaker.api.item.IItemStack;
+import crafttweaker.api.item.IngredientOr;
 import crafttweaker.api.item.IngredientStack;
 import crafttweaker.api.liquid.ILiquidStack;
 import crafttweaker.api.oredict.IOreDictEntry;
@@ -46,7 +47,6 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -384,7 +384,8 @@ public class CTInputHelper {
       itemStack.setCount(ingredient.getAmount());
       result.add(itemStack);
 
-    } else if (ingredient instanceof IngredientStack) { // ingredient with quantity
+    } else if (ingredient instanceof IngredientStack
+        || ingredient instanceof IngredientOr) { // ingredient with quantity
       List<IItemStack> items = ingredient.getItems();
 
       for (IItemStack item : items) {

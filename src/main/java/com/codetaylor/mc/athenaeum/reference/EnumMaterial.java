@@ -14,7 +14,7 @@ public enum EnumMaterial {
   DIAMOND("diamond", Item.ToolMaterial.DIAMOND, new Color(0x33EBCB), false, "gemDiamond"),
 
   FLINT("flint", ModuleMaterials.FLINT, new Color(0x1A1A1A), true, Items.FLINT),
-  BONE("bone", ModuleMaterials.BONE, new Color(0xFFF6C8), false, Items.BONE),
+  BONE("bone", ModuleMaterials.BONE, new Color(0xFFF6C8), false, "bone"),
   ALUMINUM("aluminum", ModuleMaterials.ALUMINUM, new Color(0xC5C6D0), true, "ingotAluminum"),
   BRONZE("bronze", ModuleMaterials.BRONZE, new Color(0xE8983F), true, "ingotBronze"),
   CONSTANTAN("constantan", ModuleMaterials.CONSTANTAN, new Color(0xBD8D46), true, "ingotConstantan"),

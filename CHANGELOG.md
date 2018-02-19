@@ -1,3 +1,8 @@
+1.11.5
+* Added: StringHelper utility class
+* Added: CTInputHelper#getMatchingStacks support for ingredientOr
+* Changed: bone material now uses bone oreDict entry as ingredient
+
 1.10.5
 * Added: recipe item parser classes from Dropt
 * Added: FileHelper utility class
