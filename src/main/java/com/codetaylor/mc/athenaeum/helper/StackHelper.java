@@ -5,7 +5,20 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
+import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.List;
+
 public class StackHelper {
+
+  @ParametersAreNonnullByDefault
+  public static List<ItemStack> copyInto(List<ItemStack> sourceList, List<ItemStack> targetList) {
+
+    for (ItemStack itemStack : sourceList) {
+      targetList.add(itemStack.copy());
+    }
+
+    return targetList;
+  }
 
   /**
    * Container sensitive decrease stack.

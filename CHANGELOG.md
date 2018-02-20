@@ -1,3 +1,6 @@
+1.11.6
+* Added: StackHelper::copyInto method
+
 1.11.5
 * Added: StringHelper utility class
 * Added: CTInputHelper#getMatchingStacks support for ingredientOr
