@@ -1,4 +1,4 @@
-package com.codetaylor.mc.athenaeum.helper;
+package com.codetaylor.mc.athenaeum.util;
 
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.item.ItemStack;

@@ -1,3 +1,8 @@
+1.12.6
+* Changed: combined helper package into util package
+* Changed: generalized client registration strategy
+* Changed: refactored block registry methods
+
 1.11.6
 * Added: StackHelper::copyInto method
 

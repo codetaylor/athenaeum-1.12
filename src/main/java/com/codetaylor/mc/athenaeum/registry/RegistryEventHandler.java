@@ -1,6 +1,6 @@
 package com.codetaylor.mc.athenaeum.registry;
 
-import com.codetaylor.mc.athenaeum.registry.strategy.IModelRegistrationStrategy;
+import com.codetaylor.mc.athenaeum.registry.strategy.IClientModelRegistrationStrategy;
 import net.minecraft.block.Block;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.item.Item;
@@ -104,7 +104,7 @@ public class RegistryEventHandler
   @SideOnly(Side.CLIENT)
   public void onClientRegisterModelsEvent(ModelRegistryEvent event) {
 
-    for (IModelRegistrationStrategy strategy : this.registry.getModelRegistrationStrategyList()) {
+    for (IClientModelRegistrationStrategy strategy : this.registry.getClientModelRegistrationStrategyList()) {
       strategy.register();
     }
   }

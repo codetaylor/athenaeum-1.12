@@ -1,4 +1,4 @@
-package com.codetaylor.mc.athenaeum.helper;
+package com.codetaylor.mc.athenaeum.util;
 
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.fml.common.registry.GameRegistry;

@@ -1,6 +1,6 @@
 package com.codetaylor.mc.athenaeum.registry;
 
-import com.codetaylor.mc.athenaeum.registry.strategy.IModelRegistrationStrategy;
+import com.codetaylor.mc.athenaeum.registry.strategy.IClientModelRegistrationStrategy;
 import com.codetaylor.mc.athenaeum.spi.IBlockColored;
 import com.codetaylor.mc.athenaeum.spi.IBlockVariant;
 import net.minecraft.block.Block;
@@ -28,7 +28,7 @@ public class Registry {
   private final List<Block> blockList;
   private final List<Item> itemList;
   private final List<Class<? extends TileEntity>> tileEntityClassList;
-  private final List<IModelRegistrationStrategy> modelRegistrationStrategyList;
+  private final List<IClientModelRegistrationStrategy> clientModelRegistrationStrategyList;
 
   public Registry(@Nonnull String modId) {
 
@@ -43,7 +43,7 @@ public class Registry {
     this.blockList = new ArrayList<>();
     this.itemList = new ArrayList<>();
     this.tileEntityClassList = new ArrayList<>();
-    this.modelRegistrationStrategyList = new ArrayList<>();
+    this.clientModelRegistrationStrategyList = new ArrayList<>();
   }
 
   public String getModId() {
@@ -62,6 +62,21 @@ public class Registry {
 
   public <B extends Block> B registerBlock(B block, String name) {
 
+    ResourceLocation resourceLocation = new ResourceLocation(this.modId, name);
+    block.setRegistryName(resourceLocation);
+    block.setUnlocalizedName(this.modId + "." + name);
+
+    if (this.creativeTabs != null) {
+      block.setCreativeTab(this.creativeTabs);
+    }
+
+    this.blockList.add(block);
+
+    return block;
+  }
+
+  public <B extends Block> B registerBlockWithItem(B block, String name) {
+
     ItemBlock itemBlock;
 
     if (block instanceof IBlockColored) {
@@ -79,17 +94,10 @@ public class Registry {
 
   public <B extends Block, I extends ItemBlock> B registerBlock(B block, I itemBlock, String name) {
 
+    this.registerBlock(block, name);
+
     ResourceLocation resourceLocation = new ResourceLocation(this.modId, name);
-    block.setRegistryName(resourceLocation);
-    block.setUnlocalizedName(this.modId + "." + name);
-
-    if (this.creativeTabs != null) {
-      block.setCreativeTab(this.creativeTabs);
-    }
-
     this.registerItem(itemBlock, resourceLocation);
-
-    this.blockList.add(block);
 
     return block;
   }
@@ -146,15 +154,15 @@ public class Registry {
   // - Models
   // --------------------------------------------------------------------------
 
-  public List<IModelRegistrationStrategy> getModelRegistrationStrategyList() {
+  public List<IClientModelRegistrationStrategy> getClientModelRegistrationStrategyList() {
 
-    return Collections.unmodifiableList(this.modelRegistrationStrategyList);
+    return Collections.unmodifiableList(this.clientModelRegistrationStrategyList);
   }
 
   @SideOnly(Side.CLIENT)
-  public void registerItemModelStrategy(IModelRegistrationStrategy strategy) {
+  public void registerClientModelRegistrationStrategy(IClientModelRegistrationStrategy strategy) {
 
-    this.modelRegistrationStrategyList.add(strategy);
+    this.clientModelRegistrationStrategyList.add(strategy);
   }
 
 }

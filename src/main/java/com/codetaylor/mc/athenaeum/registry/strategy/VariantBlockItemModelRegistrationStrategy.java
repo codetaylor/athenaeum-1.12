@@ -11,7 +11,7 @@ import net.minecraft.item.Item;
 import net.minecraftforge.client.model.ModelLoader;
 
 public class VariantBlockItemModelRegistrationStrategy<T extends IVariant & Comparable<T>>
-    implements IModelRegistrationStrategy {
+    implements IClientModelRegistrationStrategy {
 
   /**
    * A {@link StateMapperBase} used to create property strings.

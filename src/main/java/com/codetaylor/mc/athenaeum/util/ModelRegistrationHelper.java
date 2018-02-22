@@ -1,4 +1,4 @@
-package com.codetaylor.mc.athenaeum.helper;
+package com.codetaylor.mc.athenaeum.util;
 
 import com.codetaylor.mc.athenaeum.spi.IBlockVariant;
 import com.codetaylor.mc.athenaeum.spi.IVariant;

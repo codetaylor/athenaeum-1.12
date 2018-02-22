@@ -2,7 +2,6 @@ package com.codetaylor.mc.athenaeum.integration.crafttweaker;
 
 import com.codetaylor.mc.athenaeum.ModAthenaeum;
 import com.codetaylor.mc.athenaeum.module.ModuleBase;
-import net.minecraftforge.fml.common.event.FMLLoadCompleteEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 

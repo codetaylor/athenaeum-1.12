@@ -1,6 +1,6 @@
 package com.codetaylor.mc.athenaeum.registry.strategy;
 
-public interface IModelRegistrationStrategy {
+public interface IClientModelRegistrationStrategy {
 
   void register();
 
