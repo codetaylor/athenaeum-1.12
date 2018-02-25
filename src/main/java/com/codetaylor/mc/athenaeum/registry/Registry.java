@@ -1,6 +1,8 @@
 package com.codetaylor.mc.athenaeum.registry;
 
 import com.codetaylor.mc.athenaeum.registry.strategy.IClientModelRegistrationStrategy;
+import com.codetaylor.mc.athenaeum.registry.strategy.IForgeRegistryEventRegistrationStrategy;
+import com.codetaylor.mc.athenaeum.registry.strategy.ITileEntityRegistrationStrategy;
 import com.codetaylor.mc.athenaeum.spi.IBlockColored;
 import com.codetaylor.mc.athenaeum.spi.IBlockVariant;
 import net.minecraft.block.Block;
@@ -11,39 +13,44 @@ import net.minecraft.item.ItemColored;
 import net.minecraft.item.ItemMultiTexture;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.biome.Biome;
+import net.minecraftforge.common.BiomeDictionary;
+import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+@SuppressWarnings({"WeakerAccess", "UnusedReturnValue", "unused"})
 public class Registry {
 
   private final String modId;
   private final CreativeTabs creativeTabs;
 
-  private final List<Block> blockList;
-  private final List<Item> itemList;
-  private final List<Class<? extends TileEntity>> tileEntityClassList;
+  private final List<IForgeRegistryEventRegistrationStrategy<Block>> blockRegistrationStrategyList;
+  private final List<IForgeRegistryEventRegistrationStrategy<Item>> itemRegistrationStrategyList;
+  private final List<ITileEntityRegistrationStrategy> tileEntityRegistrationStrategyList;
   private final List<IClientModelRegistrationStrategy> clientModelRegistrationStrategyList;
+  private final List<IForgeRegistryEventRegistrationStrategy<Biome>> biomeRegistrationStrategyList;
 
-  public Registry(@Nonnull String modId) {
+  public Registry(String modId) {
 
     this(modId, null);
   }
 
-  public Registry(@Nonnull String modId, @Nullable CreativeTabs creativeTabs) {
+  public Registry(String modId, @Nullable CreativeTabs creativeTabs) {
 
     this.modId = modId;
     this.creativeTabs = creativeTabs;
 
-    this.blockList = new ArrayList<>();
-    this.itemList = new ArrayList<>();
-    this.tileEntityClassList = new ArrayList<>();
+    this.blockRegistrationStrategyList = new ArrayList<>();
+    this.itemRegistrationStrategyList = new ArrayList<>();
+    this.tileEntityRegistrationStrategyList = new ArrayList<>();
     this.clientModelRegistrationStrategyList = new ArrayList<>();
+    this.biomeRegistrationStrategyList = new ArrayList<>();
   }
 
   public String getModId() {
@@ -55,9 +62,14 @@ public class Registry {
   // - Block
   // --------------------------------------------------------------------------
 
-  public List<Block> getBlockList() {
+  public List<IForgeRegistryEventRegistrationStrategy<Block>> getBlockRegistrationStrategyList() {
 
-    return Collections.unmodifiableList(this.blockList);
+    return Collections.unmodifiableList(this.blockRegistrationStrategyList);
+  }
+
+  public void registerBlockRegistrationStrategy(IForgeRegistryEventRegistrationStrategy<Block> strategy) {
+
+    this.blockRegistrationStrategyList.add(strategy);
   }
 
   public <B extends Block> B registerBlock(B block, String name) {
@@ -70,7 +82,7 @@ public class Registry {
       block.setCreativeTab(this.creativeTabs);
     }
 
-    this.blockList.add(block);
+    this.registerBlockRegistrationStrategy(forgeRegistry -> forgeRegistry.register(block));
 
     return block;
   }
@@ -106,24 +118,33 @@ public class Registry {
   // - Item
   // --------------------------------------------------------------------------
 
-  public List<Item> getItemList() {
+  public List<IForgeRegistryEventRegistrationStrategy<Item>> getItemRegistrationStrategyList() {
 
-    return Collections.unmodifiableList(this.itemList);
+    return Collections.unmodifiableList(this.itemRegistrationStrategyList);
   }
 
-  public Item registerItem(@Nonnull Item item, @Nonnull ResourceLocation registryName) {
+  public void registerItemRegistrationStrategy(IForgeRegistryEventRegistrationStrategy<Item> strategy) {
 
+    this.itemRegistrationStrategyList.add(strategy);
+  }
+
+  public Item registerItem(Item item, String name) {
+
+    return this.registerItem(item, new ResourceLocation(this.getModId(), name));
+  }
+
+  public Item registerItem(Item item, ResourceLocation registryName) {
+
+    String resourceDomain = registryName.getResourceDomain().replaceAll("_", ".");
+    String resourcePath = registryName.getResourcePath().toLowerCase().replace("_", ".");
     item.setRegistryName(registryName);
-    item.setUnlocalizedName(
-        registryName.getResourceDomain().replaceAll("_", ".") + "."
-            + registryName.getResourcePath().toLowerCase().replace("_", ".")
-    );
+    item.setUnlocalizedName(resourceDomain + "." + resourcePath);
 
     if (this.creativeTabs != null) {
       item.setCreativeTab(this.creativeTabs);
     }
 
-    this.itemList.add(item);
+    this.registerItemRegistrationStrategy(forgeRegistry -> forgeRegistry.register(item));
 
     return item;
   }
@@ -132,9 +153,14 @@ public class Registry {
   // - Tile Entity
   // --------------------------------------------------------------------------
 
-  public List<Class<? extends TileEntity>> getTileEntityClassList() {
+  public List<ITileEntityRegistrationStrategy> getTileEntityRegistrationStrategyList() {
 
-    return Collections.unmodifiableList(this.tileEntityClassList);
+    return Collections.unmodifiableList(this.tileEntityRegistrationStrategyList);
+  }
+
+  public void registerTileEntityRegistrationStrategy(ITileEntityRegistrationStrategy strategy) {
+
+    this.tileEntityRegistrationStrategyList.add(strategy);
   }
 
   @SafeVarargs
@@ -145,9 +171,12 @@ public class Registry {
     }
   }
 
-  public void registerTileEntity(@Nonnull Class<? extends TileEntity> tileEntityClass) {
+  public void registerTileEntity(Class<? extends TileEntity> tileEntityClass) {
 
-    this.tileEntityClassList.add(tileEntityClass);
+    this.registerTileEntityRegistrationStrategy(() -> GameRegistry.registerTileEntity(
+        tileEntityClass,
+        this.getModId() + ".tile." + tileEntityClass.getSimpleName()
+    ));
   }
 
   // --------------------------------------------------------------------------
@@ -165,4 +194,34 @@ public class Registry {
     this.clientModelRegistrationStrategyList.add(strategy);
   }
 
+  // --------------------------------------------------------------------------
+  // - Biomes
+  // --------------------------------------------------------------------------
+
+  public List<IForgeRegistryEventRegistrationStrategy<Biome>> getBiomeRegistrationStrategyList() {
+
+    return Collections.unmodifiableList(this.biomeRegistrationStrategyList);
+  }
+
+  public void registerBiomeRegistrationStrategy(IForgeRegistryEventRegistrationStrategy<Biome> strategy) {
+
+    this.biomeRegistrationStrategyList.add(strategy);
+  }
+
+  public void registerBiome(Biome biome, String name) {
+
+    this.registerBiome(biome, name, new BiomeDictionary.Type[0]);
+  }
+
+  public void registerBiome(Biome biome, String name, BiomeDictionary.Type[] types) {
+
+    this.registerBiomeRegistrationStrategy(forgeRegistry -> {
+      biome.setRegistryName(this.getModId(), name);
+      forgeRegistry.register(biome);
+
+      if (types.length > 0) {
+        BiomeDictionary.addTypes(biome, types);
+      }
+    });
+  }
 }

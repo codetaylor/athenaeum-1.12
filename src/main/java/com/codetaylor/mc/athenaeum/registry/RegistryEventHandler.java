@@ -1,23 +1,22 @@
 package com.codetaylor.mc.athenaeum.registry;
 
 import com.codetaylor.mc.athenaeum.registry.strategy.IClientModelRegistrationStrategy;
+import com.codetaylor.mc.athenaeum.registry.strategy.IForgeRegistryEventRegistrationStrategy;
+import com.codetaylor.mc.athenaeum.registry.strategy.ITileEntityRegistrationStrategy;
 import net.minecraft.block.Block;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.item.Item;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionType;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.world.biome.Biome;
 import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.common.registry.EntityEntry;
-import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.common.registry.VillagerRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import net.minecraftforge.registries.IForgeRegistry;
 
 public class RegistryEventHandler
     implements IRegistryEventHandler {
@@ -32,20 +31,16 @@ public class RegistryEventHandler
   @Override
   public void onRegisterBlockEvent(RegistryEvent.Register<Block> event) {
 
-    IForgeRegistry<Block> registry = event.getRegistry();
-
-    for (Block block : this.registry.getBlockList()) {
-      registry.register(block);
+    for (IForgeRegistryEventRegistrationStrategy<Block> strategy : this.registry.getBlockRegistrationStrategyList()) {
+      strategy.register(event.getRegistry());
     }
   }
 
   @Override
   public void onRegisterItemEvent(RegistryEvent.Register<Item> event) {
 
-    IForgeRegistry<Item> registry = event.getRegistry();
-
-    for (Item item : this.registry.getItemList()) {
-      registry.register(item);
+    for (IForgeRegistryEventRegistrationStrategy<Item> strategy : this.registry.getItemRegistrationStrategyList()) {
+      strategy.register(event.getRegistry());
     }
   }
 
@@ -56,7 +51,10 @@ public class RegistryEventHandler
 
   @Override
   public void onRegisterBiomeEvent(RegistryEvent.Register<Biome> event) {
-    // TODO
+
+    for (IForgeRegistryEventRegistrationStrategy<Biome> strategy : this.registry.getBiomeRegistrationStrategyList()) {
+      strategy.register(event.getRegistry());
+    }
   }
 
   @Override
@@ -92,11 +90,8 @@ public class RegistryEventHandler
   @Override
   public void onRegisterTileEntitiesEvent() {
 
-    for (Class<? extends TileEntity> tileEntityClass : this.registry.getTileEntityClassList()) {
-      GameRegistry.registerTileEntity(
-          tileEntityClass,
-          this.registry.getModId() + ".tile." + tileEntityClass.getSimpleName()
-      );
+    for (ITileEntityRegistrationStrategy strategy : this.registry.getTileEntityRegistrationStrategyList()) {
+      strategy.register();
     }
   }
 
