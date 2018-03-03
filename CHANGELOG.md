@@ -1,4 +1,4 @@
-1.13.6
+1.13.0
 * Added: additional PacketService methods
 * Added: null ingredient support to ingredient wrapper
 * Changed: BottleHelper methods no longer cause a world block update
