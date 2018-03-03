@@ -64,12 +64,25 @@ public class StackHelper {
    */
   public static void spawnStackOnTop(World world, ItemStack itemStack, BlockPos pos) {
 
-    double yOffset = 0.0;
+    StackHelper.spawnStackOnTop(world, itemStack, pos, 1.0);
+  }
+
+  /**
+   * Spawns an {@link ItemStack} in the world, directly above the given position.
+   * <p>
+   * Server only.
+   *
+   * @param world     the world
+   * @param itemStack the {@link ItemStack} to spawn
+   * @param pos       the position to spawn
+   * @author codetaylor
+   */
+  public static void spawnStackOnTop(World world, ItemStack itemStack, BlockPos pos, double offsetY) {
 
     EntityItem entityItem = new EntityItem(
         world,
         pos.getX() + 0.5,
-        pos.getY() + 0.5 + yOffset,
+        pos.getY() + 0.5 + offsetY,
         pos.getZ() + 0.5,
         itemStack
     );
