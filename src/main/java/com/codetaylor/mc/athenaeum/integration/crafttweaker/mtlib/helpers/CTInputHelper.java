@@ -301,7 +301,11 @@ public class CTInputHelper {
    * @return {@link Ingredient}
    * @author codetaylor
    */
-  public static Ingredient toIngredient(IIngredient ingredient) {
+  public static Ingredient toIngredient(@Nullable IIngredient ingredient) {
+
+    if (ingredient == null) {
+      return Ingredient.EMPTY;
+    }
 
     return new IngredientWrapper(ingredient);
   }
@@ -321,7 +325,7 @@ public class CTInputHelper {
       result[row] = new Ingredient[ingredients[row].length];
 
       for (int col = 0; col < ingredients[row].length; col++) {
-        result[row][col] = new IngredientWrapper(ingredients[row][col]);
+        result[row][col] = CTInputHelper.toIngredient(ingredients[row][col]);
       }
     }
 
@@ -340,7 +344,7 @@ public class CTInputHelper {
     Ingredient[] result = new Ingredient[ingredients.length];
 
     for (int i = 0; i < ingredients.length; i++) {
-      result[i] = new IngredientWrapper(ingredients[i]);
+      result[i] = CTInputHelper.toIngredient(ingredients[i]);
     }
 
     return result;
@@ -375,6 +379,10 @@ public class CTInputHelper {
 
   public static List<ItemStack> getMatchingStacks(IIngredient ingredient, List<ItemStack> result) {
 
+    if (ingredient == null) {
+      return result;
+    }
+
     if (ingredient instanceof IOreDictEntry) {
       NonNullList<ItemStack> ores = OreDictionary.getOres(((IOreDictEntry) ingredient).getName());
       CTInputHelper.getMatchingStacks(ores, ingredient.getAmount(), result);
@@ -405,12 +413,16 @@ public class CTInputHelper {
 
     private IIngredient ingredient;
 
-    public IngredientWrapper(IIngredient ingredient) {
+    public IngredientWrapper(@Nullable IIngredient ingredient) {
 
       this.ingredient = ingredient;
     }
 
     public int getAmount() {
+
+      if (this.ingredient == null) {
+        return 0;
+      }
 
       return this.ingredient.getAmount();
     }

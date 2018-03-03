@@ -23,11 +23,7 @@ public class BottleHelper {
     WATER_BOTTLE.setTagCompound(waterPotion);
   }
 
-  public static boolean drainWaterIntoBottle(TileEntity tileEntity, EntityPlayer player, FluidTank tank) {
-
-    if (tileEntity.getWorld().isRemote) {
-      throw new IllegalStateException("Don't call this on the client");
-    }
+  public static boolean drainWaterIntoBottle(EntityPlayer player, FluidTank tank) {
 
     if (player.getHeldItemMainhand().getItem() == Items.GLASS_BOTTLE) {
 
@@ -42,8 +38,6 @@ public class BottleHelper {
           }
 
           tank.drain(250, true);
-
-          BlockHelper.notifyBlockUpdate(tileEntity.getWorld(), tileEntity.getPos());
           return true;
         }
       }
@@ -52,13 +46,10 @@ public class BottleHelper {
     return false;
   }
 
-  public static boolean drainWaterFromBottle(TileEntity tileEntity, EntityPlayer player, FluidTank tank) {
-
-    if (tileEntity.getWorld().isRemote) {
-      throw new IllegalStateException("Don't call this on the client");
-    }
+  public static boolean drainWaterFromBottle(EntityPlayer player, FluidTank tank) {
 
     if (player.getHeldItemMainhand().getItem() == Items.POTIONITEM
+        && WATER_BOTTLE.getTagCompound() != null
         && WATER_BOTTLE.getTagCompound().equals(player.getHeldItemMainhand().getTagCompound())) {
 
       FluidStack water = new FluidStack(FluidRegistry.WATER, 250);
@@ -72,8 +63,6 @@ public class BottleHelper {
           }
 
           tank.fill(water, true);
-
-          BlockHelper.notifyBlockUpdate(tileEntity.getWorld(), tileEntity.getPos());
           return true;
         }
       }

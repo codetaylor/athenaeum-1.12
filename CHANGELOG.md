@@ -1,3 +1,8 @@
+1.13.6
+* Added: additional PacketService methods
+* Added: null ingredient support to ingredient wrapper
+* Changed: BottleHelper methods no longer cause a world block update
+
 1.12.6
 * Added: biome registration strategy
 * Changed: combined helper package into util package

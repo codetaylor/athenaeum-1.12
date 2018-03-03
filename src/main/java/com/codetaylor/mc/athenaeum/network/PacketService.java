@@ -23,13 +23,23 @@ public class PacketService
   }
 
   @Override
+  public void sendToAllAround(IMessage message, int dimension, double x, double y, double z, double range) {
+
+    this.threadedNetworkWrapper.sendToAllAround(message, new TargetPoint(dimension, x, y, z, range));
+  }
+
+  @Override
+  public void sendToAllAround(IMessage message, int dimension, double x, double y, double z) {
+
+    this.sendToAllAround(message, dimension, x, y, z, DEFAULT_RANGE);
+  }
+
+  @Override
   public void sendToAllAround(IMessage message, TileEntity tileEntity, int range) {
 
     BlockPos pos = tileEntity.getPos();
     int dimension = tileEntity.getWorld().provider.getDimension();
-    TargetPoint point = new TargetPoint(dimension, pos.getX(), pos.getY(), pos.getZ(), range);
-
-    this.threadedNetworkWrapper.sendToAllAround(message, point);
+    this.sendToAllAround(message, dimension, pos.getX(), pos.getY(), pos.getZ(), range);
   }
 
   @Override
