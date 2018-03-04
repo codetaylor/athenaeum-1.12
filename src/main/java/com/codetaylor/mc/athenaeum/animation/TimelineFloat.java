@@ -8,11 +8,11 @@ import java.util.TreeMap;
 
 public class TimelineFloat {
 
-  private NavigableMap<Float, KeyFrameFloat> itemOffsetYKeyFrameMap;
+  private NavigableMap<Float, KeyFrameFloat> keyFrameMap;
 
   public TimelineFloat() {
 
-    this.itemOffsetYKeyFrameMap = new TreeMap<>();
+    this.keyFrameMap = new TreeMap<>();
   }
 
   public TimelineFloat addKeyFrame(float position, float value) {
@@ -23,14 +23,14 @@ public class TimelineFloat {
 
   public TimelineFloat addKeyFrame(float position, float value, Tween tween) {
 
-    this.itemOffsetYKeyFrameMap.put(position, new KeyFrameFloat(value, tween));
+    this.keyFrameMap.put(position, new KeyFrameFloat(value, tween));
     return this;
   }
 
   public float getValue(float position) {
 
-    Map.Entry<Float, KeyFrameFloat> prev = this.itemOffsetYKeyFrameMap.floorEntry(position);
-    Map.Entry<Float, KeyFrameFloat> next = this.itemOffsetYKeyFrameMap.higherEntry(position);
+    Map.Entry<Float, KeyFrameFloat> prev = this.keyFrameMap.floorEntry(position);
+    Map.Entry<Float, KeyFrameFloat> next = this.keyFrameMap.higherEntry(position);
 
     if (prev == null && next == null) {
       throw new IllegalStateException("Null timeline");
