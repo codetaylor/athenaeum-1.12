@@ -35,6 +35,18 @@ public class PacketService
   }
 
   @Override
+  public void sendToAllAround(IMessage message, int dimension, BlockPos blockPos, double range) {
+
+    this.sendToAllAround(message, dimension, blockPos.getX(), blockPos.getY(), blockPos.getZ(), range);
+  }
+
+  @Override
+  public void sendToAllAround(IMessage message, int dimension, BlockPos blockPos) {
+
+    this.sendToAllAround(message, dimension, blockPos.getX(), blockPos.getY(), blockPos.getZ());
+  }
+
+  @Override
   public void sendToAllAround(IMessage message, TileEntity tileEntity, int range) {
 
     BlockPos pos = tileEntity.getPos();
