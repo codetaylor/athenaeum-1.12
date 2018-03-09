@@ -4,15 +4,14 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidTank;
+import net.minecraftforge.fluids.capability.IFluidHandler;
 
 /**
  * https://github.com/BloodWorkXGaming/ExNihiloCreatio/blob/1.12/src/main/java/exnihilocreatio/util/TankUtil.java
  */
-public class BottleHelper {
+public class FluidHelper {
 
   private static final ItemStack WATER_BOTTLE;
 
@@ -23,13 +22,16 @@ public class BottleHelper {
     WATER_BOTTLE.setTagCompound(waterPotion);
   }
 
-  public static boolean drainWaterIntoBottle(EntityPlayer player, FluidTank tank) {
+  public static boolean drainWaterIntoBottle(EntityPlayer player, IFluidHandler tank) {
 
     if (player.getHeldItemMainhand().getItem() == Items.GLASS_BOTTLE) {
 
-      if (tank.getFluid() != null
-          && tank.getFluidAmount() >= 250
-          && tank.getFluid().getFluid() == FluidRegistry.WATER) {
+      FluidStack drain = tank.drain(250, false);
+
+      if (drain != null
+          && drain.getFluid() != null
+          && drain.amount == 250
+          && drain.getFluid() == FluidRegistry.WATER) {
 
         if (player.addItemStackToInventory(WATER_BOTTLE.copy())) {
 
@@ -46,7 +48,7 @@ public class BottleHelper {
     return false;
   }
 
-  public static boolean drainWaterFromBottle(EntityPlayer player, FluidTank tank) {
+  public static boolean drainWaterFromBottle(EntityPlayer player, IFluidHandler fluidHandler) {
 
     if (player.getHeldItemMainhand().getItem() == Items.POTIONITEM
         && WATER_BOTTLE.getTagCompound() != null
@@ -54,7 +56,7 @@ public class BottleHelper {
 
       FluidStack water = new FluidStack(FluidRegistry.WATER, 250);
 
-      if (tank.fill(water, false) == water.amount) {
+      if (fluidHandler.fill(water, false) == water.amount) {
 
         if (player.addItemStackToInventory(new ItemStack(Items.GLASS_BOTTLE))) {
 
@@ -62,7 +64,7 @@ public class BottleHelper {
             player.getHeldItemMainhand().shrink(1);
           }
 
-          tank.fill(water, true);
+          fluidHandler.fill(water, true);
           return true;
         }
       }
@@ -71,7 +73,7 @@ public class BottleHelper {
     return false;
   }
 
-  private BottleHelper() {
+  private FluidHelper() {
     //
   }
 
