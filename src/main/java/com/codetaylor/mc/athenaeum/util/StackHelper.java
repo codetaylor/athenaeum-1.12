@@ -2,13 +2,39 @@ package com.codetaylor.mc.athenaeum.util;
 
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
+import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
 
 public class StackHelper {
+
+  /**
+   * Returns an item stack's {@link NBTTagCompound}. If the stack is empty,
+   * returns a new, empty tag.
+   *
+   * @param itemStack the item stack
+   * @return the stack's tag or a new tag if the stack is empty
+   */
+  @Nonnull
+  public static NBTTagCompound getTagSafe(ItemStack itemStack) {
+
+    if (itemStack.isEmpty()) {
+      return new NBTTagCompound();
+    }
+
+    NBTTagCompound tag = itemStack.getTagCompound();
+
+    if (tag == null) {
+      tag = new NBTTagCompound();
+      itemStack.setTagCompound(tag);
+    }
+
+    return tag;
+  }
 
   @ParametersAreNonnullByDefault
   public static List<ItemStack> copyInto(List<ItemStack> sourceList, List<ItemStack> targetList) {
