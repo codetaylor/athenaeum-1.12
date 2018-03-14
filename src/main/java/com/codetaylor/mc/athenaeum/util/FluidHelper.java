@@ -1,9 +1,15 @@
 package com.codetaylor.mc.athenaeum.util;
 
+import com.sudoplay.math.FastMath;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
+import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.SoundCategory;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
+import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
@@ -71,6 +77,38 @@ public class FluidHelper {
     }
 
     return false;
+  }
+
+  public static void playFluidFillSoundServer(Fluid fluid, World world, BlockPos pos) {
+
+    if (world.isRemote) {
+      return;
+    }
+
+    if (fluid == FluidRegistry.LAVA) {
+      world.playSound(
+          null,
+          pos.getX() + 0.5f,
+          pos.getY() + 0.5f,
+          pos.getZ() + 0.5f,
+          SoundEvents.ITEM_BUCKET_FILL_LAVA,
+          SoundCategory.BLOCKS,
+          0.2F + FastMath.nextRandomFloat() * 0.2F,
+          0.9F + FastMath.nextRandomFloat() * 0.15F
+      );
+
+    } else {
+      world.playSound(
+          null,
+          pos.getX() + 0.5f,
+          pos.getY() + 0.5f,
+          pos.getZ() + 0.5f,
+          SoundEvents.ITEM_BUCKET_FILL,
+          SoundCategory.BLOCKS,
+          FastMath.nextRandomFloat() * 0.25f + 0.75f,
+          FastMath.nextRandomFloat() + 0.5f
+      );
+    }
   }
 
   private FluidHelper() {
