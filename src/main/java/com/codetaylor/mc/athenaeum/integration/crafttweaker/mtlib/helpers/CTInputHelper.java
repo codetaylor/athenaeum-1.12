@@ -392,8 +392,7 @@ public class CTInputHelper {
       itemStack.setCount(ingredient.getAmount());
       result.add(itemStack);
 
-    } else if (ingredient instanceof IngredientStack
-        || ingredient instanceof IngredientOr) { // ingredient with quantity
+    } else {
       List<IItemStack> items = ingredient.getItems();
 
       for (IItemStack item : items) {
