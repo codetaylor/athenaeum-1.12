@@ -11,6 +11,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemColored;
 import net.minecraft.item.ItemMultiTexture;
+import net.minecraft.potion.Potion;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.biome.Biome;
@@ -35,6 +36,7 @@ public class Registry {
   private final List<ITileEntityRegistrationStrategy> tileEntityRegistrationStrategyList;
   private final List<IClientModelRegistrationStrategy> clientModelRegistrationStrategyList;
   private final List<IForgeRegistryEventRegistrationStrategy<Biome>> biomeRegistrationStrategyList;
+  private final List<IForgeRegistryEventRegistrationStrategy<Potion>> potionRegistrationStrategyList;
 
   public Registry(String modId) {
 
@@ -51,6 +53,7 @@ public class Registry {
     this.tileEntityRegistrationStrategyList = new ArrayList<>();
     this.clientModelRegistrationStrategyList = new ArrayList<>();
     this.biomeRegistrationStrategyList = new ArrayList<>();
+    this.potionRegistrationStrategyList = new ArrayList<>();
   }
 
   public String getModId() {
@@ -222,6 +225,36 @@ public class Registry {
       if (types.length > 0) {
         BiomeDictionary.addTypes(biome, types);
       }
+    });
+  }
+
+  // --------------------------------------------------------------------------
+  // - Potions
+  // --------------------------------------------------------------------------
+
+  public List<IForgeRegistryEventRegistrationStrategy<Potion>> getPotionRegistrationStrategyList() {
+
+    return Collections.unmodifiableList(this.potionRegistrationStrategyList);
+  }
+
+  public void registerPotionRegistrationStrategy(IForgeRegistryEventRegistrationStrategy<Potion> strategy) {
+
+    this.potionRegistrationStrategyList.add(strategy);
+  }
+
+  public void registerPotion(Potion potion, String name) {
+
+    this.registerPotion(potion, new ResourceLocation(this.getModId(), name));
+  }
+
+  public void registerPotion(Potion potion, ResourceLocation registryName) {
+
+    this.registerPotionRegistrationStrategy(forgeRegistry -> {
+      String resourceDomain = registryName.getResourceDomain().replaceAll("_", ".");
+      String resourcePath = registryName.getResourcePath().toLowerCase().replace("_", ".");
+      potion.setRegistryName(registryName);
+      potion.setPotionName(resourceDomain + ".effect." + resourcePath);
+      forgeRegistry.register(potion);
     });
   }
 }

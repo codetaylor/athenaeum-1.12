@@ -46,7 +46,10 @@ public class RegistryEventHandler
 
   @Override
   public void onRegisterPotionEvent(RegistryEvent.Register<Potion> event) {
-    // TODO
+
+    for (IForgeRegistryEventRegistrationStrategy<Potion> strategy : this.registry.getPotionRegistrationStrategyList()) {
+      strategy.register(event.getRegistry());
+    }
   }
 
   @Override
