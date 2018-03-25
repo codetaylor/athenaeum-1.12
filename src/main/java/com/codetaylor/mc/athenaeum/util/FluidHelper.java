@@ -1,6 +1,5 @@
 package com.codetaylor.mc.athenaeum.util;
 
-import com.sudoplay.math.FastMath;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.init.SoundEvents;
@@ -93,8 +92,8 @@ public class FluidHelper {
           pos.getZ() + 0.5f,
           SoundEvents.ITEM_BUCKET_FILL_LAVA,
           SoundCategory.BLOCKS,
-          0.2F + FastMath.nextRandomFloat() * 0.2F,
-          0.9F + FastMath.nextRandomFloat() * 0.15F
+          0.2F + (float) Math.random() * 0.2F,
+          0.9F + (float) Math.random() * 0.15F
       );
 
     } else {
@@ -105,8 +104,8 @@ public class FluidHelper {
           pos.getZ() + 0.5f,
           SoundEvents.ITEM_BUCKET_FILL,
           SoundCategory.BLOCKS,
-          FastMath.nextRandomFloat() * 0.25f + 0.75f,
-          FastMath.nextRandomFloat() + 0.5f
+          (float) Math.random() * 0.25f + 0.75f,
+          (float) Math.random() + 0.5f
       );
     }
   }

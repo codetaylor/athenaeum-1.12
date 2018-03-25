@@ -65,12 +65,6 @@ minecraft {
     // makeObfSourceJar = false // an Srg named sources jar is made by default. uncomment this to disable.
 }
 
-reobf {
-    jar {
-        extraLines "PK: com/sudoplay com/codetaylor/mc/sudoplay"
-    }
-}
-
 repositories {
 
     mavenCentral()
@@ -96,11 +90,6 @@ repositories {
     }
 }
 
-configurations {
-    shade
-    compile.extendsFrom shade
-}
-
 dependencies {
     deobfCompile "CraftTweaker2:CraftTweaker2-MC1120-Main:1.12-4.1.6.457"
     deobfCompile "CraftTweaker2:CraftTweaker2-API:4.1.6.457"
@@ -108,8 +97,6 @@ dependencies {
     deobfCompile "mezz.jei:jei_1.12.2:4.8.5.159"
     deobfCompile "net.darkhax.gamestages:GameStages-1.12.2:1.0.80"
     deobfCompile "net.darkhax.bookshelf:Bookshelf-1.12.2:2.3.523"
-
-    shade "com.sudoplay.math:sudomath:1.0.3"
 
     testCompile 'junit:junit:4.12'
 }
@@ -139,13 +126,3 @@ processResources {
 task wrapper(type: Wrapper) {
     gradleVersion = '4.1'
 }
-
-jar {
-    configurations.shade.each { dep ->
-        from(project.zipTree(dep)) {
-            exclude 'META-INF', 'META-INF/**'
-            // you may exclude other things here if you want, or maybe copy the META-INF
-        }
-    }
-}
-
