@@ -6,7 +6,7 @@ import java.util.Map;
 public class LRUCache<K, V>
     extends LinkedHashMap<K, V> {
 
-  public static <K, V> LRUCache<K, V> newInstance(int capacity) {
+  public static <K, V> LRUCache<K, V> create(int capacity) {
 
     return new LRUCache<>(capacity);
   }
