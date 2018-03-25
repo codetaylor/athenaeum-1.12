@@ -2,6 +2,7 @@ package com.codetaylor.mc.athenaeum.gui.element;
 
 import com.codetaylor.mc.athenaeum.gui.GuiContainerBase;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.FluidStack;
@@ -60,5 +61,27 @@ public class GuiElementFluidTank
     }
 
     return this.fluidSprite;
+  }
+
+  @Override
+  public void drawBackgroundLayer(float partialTicks, int mouseX, int mouseY) {
+
+    FluidStack fluid = this.fluidTank.getFluid();
+
+    if (fluid != null) {
+      int color = fluid.getFluid().getColor();
+      GlStateManager.color(
+          ((color >> 16) & 0xFF) / 255f,
+          ((color >> 8) & 0xFF) / 255f,
+          (color & 0xFF) / 255f,
+          ((color >> 24) & 0xFF) / 255f
+      );
+    }
+
+    super.drawBackgroundLayer(partialTicks, mouseX, mouseY);
+
+    if (fluid != null) {
+      GlStateManager.color(1, 1, 1, 1);
+    }
   }
 }
