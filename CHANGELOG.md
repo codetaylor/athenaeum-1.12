@@ -1,3 +1,15 @@
+1.14.0
+* Fixed: transformed ingredients handled incorrectly (codetaylor/artisan-worktables#93)
+* Fixed: fluid tank GUI color incorrect
+* Added: LRU cache
+* Added: potion registration to registry
+* Added: base TE packets from AW
+* Added: getTagSafe method to Stack Helper
+* Added: injector helper
+* Changed: renamed BottleHelper to FluidHelper; now uses IFluidHandler 
+* Changed: overloaded PacketService methods for convenience
+* Changed: split stack handler util method
+
 1.13.0
 * Added: additional PacketService methods
 * Added: null ingredient support to ingredient wrapper
