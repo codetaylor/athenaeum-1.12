@@ -1,5 +1,6 @@
 package com.codetaylor.mc.athenaeum.util;
 
+import net.minecraft.block.properties.PropertyDirection;
 import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.util.EnumFacing;
 
@@ -14,6 +15,11 @@ public class Properties {
       EnumFacing.Axis.class,
       EnumFacing.Axis.X,
       EnumFacing.Axis.Z
+  );
+
+  public static final PropertyDirection FACING_HORIZONTAL = PropertyDirection.create(
+      "facing",
+      EnumFacing.Plane.HORIZONTAL
   );
 
   private Properties() {
