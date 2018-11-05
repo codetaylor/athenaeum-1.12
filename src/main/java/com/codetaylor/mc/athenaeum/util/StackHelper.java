@@ -1,8 +1,11 @@
 package com.codetaylor.mc.athenaeum.util;
 
+import net.minecraft.block.Block;
 import net.minecraft.entity.item.EntityItem;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
@@ -11,6 +14,8 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
 
 public class StackHelper {
+
+  public static final String BLOCK_ENTITY_TAG = "BlockEntityTag";
 
   /**
    * Returns an item stack's {@link NBTTagCompound}. If the stack is empty,
@@ -117,6 +122,52 @@ public class StackHelper {
     entityItem.motionZ = 0;
 
     world.spawnEntity(entityItem);
+  }
+
+  /**
+   * Create and write a tile entity's NBT to the block entity tag of an item stack.
+   *
+   * @param block      the block
+   * @param amount     the amount
+   * @param meta       the item meta
+   * @param tileEntity the TE
+   * @return the IS
+   */
+  public static ItemStack createItemStackFromTileEntity(Block block, int amount, int meta, TileEntity tileEntity) {
+
+    return StackHelper.createItemStackFromTileEntity(Item.getItemFromBlock(block), amount, meta, tileEntity);
+  }
+
+  /**
+   * Create and write a tile entity's NBT to the block entity tag of an item stack.
+   *
+   * @param item       the item
+   * @param amount     the amount
+   * @param meta       the item meta
+   * @param tileEntity the TE
+   * @return the IS
+   */
+  public static ItemStack createItemStackFromTileEntity(Item item, int amount, int meta, TileEntity tileEntity) {
+
+    ItemStack itemStack = new ItemStack(item, amount, meta);
+    return StackHelper.writeTileEntityToItemStack(tileEntity, itemStack);
+  }
+
+  /**
+   * Write a tile entity's NBT to the block entity tag of an item stack.
+   *
+   * @param tileEntity the TE
+   * @param itemStack  the IS
+   * @return the IS
+   */
+  public static ItemStack writeTileEntityToItemStack(TileEntity tileEntity, ItemStack itemStack) {
+
+    NBTTagCompound compound = new NBTTagCompound();
+    NBTTagCompound teCompound = new NBTTagCompound();
+    tileEntity.writeToNBT(teCompound);
+    compound.setTag(BLOCK_ENTITY_TAG, teCompound);
+    itemStack.setTagCompound(compound);
+    return itemStack;
   }
 
   private StackHelper() {
