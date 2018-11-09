@@ -6,6 +6,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityFurnace;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
@@ -16,6 +17,16 @@ import java.util.List;
 public class StackHelper {
 
   public static final String BLOCK_ENTITY_TAG = "BlockEntityTag";
+
+  public static boolean isFuel(ItemStack itemStack) {
+
+    return TileEntityFurnace.isItemFuel(itemStack);
+  }
+
+  public static int getItemBurnTime(ItemStack itemStack) {
+
+    return TileEntityFurnace.getItemBurnTime(itemStack);
+  }
 
   /**
    * Returns an item stack's {@link NBTTagCompound}. If the stack is empty,
