@@ -1,14 +1,24 @@
 package com.codetaylor.mc.athenaeum.util;
 
+import net.minecraft.block.Block;
+import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.renderer.vertex.VertexFormatElement;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemBlock;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumFacing;
 import net.minecraftforge.client.model.pipeline.IVertexConsumer;
 import net.minecraftforge.client.model.pipeline.UnpackedBakedQuad;
 import net.minecraftforge.client.model.pipeline.VertexTransformer;
 import net.minecraftforge.common.model.TRSRTransformation;
 
 import javax.vecmath.Vector4f;
+import java.util.ArrayList;
+import java.util.List;
 
 public final class ModelHelper {
 
@@ -54,6 +64,47 @@ public final class ModelHelper {
     quad.pipe(consumer);
 
     return builder.build();
+  }
+
+  public static IBakedModel getBakedModel(ItemStack stack) {
+
+    Item item = stack.getItem();
+
+    if (item instanceof ItemBlock) {
+      Block block = ((ItemBlock) item).getBlock();
+      IBlockState blockState = block.getStateFromMeta(stack.getMetadata());
+      return ModelHelper.getBakedModel(blockState);
+
+    } else {
+      return Minecraft.getMinecraft().getRenderItem().getItemModelMesher().getItemModel(stack);
+    }
+  }
+
+  public static IBakedModel getBakedModel(IBlockState blockState) {
+
+    return Minecraft.getMinecraft().getBlockRendererDispatcher().getBlockModelShapes().getModelForState(blockState);
+  }
+
+  public static List<BakedQuad> getQuads(ItemStack stack, long rand) {
+
+    Item item = stack.getItem();
+
+    if (item instanceof ItemBlock) {
+      Block block = ((ItemBlock) item).getBlock();
+      IBlockState blockState = block.getStateFromMeta(stack.getMetadata());
+      IBakedModel bakedModel = ModelHelper.getBakedModel(blockState);
+      List<BakedQuad> result = new ArrayList<>();
+
+      for (EnumFacing facing : EnumFacing.values()) {
+        result.addAll(bakedModel.getQuads(blockState, facing, rand));
+      }
+
+      return result;
+
+    } else {
+      IBakedModel bakedModel = ModelHelper.getBakedModel(stack);
+      return bakedModel.getQuads(null, null, rand);
+    }
   }
 
   private ModelHelper() {
