@@ -7,6 +7,21 @@ public class StringHelper {
     return input.substring(0, 1).toUpperCase() + input.substring(1);
   }
 
+  public static String ticksToHMS(int ticks) {
+
+    int totalSecs = ticks / 20;
+    int hours = totalSecs / 3600;
+    int minutes = (totalSecs % 3600) / 60;
+    int seconds = totalSecs % 60;
+
+    if (hours > 0) {
+      return String.format("%02d:%02d:%02d", hours, minutes, seconds);
+
+    } else {
+      return String.format("%02d:%02d", minutes, seconds);
+    }
+  }
+
   private StringHelper() {
     //
   }
