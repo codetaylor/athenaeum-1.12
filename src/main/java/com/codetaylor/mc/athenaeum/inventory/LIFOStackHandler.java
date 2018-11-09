@@ -50,14 +50,13 @@ public class LIFOStackHandler
 
     // Always insert into the first empty slot regardless of the slot attempted.
 
-    for (int i = 0; i < this.stacks.size(); i++) {
+    int index = this.getFirstEmptyIndex();
 
-      if (this.stacks.get(i).isEmpty()) {
-        return super.insertItem(i, stack, simulate);
-      }
+    if (index < 0) {
+      return stack;
     }
 
-    return stack;
+    return super.insertItem(index, stack, simulate);
   }
 
   @Nonnull
@@ -66,13 +65,56 @@ public class LIFOStackHandler
 
     // Always extract the last item regardless of the slot attempted.
 
+    int index = this.getLastNonEmptyIndex();
+
+    if (index < 0) {
+      return ItemStack.EMPTY;
+    }
+
+    return super.extractItem(index, amount, simulate);
+  }
+
+  /**
+   * @return the last non-empty stack in the handler, or ItemStack.EMPTY
+   */
+  public ItemStack getLastNonEmptyStack() {
+
+    int index = this.getLastNonEmptyIndex();
+
+    if (index < -1) {
+      return ItemStack.EMPTY;
+    }
+
+    return this.getStackInSlot(index);
+  }
+
+  /**
+   * @return the last index to have a non-empty stack, or -1
+   */
+  public int getLastNonEmptyIndex() {
+
     for (int i = this.stacks.size() - 1; i >= 0; i--) {
 
       if (!this.stacks.get(i).isEmpty()) {
-        return super.extractItem(i, amount, simulate);
+        return i;
       }
     }
 
-    return ItemStack.EMPTY;
+    return -1;
+  }
+
+  /**
+   * @return the first index to have an empty stack, or -1
+   */
+  public int getFirstEmptyIndex() {
+
+    for (int i = 0; i < this.stacks.size(); i++) {
+
+      if (this.stacks.get(i).isEmpty()) {
+        return i;
+      }
+    }
+
+    return -1;
   }
 }
