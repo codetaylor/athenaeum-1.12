@@ -12,6 +12,17 @@ import java.util.List;
 
 public final class RecipeHelper {
 
+  /**
+   * Removes all recipes from the given registry that have an output that
+   * matches the given output.
+   * <p>
+   * This only works with recipes that implement {@link IRecipeSingleOutput}.
+   *
+   * @param registry registry
+   * @param output   the output to match
+   * @param <R>      recipe type
+   * @return true if any recipes were removed
+   */
   public static <R extends IForgeRegistryEntry<R> & IRecipeSingleOutput> boolean removeRecipesByOutput(IForgeRegistryModifiable<R> registry, Ingredient output) {
 
     Iterator<R> iterator = registry.iterator();
