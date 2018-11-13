@@ -62,7 +62,7 @@ public class RegistryEventHandler
 
   @Override
   public void onRegisterSoundEvent(RegistryEvent.Register<SoundEvent> event) {
-    // TODO
+    // TODO: register sound event
   }
 
   @Override
@@ -75,22 +75,25 @@ public class RegistryEventHandler
 
   @Override
   public void onRegisterEnchantmentEvent(RegistryEvent.Register<Enchantment> event) {
-    // TODO
+    // TODO: register enchantment event
   }
 
   @Override
   public void onRegisterVillagerProfessionEvent(RegistryEvent.Register<VillagerRegistry.VillagerProfession> event) {
-    // TODO
+    // TODO: register villager profession event
   }
 
   @Override
   public void onRegisterEntityEvent(RegistryEvent.Register<EntityEntry> event) {
-    // TODO
+
+    for (IForgeRegistryEventRegistrationStrategy<EntityEntry> strategy : this.registry.getEntityEntryRegistrationStrategyList()) {
+      strategy.register(event.getRegistry());
+    }
   }
 
   @Override
   public void onRegisterRecipesEvent(RegistryEvent.Register<IRecipe> event) {
-    // TODO
+    // TODO: register recipes
   }
 
   @Override

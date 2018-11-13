@@ -7,6 +7,7 @@ import com.codetaylor.mc.athenaeum.spi.IBlockColored;
 import com.codetaylor.mc.athenaeum.spi.IBlockVariant;
 import net.minecraft.block.Block;
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.entity.Entity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemColored;
@@ -17,6 +18,8 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.biome.Biome;
 import net.minecraftforge.common.BiomeDictionary;
+import net.minecraftforge.fml.common.registry.EntityEntry;
+import net.minecraftforge.fml.common.registry.EntityEntryBuilder;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -39,6 +42,9 @@ public class Registry {
   private final List<IForgeRegistryEventRegistrationStrategy<Biome>> biomeRegistrationStrategyList;
   private final List<IForgeRegistryEventRegistrationStrategy<Potion>> potionRegistrationStrategyList;
   private final List<IForgeRegistryEventRegistrationStrategy<PotionType>> potionTypeRegistrationStrategyList;
+  private final List<IForgeRegistryEventRegistrationStrategy<EntityEntry>> entityEntryRegistrationStrategyList;
+
+  private int entityEntryIndex;
 
   public Registry(String modId) {
 
@@ -57,6 +63,9 @@ public class Registry {
     this.biomeRegistrationStrategyList = new ArrayList<>();
     this.potionRegistrationStrategyList = new ArrayList<>();
     this.potionTypeRegistrationStrategyList = new ArrayList<>();
+    this.entityEntryRegistrationStrategyList = new ArrayList<>();
+
+    this.entityEntryIndex = 0;
   }
 
   public String getModId() {
@@ -290,4 +299,36 @@ public class Registry {
       forgeRegistry.register(potion);
     });
   }
+
+  // --------------------------------------------------------------------------
+  // - Entities
+  // --------------------------------------------------------------------------
+
+  public List<IForgeRegistryEventRegistrationStrategy<EntityEntry>> getEntityEntryRegistrationStrategyList() {
+
+    return Collections.unmodifiableList(this.entityEntryRegistrationStrategyList);
+  }
+
+  public void registerEntityEntryRegistrationStrategy(IForgeRegistryEventRegistrationStrategy<EntityEntry> strategy) {
+
+    this.entityEntryRegistrationStrategyList.add(strategy);
+  }
+
+  public void registerEntityEntry(EntityEntry entry) {
+
+    this.registerEntityEntryRegistrationStrategy(forgeRegistry -> {
+
+      forgeRegistry.register(entry);
+    });
+  }
+
+  public <E extends Entity> void createEntityEntry(String name, EntityEntryBuilder<E> builder) {
+
+    ResourceLocation resourceLocation = new ResourceLocation(this.getModId(), name);
+    builder.id(resourceLocation, this.entityEntryIndex);
+    builder.name(name);
+    this.entityEntryIndex += 1;
+    this.registerEntityEntry(builder.build());
+  }
+
 }
