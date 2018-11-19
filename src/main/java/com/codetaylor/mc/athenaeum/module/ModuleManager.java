@@ -39,6 +39,11 @@ public class ModuleManager {
         "gamestages",
         "com.codetaylor.mc.athenaeum.integration.SimplePluginHandler"
     );
+
+    this.registerIntegrationHandler(
+        "dropt",
+        "com.codetaylor.mc.athenaeum.integration.SimplePluginHandler"
+    );
   }
 
   @SafeVarargs
