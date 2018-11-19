@@ -2,6 +2,7 @@ package com.codetaylor.mc.athenaeum.util;
 
 import net.minecraft.block.Block;
 import net.minecraft.entity.item.EntityItem;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -92,6 +93,18 @@ public class StackHelper {
     }
 
     return itemStack;
+  }
+
+  public static void addToInventoryOrSpawn(World world, EntityPlayer player, ItemStack itemStack, BlockPos pos) {
+
+    StackHelper.addToInventoryOrSpawn(world, player, itemStack, pos, 1.0);
+  }
+
+  public static void addToInventoryOrSpawn(World world, EntityPlayer player, ItemStack itemStack, BlockPos pos, double offsetY) {
+
+    if (!player.addItemStackToInventory(itemStack)) {
+      StackHelper.spawnStackOnTop(world, itemStack, pos, offsetY);
+    }
   }
 
   /**
