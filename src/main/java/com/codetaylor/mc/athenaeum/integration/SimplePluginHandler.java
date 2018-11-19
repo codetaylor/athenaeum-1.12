@@ -5,6 +5,8 @@ package com.codetaylor.mc.athenaeum.integration;
  * <p>
  * This is used to instantiate plugins that register themselves on
  * the event bus in their constructor.
+ * <p>
+ * This is currently used by the GameStages and Dropt plugin.
  */
 public class SimplePluginHandler
     implements IIntegrationPluginHandler {
