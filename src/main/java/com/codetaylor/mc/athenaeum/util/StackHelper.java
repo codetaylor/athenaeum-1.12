@@ -10,6 +10,9 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityFurnace;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.items.ItemStackHandler;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -104,6 +107,43 @@ public class StackHelper {
 
     if (!player.addItemStackToInventory(itemStack)) {
       StackHelper.spawnStackOnTop(world, itemStack, pos, offsetY);
+    }
+  }
+
+  /**
+   * Iterates the contents of an {@link ItemStackHandler} and spawns each
+   * non-empty item in the world.
+   * <p>
+   * Server only.
+   *
+   * @param world        the world
+   * @param stackHandler the stack handler to empty
+   * @param pos          the position to spawn the items
+   */
+  public static void spawnStackHandlerContentsOnTop(World world, ItemStackHandler stackHandler, BlockPos pos) {
+
+    StackHelper.spawnStackHandlerContentsOnTop(world, stackHandler, pos, 1.0);
+  }
+
+  /**
+   * Iterates the contents of an {@link ItemStackHandler} and spawns each
+   * non-empty item in the world.
+   * <p>
+   * Server only.
+   *
+   * @param world        the world
+   * @param stackHandler the stack handler to empty
+   * @param pos          the position to spawn the items
+   * @param offsetY      the Y offset to spawn the items
+   */
+  public static void spawnStackHandlerContentsOnTop(World world, ItemStackHandler stackHandler, BlockPos pos, double offsetY) {
+
+    for (int i = 0; i < stackHandler.getSlots(); i++) {
+      ItemStack itemStack = stackHandler.extractItem(i, stackHandler.getSlotLimit(i), false);
+
+      if (!itemStack.isEmpty()) {
+        StackHelper.spawnStackOnTop(world, itemStack, pos, offsetY);
+      }
     }
   }
 
