@@ -1,3 +1,23 @@
+1.15.0:
+* Added:
+    * registry support for potions
+    * helper methods to serialize TE to item stack
+    * horizontal facing property
+    * model helper
+    * property object
+    * LIFO stack handler
+    * baked model util methods
+    * ticks to hms string helper method
+    * fuel helper methods
+    * recipe helper
+    * render helper
+    * registry support for entity entries
+    * array helper
+    * quaternion helper
+    * oredict helper
+    * aabb helper
+    * dropt integration handler
+
 1.14.0
 * Fixed: transformed ingredients handled incorrectly (codetaylor/artisan-worktables#93)
 * Fixed: fluid tank GUI color incorrect
