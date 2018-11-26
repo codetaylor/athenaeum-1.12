@@ -10,12 +10,8 @@ import java.util.List;
  * that are triggered when the contents of the handler change.
  */
 public class ObservableStackHandler
-    extends ItemStackHandler {
-
-  public interface IContentsChangedEventHandler {
-
-    void onContentsChanged(ItemStackHandler stackHandler, int slotIndex);
-  }
+    extends ItemStackHandler
+    implements IObservableStackHandler {
 
   private final List<IContentsChangedEventHandler> eventHandlerList;
 
@@ -25,6 +21,7 @@ public class ObservableStackHandler
     this.eventHandlerList = new ArrayList<>();
   }
 
+  @Override
   public void addObserver(IContentsChangedEventHandler handler) {
 
     this.eventHandlerList.add(handler);
