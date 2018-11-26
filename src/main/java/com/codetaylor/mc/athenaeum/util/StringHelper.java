@@ -7,6 +7,11 @@ public class StringHelper {
     return input.substring(0, 1).toUpperCase() + input.substring(1);
   }
 
+  public static String lowercaseFirstLetter(String input) {
+
+    return input.substring(0, 1).toLowerCase() + input.substring(1);
+  }
+
   public static String ticksToHMS(int ticks) {
 
     int totalSecs = ticks / 20;
