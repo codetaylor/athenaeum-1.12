@@ -66,7 +66,8 @@ public class TileDataServiceClientMonitor {
 
     if (event.phase == TickEvent.Phase.START) {
 
-      if (ModAthenaeumConfig.TILE_DATA_SERVICE.ENABLED) {
+      if (!Minecraft.getMinecraft().isGamePaused()
+          && ModAthenaeumConfig.TILE_DATA_SERVICE.ENABLED) {
         TOTAL.update();
 
         for (TileDataServiceClientMonitor value : PER_POS_TOTAL.asMap().values()) {
