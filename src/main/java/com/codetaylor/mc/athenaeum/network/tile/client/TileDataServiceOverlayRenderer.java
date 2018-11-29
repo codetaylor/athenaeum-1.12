@@ -8,6 +8,7 @@ import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -37,7 +38,7 @@ public class TileDataServiceOverlayRenderer {
 
       // --- Total ---
 
-      INSTANCE.renderMonitor(TileDataServiceClientMonitor.TOTAL, resolution.getScaledWidth() / 2 - 32 - 128, 100);
+      INSTANCE.renderMonitor(TileDataServiceClientMonitor.TOTAL, resolution.getScaledWidth() / 2 - 32 - 128, 100, "Total Rx");
 
       // --- Position ---
 
@@ -46,17 +47,19 @@ public class TileDataServiceOverlayRenderer {
       if (traceResult != null
           && traceResult.typeOfHit == RayTraceResult.Type.BLOCK) {
 
-        TileDataServiceClientMonitor monitor = TileDataServiceClientMonitor.findMonitorForPosition(traceResult.getBlockPos());
+        BlockPos blockPos = traceResult.getBlockPos();
+        TileDataServiceClientMonitor monitor = TileDataServiceClientMonitor.findMonitorForPosition(blockPos);
 
         if (monitor != null) {
-          INSTANCE.renderMonitor(monitor, resolution.getScaledWidth() / 2 - 32 + 128, 100);
+          String title = "[" + blockPos.getX() + ", " + blockPos.getY() + ", " + blockPos.getZ() + "]";
+          INSTANCE.renderMonitor(monitor, resolution.getScaledWidth() / 2 - 32 + 128, 100, title);
         }
       }
 
     }
   }
 
-  public void renderMonitor(TileDataServiceClientMonitor monitor, int x, int y) {
+  public void renderMonitor(TileDataServiceClientMonitor monitor, int x, int y, String title) {
 
     int trackedIndex = ModAthenaeumConfig.TILE_DATA_SERVICE.TRACKING_INDEX;
     int totalWidth = 64;
@@ -96,9 +99,8 @@ public class TileDataServiceOverlayRenderer {
     FontRenderer fontRenderer = Minecraft.getMinecraft().fontRenderer;
 
     {
-      String text = "Total Rx";
-      int textWidth = fontRenderer.getStringWidth(text);
-      fontRenderer.drawStringWithShadow(text, (float) (x - (textWidth / 2.0) + (totalWidth / 2.0)), y - 9, Color.WHITE.getRGB());
+      int textWidth = fontRenderer.getStringWidth(title);
+      fontRenderer.drawStringWithShadow(title, (float) (x - (textWidth / 2.0) + (totalWidth / 2.0)), y - 9, Color.WHITE.getRGB());
     }
 
     {
