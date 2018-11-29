@@ -6,6 +6,7 @@ import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
+import net.minecraft.client.Minecraft;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -21,10 +22,6 @@ import java.util.concurrent.TimeUnit;
 @Mod.EventBusSubscriber(value = Side.CLIENT)
 @SideOnly(Side.CLIENT)
 public class TileDataServiceClientMonitor {
-
-  // ---------------------------------------------------------------------------
-  // - Events
-  // ---------------------------------------------------------------------------
 
   private static final short TOTAL_INTERVAL_COUNT = 2 * 60;
   private static final int CACHE_CLEANUP_INTERVAL_TICKS = 10 * 20;
@@ -43,20 +40,24 @@ public class TileDataServiceClientMonitor {
 
     public TileDataServiceClientMonitor load(@Nonnull BlockPos pos) {
 
-      return new TileDataServiceClientMonitor(ModAthenaeumConfig.TILE_DATA_SERVICE.UPDATE_INTERVAL_TICKS, TOTAL_INTERVAL_COUNT);
+      return new TileDataServiceClientMonitor(() -> ModAthenaeumConfig.TILE_DATA_SERVICE.UPDATE_INTERVAL_TICKS, TOTAL_INTERVAL_COUNT);
     }
   };
 
   private static int cacheCleanupCounter;
 
   static {
-    TOTAL = new TileDataServiceClientMonitor(ModAthenaeumConfig.TILE_DATA_SERVICE.UPDATE_INTERVAL_TICKS, TOTAL_INTERVAL_COUNT);
+    TOTAL = new TileDataServiceClientMonitor(() -> ModAthenaeumConfig.TILE_DATA_SERVICE.UPDATE_INTERVAL_TICKS, TOTAL_INTERVAL_COUNT);
 
     PER_POS_TOTAL = CacheBuilder.newBuilder()
         .maximumSize(1000)
         .expireAfterAccess(10, TimeUnit.MINUTES)
         .build(CACHE_LOADER);
   }
+
+  // ---------------------------------------------------------------------------
+  // - Events
+  // ---------------------------------------------------------------------------
 
   @SubscribeEvent
   public static void onEvent(TickEvent.ClientTickEvent event) {
@@ -142,13 +143,13 @@ public class TileDataServiceClientMonitor {
   // ---------------------------------------------------------------------------
 
   private final IntArrayList totalBytesReceivedPerSecond;
-  private final int updateIntervalTicks;
+  private final ShortProvider updateIntervalTicks;
   private final int totalIntervalCount;
 
   private int totalBytesReceived;
   private short tickCounter;
 
-  public TileDataServiceClientMonitor(short updateIntervalTicks, short totalIntervalCount) {
+  public TileDataServiceClientMonitor(ShortProvider updateIntervalTicks, short totalIntervalCount) {
 
     totalBytesReceivedPerSecond = new IntArrayList(totalIntervalCount);
     this.updateIntervalTicks = updateIntervalTicks;
@@ -162,7 +163,7 @@ public class TileDataServiceClientMonitor {
 
     this.tickCounter += 1;
 
-    if (this.tickCounter >= this.updateIntervalTicks) {
+    if (this.tickCounter >= this.updateIntervalTicks.get()) {
       this.tickCounter = 0;
       this.totalBytesReceivedPerSecond.add(0, this.totalBytesReceived);
       this.totalBytesReceived = 0;
@@ -191,6 +192,11 @@ public class TileDataServiceClientMonitor {
   public int getTotalIntervalCount() {
 
     return this.totalIntervalCount;
+  }
+
+  interface ShortProvider {
+
+    short get();
   }
 
 }
