@@ -1,6 +1,8 @@
 package com.codetaylor.mc.athenaeum.module;
 
 import com.codetaylor.mc.athenaeum.network.*;
+import com.codetaylor.mc.athenaeum.network.tile.ITileDataService;
+import com.codetaylor.mc.athenaeum.network.tile.TileDataServiceContainer;
 import com.codetaylor.mc.athenaeum.registry.IRegistryEventHandler;
 import com.codetaylor.mc.athenaeum.registry.Registry;
 import com.codetaylor.mc.athenaeum.registry.RegistryEventHandler;
@@ -11,6 +13,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionType;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.world.biome.Biome;
 import net.minecraftforge.client.event.ModelRegistryEvent;
@@ -50,6 +53,7 @@ public abstract class ModuleBase
   private ThreadedNetworkWrapper threadedNetworkWrapper;
   private IPacketRegistry packetRegistry;
   private IPacketService packetService;
+  private ITileDataService tileDataService;
 
   protected ModuleBase(int priority, String modId) {
 
@@ -116,6 +120,15 @@ public abstract class ModuleBase
     }
 
     return this.packetService;
+  }
+
+  protected ITileDataService enableNetworkTileDataService(IPacketService packetService) {
+
+    if (this.tileDataService == null) {
+      this.tileDataService = TileDataServiceContainer.register(new ResourceLocation(this.modId, this.name), packetService);
+    }
+
+    return this.tileDataService;
   }
 
   // --------------------------------------------------------------------------
