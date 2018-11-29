@@ -1,5 +1,6 @@
 package com.codetaylor.mc.athenaeum.network.tile.client;
 
+import com.codetaylor.mc.athenaeum.ModAthenaeumConfig;
 import com.codetaylor.mc.athenaeum.network.tile.TileDataServiceLogger;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
@@ -25,11 +26,7 @@ public class TileDataServiceClientMonitor {
   // - Events
   // ---------------------------------------------------------------------------
 
-  // TODO: Config
-  private static final short UPDATE_INTERVAL_TICKS = 20;
-  // TODO: Config
-  private static final short TOTAL_INTERVAL_COUNT = 120;
-
+  private static final short TOTAL_INTERVAL_COUNT = 2 * 60;
   private static final int CACHE_CLEANUP_INTERVAL_TICKS = 10 * 20;
 
   /**
@@ -46,14 +43,14 @@ public class TileDataServiceClientMonitor {
 
     public TileDataServiceClientMonitor load(@Nonnull BlockPos pos) {
 
-      return new TileDataServiceClientMonitor(UPDATE_INTERVAL_TICKS, TOTAL_INTERVAL_COUNT);
+      return new TileDataServiceClientMonitor(ModAthenaeumConfig.TILE_DATA_SERVICE.UPDATE_INTERVAL_TICKS, TOTAL_INTERVAL_COUNT);
     }
   };
 
   private static int cacheCleanupCounter;
 
   static {
-    TOTAL = new TileDataServiceClientMonitor(UPDATE_INTERVAL_TICKS, TOTAL_INTERVAL_COUNT);
+    TOTAL = new TileDataServiceClientMonitor(ModAthenaeumConfig.TILE_DATA_SERVICE.UPDATE_INTERVAL_TICKS, TOTAL_INTERVAL_COUNT);
 
     PER_POS_TOTAL = CacheBuilder.newBuilder()
         .maximumSize(1000)
@@ -68,10 +65,13 @@ public class TileDataServiceClientMonitor {
     // updates once.
 
     if (event.phase == TickEvent.Phase.START) {
-      TOTAL.update();
 
-      for (TileDataServiceClientMonitor value : PER_POS_TOTAL.asMap().values()) {
-        value.update();
+      if (ModAthenaeumConfig.TILE_DATA_SERVICE.ENABLED) {
+        TOTAL.update();
+
+        for (TileDataServiceClientMonitor value : PER_POS_TOTAL.asMap().values()) {
+          value.update();
+        }
       }
 
       cacheCleanupCounter += 1;
@@ -93,23 +93,26 @@ public class TileDataServiceClientMonitor {
    */
   public static void onClientPacketReceived(int serviceId, BlockPos pos, int size) {
 
-    // --- Total ---
+    if (ModAthenaeumConfig.TILE_DATA_SERVICE.ENABLED) {
 
-    TOTAL.receiveBytes(size);
+      // --- Total ---
 
-    // --- Per Position ---
+      TOTAL.receiveBytes(size);
 
-    TileDataServiceClientMonitor monitor = null;
+      // --- Per Position ---
 
-    try {
-      monitor = PER_POS_TOTAL.get(pos);
+      TileDataServiceClientMonitor monitor = null;
 
-    } catch (ExecutionException e) {
-      TileDataServiceLogger.LOGGER.error("", e);
-    }
+      try {
+        monitor = PER_POS_TOTAL.get(pos);
 
-    if (monitor != null) {
-      monitor.receiveBytes(size);
+      } catch (ExecutionException e) {
+        TileDataServiceLogger.LOGGER.error("", e);
+      }
+
+      if (monitor != null) {
+        monitor.receiveBytes(size);
+      }
     }
   }
 

@@ -1,7 +1,7 @@
 package com.codetaylor.mc.athenaeum.network.tile;
 
-import com.codetaylor.mc.athenaeum.spi.packet.CPacketTileEntityBase;
 import com.codetaylor.mc.athenaeum.network.tile.client.TileDataServiceClientMonitor;
+import com.codetaylor.mc.athenaeum.spi.packet.CPacketTileEntityBase;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import net.minecraft.network.PacketBuffer;
@@ -55,9 +55,7 @@ public class SCPacketTileData
   @Override
   protected IMessage onMessage(SCPacketTileData message, MessageContext ctx, TileEntity tileEntity) {
 
-    { // TODO: Config
-      TileDataServiceClientMonitor.onClientPacketReceived(message.serviceId, message.blockPos, message.buffer.writerIndex());
-    }
+    TileDataServiceClientMonitor.onClientPacketReceived(message.serviceId, message.blockPos, message.buffer.writerIndex());
 
     if (tileEntity instanceof TileDataContainerBase) {
 

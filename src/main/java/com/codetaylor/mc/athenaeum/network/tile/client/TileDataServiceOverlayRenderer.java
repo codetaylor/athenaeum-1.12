@@ -1,5 +1,6 @@
 package com.codetaylor.mc.athenaeum.network.tile.client;
 
+import com.codetaylor.mc.athenaeum.ModAthenaeumConfig;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.ScaledResolution;
@@ -24,6 +25,10 @@ public class TileDataServiceOverlayRenderer {
   @SubscribeEvent
   public static void onRenderGameOverlayPostEvent(RenderGameOverlayEvent.Post event) {
 
+    if (!ModAthenaeumConfig.TILE_DATA_SERVICE.ENABLED) {
+      return;
+    }
+
     RenderGameOverlayEvent.ElementType type = event.getType();
 
     if (type == RenderGameOverlayEvent.ElementType.ALL) {
@@ -36,7 +41,6 @@ public class TileDataServiceOverlayRenderer {
 
       // --- Position ---
 
-      // TODO: get the monitor for what the player is looking at
       RayTraceResult traceResult = Minecraft.getMinecraft().objectMouseOver;
 
       if (traceResult != null
@@ -54,8 +58,7 @@ public class TileDataServiceOverlayRenderer {
 
   public void renderMonitor(TileDataServiceClientMonitor monitor, int x, int y) {
 
-    // TODO: Config
-    int trackedIndex = 10;
+    int trackedIndex = ModAthenaeumConfig.TILE_DATA_SERVICE.TRACKING_INDEX;
     int totalWidth = 64;
 
     int size = monitor.size();
