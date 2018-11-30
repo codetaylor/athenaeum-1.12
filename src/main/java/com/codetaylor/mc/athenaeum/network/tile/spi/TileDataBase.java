@@ -1,5 +1,11 @@
 package com.codetaylor.mc.athenaeum.network.tile.spi;
 
+/**
+ * This is the base tile data element.
+ * <p>
+ * It implements the default, expected behavior of tile data elements and all
+ * tile data elements should extend it.
+ */
 public abstract class TileDataBase
     implements ITileData {
 
