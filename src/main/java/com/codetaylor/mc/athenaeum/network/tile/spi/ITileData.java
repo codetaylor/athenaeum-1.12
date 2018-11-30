@@ -1,4 +1,4 @@
-package com.codetaylor.mc.athenaeum.network.tile;
+package com.codetaylor.mc.athenaeum.network.tile.spi;
 
 import net.minecraft.network.PacketBuffer;
 

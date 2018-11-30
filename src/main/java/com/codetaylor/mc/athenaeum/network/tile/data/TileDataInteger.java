@@ -1,6 +1,6 @@
 package com.codetaylor.mc.athenaeum.network.tile.data;
 
-import com.codetaylor.mc.athenaeum.network.tile.TileDataBase;
+import com.codetaylor.mc.athenaeum.network.tile.spi.TileDataBase;
 import net.minecraft.network.PacketBuffer;
 
 public class TileDataInteger

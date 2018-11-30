@@ -1,4 +1,6 @@
-package com.codetaylor.mc.athenaeum.network.tile;
+package com.codetaylor.mc.athenaeum.network.tile.spi;
+
+import com.codetaylor.mc.athenaeum.network.tile.TileDataTracker;
 
 import javax.annotation.Nullable;
 

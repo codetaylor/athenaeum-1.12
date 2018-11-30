@@ -1,4 +1,4 @@
-package com.codetaylor.mc.athenaeum.network.tile;
+package com.codetaylor.mc.athenaeum.network.tile.spi;
 
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;

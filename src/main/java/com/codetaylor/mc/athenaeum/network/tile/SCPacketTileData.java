@@ -1,6 +1,8 @@
 package com.codetaylor.mc.athenaeum.network.tile;
 
 import com.codetaylor.mc.athenaeum.network.tile.client.TileDataServiceClientMonitor;
+import com.codetaylor.mc.athenaeum.network.tile.spi.ITileDataService;
+import com.codetaylor.mc.athenaeum.network.tile.spi.TileDataContainerBase;
 import com.codetaylor.mc.athenaeum.spi.packet.CPacketTileEntityBase;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;

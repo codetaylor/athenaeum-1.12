@@ -1,5 +1,7 @@
 package com.codetaylor.mc.athenaeum.network.tile;
 
+import com.codetaylor.mc.athenaeum.network.tile.spi.ITileData;
+import com.codetaylor.mc.athenaeum.network.tile.spi.TileDataContainerBase;
 import io.netty.buffer.Unpooled;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.fml.relauncher.Side;
@@ -10,7 +12,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-class TileDataTracker {
+public class TileDataTracker {
 
   private final TileDataContainerBase tile;
   private final ITileData[] data;

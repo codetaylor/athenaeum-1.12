@@ -1,7 +1,7 @@
 package com.codetaylor.mc.athenaeum.network.tile.data;
 
-import com.codetaylor.mc.athenaeum.network.tile.ITileDataItemStackHandler;
-import com.codetaylor.mc.athenaeum.network.tile.TileDataBase;
+import com.codetaylor.mc.athenaeum.network.tile.spi.ITileDataItemStackHandler;
+import com.codetaylor.mc.athenaeum.network.tile.spi.TileDataBase;
 import com.google.common.base.Preconditions;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
