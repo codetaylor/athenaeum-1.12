@@ -1,7 +1,6 @@
 package com.codetaylor.mc.athenaeum.network.tile;
 
 import com.codetaylor.mc.athenaeum.network.IPacketService;
-import com.codetaylor.mc.athenaeum.network.tile.spi.ITileDataService;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.Mod;

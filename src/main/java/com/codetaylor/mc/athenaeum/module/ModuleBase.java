@@ -1,7 +1,7 @@
 package com.codetaylor.mc.athenaeum.module;
 
 import com.codetaylor.mc.athenaeum.network.*;
-import com.codetaylor.mc.athenaeum.network.tile.spi.ITileDataService;
+import com.codetaylor.mc.athenaeum.network.tile.ITileDataService;
 import com.codetaylor.mc.athenaeum.network.tile.TileDataServiceContainer;
 import com.codetaylor.mc.athenaeum.registry.IRegistryEventHandler;
 import com.codetaylor.mc.athenaeum.registry.Registry;

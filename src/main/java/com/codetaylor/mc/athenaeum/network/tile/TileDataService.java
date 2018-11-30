@@ -2,7 +2,6 @@ package com.codetaylor.mc.athenaeum.network.tile;
 
 import com.codetaylor.mc.athenaeum.network.IPacketService;
 import com.codetaylor.mc.athenaeum.network.tile.spi.ITileData;
-import com.codetaylor.mc.athenaeum.network.tile.spi.ITileDataService;
 import com.codetaylor.mc.athenaeum.network.tile.spi.TileDataContainerBase;
 import net.minecraft.network.PacketBuffer;
 
