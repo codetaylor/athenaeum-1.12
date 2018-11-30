@@ -11,6 +11,9 @@ import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * This class retains collections of registered tile data services.
+ */
 @Mod.EventBusSubscriber
 public final class TileDataServiceContainer {
 
