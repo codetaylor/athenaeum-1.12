@@ -16,23 +16,25 @@ public class TileDataInteger
   public TileDataInteger(int initialValue, int updateInterval) {
 
     super(updateInterval);
-    this.setValue(initialValue);
+    this.set(initialValue);
   }
 
-  public void setValue(int value) {
+  public void set(int value) {
 
-    this.value = value;
-    this.setDirty(true);
+    if (value != this.value) {
+      this.value = value;
+      this.setDirty(true);
+    }
   }
 
-  public int getValue() {
+  public int get() {
 
     return this.value;
   }
 
   public int add(int value) {
 
-    this.value += value;
+    this.set(this.value + value);
     return this.value;
   }
 

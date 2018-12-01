@@ -16,16 +16,18 @@ public class TileDataBoolean
   public TileDataBoolean(boolean initialValue, int updateInterval) {
 
     super(updateInterval);
-    this.setValue(initialValue);
+    this.set(initialValue);
   }
 
-  public void setValue(boolean value) {
+  public void set(boolean value) {
 
-    this.value = value;
-    this.setDirty(true);
+    if (value != this.value) {
+      this.value = value;
+      this.setDirty(true);
+    }
   }
 
-  public boolean getValue() {
+  public boolean get() {
 
     return this.value;
   }
