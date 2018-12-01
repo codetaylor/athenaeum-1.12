@@ -45,9 +45,16 @@ public class TileDataService
   public void register(TileDataContainerBase tile, ITileData[] data) {
 
     if (data.length > 0) {
-      TileDataTracker tracker = new TileDataTracker(tile, data);
-      this.dataTrackerList.add(tracker);
-      this.dataTrackerMap.put(tile, tracker);
+
+      TileDataTracker tracker = this.dataTrackerMap.get(tile);
+
+      if (tracker == null) {
+        tracker = new TileDataTracker(tile);
+        this.dataTrackerList.add(tracker);
+        this.dataTrackerMap.put(tile, tracker);
+      }
+
+      tracker.addTileData(data);
     }
   }
 

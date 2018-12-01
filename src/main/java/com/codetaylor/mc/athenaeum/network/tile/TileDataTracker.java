@@ -6,29 +6,38 @@ import io.netty.buffer.Unpooled;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import scala.actors.threadpool.Arrays;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 public class TileDataTracker {
 
   private final TileDataContainerBase tile;
-  private final ITileData[] data;
   private final PacketBuffer packetBuffer;
+
+  private ArrayList<ITileData> data;
 
   /**
    * Temporarily stores data entries to pass to the tile's update method.
    */
-  private final List<ITileData> toUpdate;
+  private List<ITileData> toUpdate;
 
-  /* package */ TileDataTracker(TileDataContainerBase tile, ITileData[] data) {
+  /* package */ TileDataTracker(TileDataContainerBase tile) {
 
     this.tile = tile;
-    this.data = data;
     this.packetBuffer = new PacketBuffer(Unpooled.buffer());
-    this.toUpdate = new ArrayList<>(this.data.length);
+    this.data = new ArrayList<>(1);
+    this.toUpdate = new ArrayList<>(1);
+  }
+
+  /* package */ void addTileData(ITileData[] toAdd) {
+
+    //noinspection unchecked
+    this.data.addAll(Arrays.asList(toAdd));
+    this.data.trimToSize();
+    this.toUpdate = new ArrayList<>(this.data.size());
   }
 
   public TileDataContainerBase getTile() {
@@ -46,11 +55,11 @@ public class TileDataTracker {
 
     int dirtyCount = 0;
 
-    for (int i = 0; i < this.data.length; i++) {
+    for (int i = 0; i < this.data.size(); i++) {
 
-      this.data[i].update();
+      this.data.get(i).update();
 
-      if (this.data[i].isDirty()) {
+      if (this.data.get(i).isDirty()) {
         dirtyCount += 1;
       }
     }
@@ -60,12 +69,12 @@ public class TileDataTracker {
     if (dirtyCount > 0) {
       this.packetBuffer.writeInt(dirtyCount);
 
-      for (int i = 0; i < this.data.length; i++) {
+      for (int i = 0; i < this.data.size(); i++) {
 
-        if (this.data[i].isDirty()) {
+        if (this.data.get(i).isDirty()) {
           this.packetBuffer.writeInt(i);
-          this.data[i].write(this.packetBuffer);
-          this.data[i].setDirty(false);
+          this.data.get(i).write(this.packetBuffer);
+          this.data.get(i).setDirty(false);
         }
       }
     }
@@ -83,18 +92,23 @@ public class TileDataTracker {
 
     int dirtyCount = buffer.readInt();
 
-    // Deserialize buffer and stash updated entries.
-    for (int i = 0; i < dirtyCount; i++) {
-      int index = buffer.readInt();
-      this.data[index].read(buffer);
-      this.toUpdate.add(this.data[index]);
-    }
+    if (dirtyCount > 0) {
 
-    // Notify the tile that data was updated.
-    // Clear the stash.
-    if (!this.toUpdate.isEmpty()) {
-      this.tile.onTileDataUpdate(Collections.unmodifiableList(this.toUpdate));
-      this.toUpdate.clear();
+      // Deserialize buffer and stash updated entries.
+      for (int i = 0; i < dirtyCount; i++) {
+        ITileData data = this.data.get(buffer.readInt());
+        data.read(buffer);
+        data.setDirty(true);
+        this.toUpdate.add(data);
+      }
+
+      // Notify the tile that data was updated.
+      this.tile.onTileDataUpdate();
+
+      // Clear the dirty flag on updated data; clear the stash at the same time.
+      for (int i = this.toUpdate.size() - 1; i >= 0; i--) {
+        this.toUpdate.remove(i).setDirty(false);
+      }
     }
   }
 
