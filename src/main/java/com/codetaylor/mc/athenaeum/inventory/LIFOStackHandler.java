@@ -10,19 +10,27 @@ import java.util.List;
 public class LIFOStackHandler
     extends ObservableStackHandler {
 
+  // TODO: remove
+  @Deprecated
   public interface IContentsClearedEventHandler {
 
     void onContentsCleared(ItemStackHandler stackHandler);
   }
 
+  // TODO: remove
+  @Deprecated
   private final List<IContentsClearedEventHandler> contentsClearedEventHandlerList;
 
   public LIFOStackHandler(int size) {
 
     super(size);
+
+    // TODO: remove
     this.contentsClearedEventHandlerList = new ArrayList<>(1);
   }
 
+  // TODO: remove
+  @Deprecated
   public void addObserverContentsCleared(IContentsClearedEventHandler handler) {
 
     this.contentsClearedEventHandlerList.add(handler);
@@ -37,8 +45,11 @@ public class LIFOStackHandler
       this.stacks.set(i, ItemStack.EMPTY);
     }
 
+    // 2018-11-30: Using the new tile data service, this becomes a non-issue.
+    //
     // If we trigger the slot changed method, a block update packet will be sent
     // for all 16 slots. Doing it this way sends the update packet only once.
+    // TODO: remove clear observer
     for (IContentsClearedEventHandler handler : this.contentsClearedEventHandlerList) {
       handler.onContentsCleared(this);
     }
