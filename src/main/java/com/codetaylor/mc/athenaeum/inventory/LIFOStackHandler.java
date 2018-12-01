@@ -81,7 +81,7 @@ public class LIFOStackHandler
 
     int index = this.getLastNonEmptyIndex();
 
-    if (index < -1) {
+    if (index < 0) {
       return ItemStack.EMPTY;
     }
 
