@@ -143,13 +143,13 @@ public class TileDataServiceClientMonitor {
   // ---------------------------------------------------------------------------
 
   private final IntArrayList totalBytesReceivedPerSecond;
-  private final ShortProvider updateIntervalTicks;
+  private final UpdateIntervalProvider updateIntervalTicks;
   private final int totalIntervalCount;
 
   private int totalBytesReceived;
   private short tickCounter;
 
-  public TileDataServiceClientMonitor(ShortProvider updateIntervalTicks, short totalIntervalCount) {
+  public TileDataServiceClientMonitor(UpdateIntervalProvider updateIntervalTicks, short totalIntervalCount) {
 
     totalBytesReceivedPerSecond = new IntArrayList(totalIntervalCount);
     this.updateIntervalTicks = updateIntervalTicks;
@@ -163,7 +163,7 @@ public class TileDataServiceClientMonitor {
 
     this.tickCounter += 1;
 
-    if (this.tickCounter >= this.updateIntervalTicks.get()) {
+    if (this.tickCounter >= this.updateIntervalTicks.getUpdateInterval()) {
       this.tickCounter = 0;
       this.totalBytesReceivedPerSecond.add(0, this.totalBytesReceived);
       this.totalBytesReceived = 0;
@@ -194,9 +194,9 @@ public class TileDataServiceClientMonitor {
     return this.totalIntervalCount;
   }
 
-  interface ShortProvider {
+  interface UpdateIntervalProvider {
 
-    short get();
+    short getUpdateInterval();
   }
 
 }
