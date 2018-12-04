@@ -56,7 +56,6 @@ public class SCPacketTileData
   @Override
   protected IMessage onMessage(SCPacketTileData message, MessageContext ctx, TileEntity tileEntity) {
 
-    TileDataServiceClientMonitor.onClientPacketReceived(message.serviceId, message.blockPos, message.buffer.writerIndex());
 
     if (tileEntity instanceof TileDataContainerBase) {
 
@@ -70,6 +69,7 @@ public class SCPacketTileData
 
           try {
             tracker.updateClient(message.buffer);
+            TileDataServiceClientMonitor.onClientPacketReceived(tracker, message.blockPos, message.buffer.writerIndex());
 
           } catch (Exception e) {
             TileDataServiceLogger.LOGGER.error("", e);

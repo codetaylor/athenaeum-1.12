@@ -2,6 +2,8 @@ package com.codetaylor.mc.athenaeum.network.tile.client;
 
 import com.codetaylor.mc.athenaeum.ModAthenaeumConfig;
 import com.codetaylor.mc.athenaeum.network.tile.TileDataServiceLogger;
+import com.codetaylor.mc.athenaeum.network.tile.TileDataTracker;
+import com.codetaylor.mc.athenaeum.network.tile.spi.ITileData;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
@@ -26,6 +28,8 @@ public class TileDataServiceClientMonitor {
   private static final short TOTAL_INTERVAL_COUNT = 2 * 60;
   private static final int CACHE_CLEANUP_INTERVAL_TICKS = 10 * 20;
 
+  private static final TileDataTrackerUpdateMonitor TRACKER_UPDATE_MONITOR;
+
   /**
    * Monitors all network traffic for all tile data services.
    */
@@ -47,6 +51,8 @@ public class TileDataServiceClientMonitor {
   private static int cacheCleanupCounter;
 
   static {
+    TRACKER_UPDATE_MONITOR = new TileDataTrackerUpdateMonitor();
+
     TOTAL = new TileDataServiceClientMonitor(() -> ModAthenaeumConfig.TILE_DATA_SERVICE.UPDATE_INTERVAL_TICKS, TOTAL_INTERVAL_COUNT);
 
     PER_POS_TOTAL = CacheBuilder.newBuilder()
@@ -74,6 +80,8 @@ public class TileDataServiceClientMonitor {
         for (TileDataServiceClientMonitor value : PER_POS_TOTAL.asMap().values()) {
           value.update();
         }
+
+        TRACKER_UPDATE_MONITOR.update();
       }
 
       cacheCleanupCounter += 1;
@@ -89,11 +97,11 @@ public class TileDataServiceClientMonitor {
    * Called when a packet from the tile entity data service is received on
    * the client.
    *
-   * @param serviceId the service index
-   * @param pos       the pos of the TE
-   * @param size      the size of the packet's TE update buffer in bytes
+   * @param tracker the tracker that received the packet
+   * @param pos     the pos of the TE
+   * @param size    the size of the packet's TE update buffer in bytes
    */
-  public static void onClientPacketReceived(int serviceId, BlockPos pos, int size) {
+  public static void onClientPacketReceived(TileDataTracker tracker, BlockPos pos, int size) {
 
     if (ModAthenaeumConfig.TILE_DATA_SERVICE.ENABLED) {
 
@@ -118,6 +126,13 @@ public class TileDataServiceClientMonitor {
     }
   }
 
+  public static void onClientTrackerUpdateReceived(BlockPos pos, Class<? extends ITileData> tileDataClass) {
+
+    if (ModAthenaeumConfig.TILE_DATA_SERVICE.ENABLED) {
+      TRACKER_UPDATE_MONITOR.onClientTrackerUpdateReceived(pos, tileDataClass);
+    }
+  }
+
   // ---------------------------------------------------------------------------
   // - Static Accessors
   // ---------------------------------------------------------------------------
@@ -136,6 +151,11 @@ public class TileDataServiceClientMonitor {
     }
 
     return null;
+  }
+
+  public static TileDataTrackerUpdateMonitor getTrackerUpdateMonitor() {
+
+    return TRACKER_UPDATE_MONITOR;
   }
 
   // ---------------------------------------------------------------------------

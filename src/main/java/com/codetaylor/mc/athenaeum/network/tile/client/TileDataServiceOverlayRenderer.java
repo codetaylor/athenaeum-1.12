@@ -1,6 +1,10 @@
 package com.codetaylor.mc.athenaeum.network.tile.client;
 
 import com.codetaylor.mc.athenaeum.ModAthenaeumConfig;
+import it.unimi.dsi.fastutil.objects.Object2IntArrayMap;
+import it.unimi.dsi.fastutil.objects.Object2IntMap;
+import it.unimi.dsi.fastutil.objects.Object2ObjectArrayMap;
+import it.unimi.dsi.fastutil.objects.ObjectIterator;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.ScaledResolution;
@@ -26,7 +30,8 @@ public class TileDataServiceOverlayRenderer {
   @SubscribeEvent
   public static void onRenderGameOverlayPostEvent(RenderGameOverlayEvent.Post event) {
 
-    if (!ModAthenaeumConfig.TILE_DATA_SERVICE.ENABLED) {
+    if (!ModAthenaeumConfig.TILE_DATA_SERVICE.ENABLED ||
+        Minecraft.getMinecraft().isGamePaused()) {
       return;
     }
 
@@ -50,9 +55,33 @@ public class TileDataServiceOverlayRenderer {
         BlockPos blockPos = traceResult.getBlockPos();
         TileDataServiceClientMonitor monitor = TileDataServiceClientMonitor.findMonitorForPosition(blockPos);
 
+        int x = resolution.getScaledWidth() / 2 - 32 + 128;
+        int y = 100;
+
         if (monitor != null) {
           String title = "[" + blockPos.getX() + ", " + blockPos.getY() + ", " + blockPos.getZ() + "]";
-          INSTANCE.renderMonitor(monitor, resolution.getScaledWidth() / 2 - 32 + 128, 100, title);
+          INSTANCE.renderMonitor(monitor, x, y, title);
+        }
+
+        TileDataTrackerUpdateMonitor trackerUpdateMonitor = TileDataServiceClientMonitor.getTrackerUpdateMonitor();
+        Object2ObjectArrayMap<BlockPos, Object2IntArrayMap<Class>> updateMap = trackerUpdateMonitor.getPublicTrackerUpdateMap();
+        Object2IntArrayMap<Class> map = updateMap.get(blockPos);
+
+        if (map != null) {
+
+          ObjectIterator<Object2IntMap.Entry<Class>> iterator = map.object2IntEntrySet().iterator();
+          FontRenderer fontRenderer = Minecraft.getMinecraft().fontRenderer;
+          int index = 0;
+
+          while (iterator.hasNext()) {
+            Object2IntMap.Entry<Class> entry = iterator.next();
+
+            Class dataClass = entry.getKey();
+            int count = entry.getIntValue();
+
+            fontRenderer.drawStringWithShadow(dataClass.getSimpleName() + " " + count, x + 64 /* TODO: cost */ + 5, y + 9 + index * 10, Color.WHITE.getRGB());
+            index += 1;
+          }
         }
       }
 
@@ -62,7 +91,7 @@ public class TileDataServiceOverlayRenderer {
   public void renderMonitor(TileDataServiceClientMonitor monitor, int x, int y, String title) {
 
     int trackedIndex = ModAthenaeumConfig.TILE_DATA_SERVICE.TRACKING_INDEX;
-    int totalWidth = 64;
+    int totalWidth = 64; // TODO: const
 
     int size = monitor.size();
 

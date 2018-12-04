@@ -1,9 +1,11 @@
 package com.codetaylor.mc.athenaeum.network.tile;
 
+import com.codetaylor.mc.athenaeum.network.tile.client.TileDataServiceClientMonitor;
 import com.codetaylor.mc.athenaeum.network.tile.spi.ITileData;
 import com.codetaylor.mc.athenaeum.network.tile.spi.TileDataContainerBase;
 import io.netty.buffer.Unpooled;
 import net.minecraft.network.PacketBuffer;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import scala.actors.threadpool.Arrays;
@@ -100,6 +102,7 @@ public class TileDataTracker {
         data.read(buffer);
         data.setDirty(true);
         this.toUpdate.add(data);
+        TileDataServiceClientMonitor.onClientTrackerUpdateReceived(this.tile.getPos(), data.getClass());
       }
 
       // Notify the tile that data was updated.
