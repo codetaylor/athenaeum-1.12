@@ -101,6 +101,7 @@ public class TileDataServiceOverlayRenderer {
 
     int max = 0;
     int min = Integer.MAX_VALUE;
+    int minActual = Integer.MAX_VALUE;
     int total = 0;
     int tracked = 0;
 
@@ -118,6 +119,10 @@ public class TileDataServiceOverlayRenderer {
 
       if (count > 0 && count < min) {
         min = count;
+      }
+
+      if (count < minActual) {
+        minActual = count;
       }
     }
 
@@ -142,7 +147,8 @@ public class TileDataServiceOverlayRenderer {
       return; // prevent div by zero
     }
 
-    if (min != max) {
+    // Only render if the first value
+    if (minActual != max) {
 
       Tessellator tessellator = Tessellator.getInstance();
       BufferBuilder renderer = tessellator.getBuffer();
