@@ -2,6 +2,7 @@ package com.codetaylor.mc.athenaeum.network.tile.data;
 
 import com.codetaylor.mc.athenaeum.network.tile.spi.TileDataBase;
 import net.minecraft.network.PacketBuffer;
+import net.minecraft.util.math.MathHelper;
 
 public class TileDataFloat
     extends TileDataBase {
@@ -21,7 +22,7 @@ public class TileDataFloat
 
   public void set(float value) {
 
-    if (value != this.value) {
+    if (!MathHelper.epsilonEquals(value, this.value)) {
       this.value = value;
       this.setDirty(true);
     }
