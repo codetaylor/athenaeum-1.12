@@ -3,6 +3,8 @@ package com.codetaylor.mc.athenaeum.network;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
+import net.minecraft.world.WorldProvider;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 
 import static net.minecraftforge.fml.common.network.NetworkRegistry.TargetPoint;
@@ -50,7 +52,9 @@ public class PacketService
   public void sendToAllAround(IMessage message, TileEntity tileEntity, int range) {
 
     BlockPos pos = tileEntity.getPos();
-    int dimension = tileEntity.getWorld().provider.getDimension();
+    World world = tileEntity.getWorld();
+    WorldProvider provider = world.provider;
+    int dimension = provider.getDimension();
     this.sendToAllAround(message, dimension, pos.getX(), pos.getY(), pos.getZ(), range);
   }
 

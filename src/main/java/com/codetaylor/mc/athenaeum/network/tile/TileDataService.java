@@ -63,10 +63,10 @@ public class TileDataService
 
     for (int i = 0; i < this.dataTrackerList.size(); i++) {
 
-      // --- Bookkeeping ---
-
       TileDataTracker tracker = this.dataTrackerList.get(i);
       TileDataContainerBase tile = tracker.getTile();
+
+      // --- Bookkeeping ---
 
       if (tile.isInvalid()) {
         // Move the last element to this position, remove the last element,
@@ -74,6 +74,13 @@ public class TileDataService
         this.dataTrackerList.set(i, this.dataTrackerList.get(this.dataTrackerList.size() - 1));
         this.dataTrackerList.remove(this.dataTrackerList.size() - 1);
         i -= 1;
+        continue;
+      }
+
+      //noinspection ConstantConditions
+      if (tile.getWorld() == null) {
+        // Rarely does the tile not have a world yet when first placed.
+        // This should postpone the initial update until the tile has a world.
         continue;
       }
 
