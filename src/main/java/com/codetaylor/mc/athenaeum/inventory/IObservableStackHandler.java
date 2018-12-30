@@ -6,7 +6,7 @@ public interface IObservableStackHandler {
 
   void addObserver(IContentsChangedEventHandler handler);
 
-  public interface IContentsChangedEventHandler {
+  interface IContentsChangedEventHandler {
 
     void onContentsChanged(ItemStackHandler stackHandler, int slotIndex);
   }
