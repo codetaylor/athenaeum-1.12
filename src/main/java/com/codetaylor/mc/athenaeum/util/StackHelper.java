@@ -10,8 +10,6 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityFurnace;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.items.ItemStackHandler;
 
 import javax.annotation.Nonnull;
@@ -30,6 +28,24 @@ public class StackHelper {
   public static int getItemBurnTime(ItemStack itemStack) {
 
     return TileEntityFurnace.getItemBurnTime(itemStack);
+  }
+
+  /**
+   * Decreases the stack in the given slot by the given amount.
+   *
+   * @param stackHandler   the handler
+   * @param slot           the slot to adjust
+   * @param amount         the amount to add
+   * @param checkContainer should this decrement be container sensitive
+   * @return the adjusted stack
+   * @see #decrease(ItemStack, int, boolean)
+   */
+  public static ItemStack decreaseStackInSlot(ItemStackHandler stackHandler, int slot, int amount, boolean checkContainer) {
+
+    ItemStack stackInSlot = stackHandler.getStackInSlot(slot).copy();
+    ItemStack adjustedStack = StackHelper.decrease(stackInSlot, amount, checkContainer);
+    stackHandler.setStackInSlot(slot, adjustedStack);
+    return adjustedStack;
   }
 
   /**
@@ -75,7 +91,6 @@ public class StackHelper {
    * @param amount         decrease amount
    * @param checkContainer check for container
    * @return the resulting {@link ItemStack}
-   * @author codetaylor
    */
   public static ItemStack decrease(ItemStack itemStack, int amount, boolean checkContainer) {
 
@@ -155,7 +170,6 @@ public class StackHelper {
    * @param world     the world
    * @param itemStack the {@link ItemStack} to spawn
    * @param pos       the position to spawn
-   * @author codetaylor
    */
   public static void spawnStackOnTop(World world, ItemStack itemStack, BlockPos pos) {
 
@@ -170,7 +184,6 @@ public class StackHelper {
    * @param world     the world
    * @param itemStack the {@link ItemStack} to spawn
    * @param pos       the position to spawn
-   * @author codetaylor
    */
   public static void spawnStackOnTop(World world, ItemStack itemStack, BlockPos pos, double offsetY) {
 
