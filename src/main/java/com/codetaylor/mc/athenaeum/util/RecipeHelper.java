@@ -1,8 +1,10 @@
 package com.codetaylor.mc.athenaeum.util;
 
+import com.codetaylor.mc.athenaeum.recipe.IRecipeSingleFluidOutput;
 import com.codetaylor.mc.athenaeum.recipe.IRecipeSingleOutput;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.registries.IForgeRegistryEntry;
 import net.minecraftforge.registries.IForgeRegistryModifiable;
 
@@ -32,6 +34,26 @@ public final class RecipeHelper {
       R recipe = iterator.next();
 
       if (output.apply(recipe.getOutput())) {
+        toRemove.add(recipe.getRegistryName());
+      }
+    }
+
+    for (ResourceLocation resourceLocation : toRemove) {
+      registry.remove(resourceLocation);
+    }
+
+    return !toRemove.isEmpty();
+  }
+
+  public static <R extends IForgeRegistryEntry<R> & IRecipeSingleFluidOutput> boolean removeRecipesByOutput(IForgeRegistryModifiable<R> registry, FluidStack output) {
+
+    Iterator<R> iterator = registry.iterator();
+    List<ResourceLocation> toRemove = new ArrayList<>(1);
+
+    while (iterator.hasNext()) {
+      R recipe = iterator.next();
+
+      if (output.isFluidEqual(recipe.getOutput())) {
         toRemove.add(recipe.getRegistryName());
       }
     }
