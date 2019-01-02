@@ -1,5 +1,6 @@
 package com.codetaylor.mc.athenaeum.util;
 
+import com.google.common.base.Preconditions;
 import net.minecraft.block.Block;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
@@ -245,6 +246,20 @@ public class StackHelper {
     compound.setTag(BLOCK_ENTITY_TAG, teCompound);
     itemStack.setTagCompound(compound);
     return itemStack;
+  }
+
+  public static ItemStack readLargeItemStack(NBTTagCompound compound) {
+
+    ItemStack itemStack = new ItemStack(Preconditions.checkNotNull(compound));
+    itemStack.setCount(compound.getInteger("CountLarge"));
+    return itemStack;
+  }
+
+  public static NBTTagCompound writeLargeItemStack(ItemStack itemStack, NBTTagCompound compound) {
+
+    itemStack.writeToNBT(compound);
+    compound.setInteger("CountLarge", itemStack.getCount());
+    return compound;
   }
 
   private StackHelper() {
