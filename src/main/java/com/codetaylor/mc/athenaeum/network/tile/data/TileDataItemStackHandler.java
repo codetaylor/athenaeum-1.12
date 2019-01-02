@@ -61,9 +61,14 @@ public class TileDataItemStackHandler<H extends ItemStackHandler & ITileDataItem
         this.stackHandler.setStackInSlot(slot, ItemStack.EMPTY);
 
       } else {
-        this.stackHandler.setStackInSlot(slot, new ItemStack(Preconditions.checkNotNull(buffer.readCompoundTag())));
+        this.stackHandler.setStackInSlot(slot, this.readItemStack(buffer));
       }
     }
+  }
+
+  protected ItemStack readItemStack(PacketBuffer buffer) throws IOException {
+
+    return new ItemStack(Preconditions.checkNotNull(buffer.readCompoundTag()));
   }
 
   @Override
@@ -82,10 +87,15 @@ public class TileDataItemStackHandler<H extends ItemStackHandler & ITileDataItem
         buffer.writeBoolean(itemStack.isEmpty());
 
         if (!itemStack.isEmpty()) {
-          buffer.writeCompoundTag(itemStack.serializeNBT());
+          this.writeItemStack(buffer, itemStack);
         }
       }
     }
+  }
+
+  protected void writeItemStack(PacketBuffer buffer, ItemStack itemStack) {
+
+    buffer.writeCompoundTag(itemStack.serializeNBT());
   }
 
 }
