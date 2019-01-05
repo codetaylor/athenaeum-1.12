@@ -163,6 +163,20 @@ public class StackHelper {
     }
   }
 
+  public static void spawnStackHandlerSlotContentsOnTop(World world, ItemStackHandler stackHandler, int slot, BlockPos pos) {
+
+    StackHelper.spawnStackHandlerSlotContentsOnTop(world, stackHandler, slot, pos, 1.0);
+  }
+
+  public static void spawnStackHandlerSlotContentsOnTop(World world, ItemStackHandler stackHandler, int slot, BlockPos pos, double offsetY) {
+
+    ItemStack itemStack = stackHandler.extractItem(slot, stackHandler.getSlotLimit(slot), false);
+
+    if (!itemStack.isEmpty()) {
+      StackHelper.spawnStackOnTop(world, itemStack, pos, offsetY);
+    }
+  }
+
   /**
    * Spawns an {@link ItemStack} in the world, directly above the given position.
    * <p>
