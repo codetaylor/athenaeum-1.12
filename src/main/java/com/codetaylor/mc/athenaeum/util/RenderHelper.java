@@ -37,17 +37,19 @@ public final class RenderHelper {
     if (!itemStack.isEmpty()) {
 
       GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
-      GlStateManager.enableRescaleNormal();
+
+      // Use GlStateManager.enableNormalize() instead of GlStateManager.enableRescaleNormal() because it works with non-uniform scales.
+      GlStateManager.enableNormalize();
+
       GlStateManager.enableAlpha();
       GlStateManager.alphaFunc(GL11.GL_GREATER, 0.1F);
       GlStateManager.enableBlend();
-//      GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
       GlStateManager.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 
       RenderHelper.renderItemModelCustom(itemStack, model, transform, leftHanded, renderEffect);
 
       GlStateManager.cullFace(GlStateManager.CullFace.BACK);
-      GlStateManager.disableRescaleNormal();
+      GlStateManager.disableNormalize();
       GlStateManager.disableBlend();
     }
   }
@@ -120,10 +122,12 @@ public final class RenderHelper {
     bufferbuilder.begin(7, DefaultVertexFormats.ITEM);
 
     for (EnumFacing enumfacing : EnumFacing.values()) {
-      RenderHelper.renderQuads(bufferbuilder, model.getQuads(null, enumfacing, 0L), color, stack);
+      List<BakedQuad> quads = model.getQuads(null, enumfacing, 0L);
+      RenderHelper.renderQuads(bufferbuilder, quads, color, stack);
     }
 
-    RenderHelper.renderQuads(bufferbuilder, model.getQuads(null, null, 0L), color, stack);
+    List<BakedQuad> quads = model.getQuads(null, null, 0L);
+    RenderHelper.renderQuads(bufferbuilder, quads, color, stack);
     tessellator.draw();
   }
 
