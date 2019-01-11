@@ -2,6 +2,9 @@ package com.codetaylor.mc.athenaeum.util;
 
 import com.codetaylor.mc.athenaeum.recipe.IRecipeSingleFluidOutput;
 import com.codetaylor.mc.athenaeum.recipe.IRecipeSingleOutput;
+import net.minecraft.item.ItemFood;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.FluidStack;
@@ -63,6 +66,22 @@ public final class RecipeHelper {
     }
 
     return !toRemove.isEmpty();
+  }
+
+  /**
+   * Returns true if the given itemStack has a furnace recipe with an output
+   * item that extends {@link ItemFood}.
+   *
+   * @param furnaceInput the input item stack to check
+   * @return true
+   */
+  public static boolean hasFurnaceFoodRecipe(ItemStack furnaceInput) {
+
+    FurnaceRecipes furnaceRecipes = FurnaceRecipes.instance();
+    ItemStack smeltingResult = furnaceRecipes.getSmeltingResult(furnaceInput);
+
+    return !smeltingResult.isEmpty()
+        && smeltingResult.getItem() instanceof ItemFood;
   }
 
   private RecipeHelper() {
