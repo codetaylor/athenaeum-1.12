@@ -65,6 +65,27 @@ public class PacketService
   }
 
   @Override
+  public void sendToDimension(IMessage message, TileEntity tileEntity) {
+
+    World world = tileEntity.getWorld();
+    WorldProvider provider = world.provider;
+    int dimension = provider.getDimension();
+    this.sendToDimension(message, dimension);
+  }
+
+  @Override
+  public void sendToDimension(IMessage message, int dimension) {
+
+    this.threadedNetworkWrapper.sendToDimension(message, dimension);
+  }
+
+  @Override
+  public void sendToAll(IMessage message) {
+
+    this.threadedNetworkWrapper.sendToAll(message);
+  }
+
+  @Override
   public void sendTo(IMessage message, EntityPlayerMP player) {
 
     this.threadedNetworkWrapper.sendTo(message, player);

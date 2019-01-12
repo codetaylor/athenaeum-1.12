@@ -56,7 +56,6 @@ public class SCPacketTileData
   @Override
   protected IMessage onMessage(SCPacketTileData message, MessageContext ctx, TileEntity tileEntity) {
 
-
     if (tileEntity instanceof TileDataContainerBase) {
 
       ITileDataService dataService = TileDataServiceContainer.find(message.serviceId);

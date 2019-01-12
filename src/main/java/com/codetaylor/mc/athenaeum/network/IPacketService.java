@@ -22,6 +22,12 @@ public interface IPacketService {
 
   void sendToAllAround(IMessage message, TileEntity tileEntity);
 
+  void sendToDimension(IMessage message, TileEntity tileEntity);
+
+  void sendToDimension(IMessage message, int dimension);
+
+  void sendToAll(IMessage message);
+
   void sendTo(IMessage message, EntityPlayerMP player);
 
   void sendToServer(IMessage message);

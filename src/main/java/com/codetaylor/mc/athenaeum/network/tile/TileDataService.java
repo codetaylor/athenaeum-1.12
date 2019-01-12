@@ -91,7 +91,7 @@ public class TileDataService
       if (updateBuffer.writerIndex() > 0) {
 
         SCPacketTileData packet = new SCPacketTileData(this.serviceId, tile.getPos(), updateBuffer);
-        this.packetService.sendToAllAround(packet, tile);
+        this.packetService.sendToDimension(packet, tile);
       }
     }
   }
