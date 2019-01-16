@@ -2,7 +2,6 @@ package com.codetaylor.mc.athenaeum.util;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
-import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.SoundCategory;
@@ -84,30 +83,34 @@ public class FluidHelper {
       return;
     }
 
-    if (fluid == FluidRegistry.LAVA) {
-      world.playSound(
-          null,
-          pos.getX() + 0.5f,
-          pos.getY() + 0.5f,
-          pos.getZ() + 0.5f,
-          SoundEvents.ITEM_BUCKET_FILL_LAVA,
-          SoundCategory.BLOCKS,
-          0.2F + (float) Math.random() * 0.2F,
-          0.9F + (float) Math.random() * 0.15F
-      );
+    world.playSound(
+        null,
+        pos.getX() + 0.5f,
+        pos.getY() + 0.5f,
+        pos.getZ() + 0.5f,
+        fluid.getFillSound(),
+        SoundCategory.BLOCKS,
+        0.2F + (float) Math.random() * 0.2F,
+        0.9F + (float) Math.random() * 0.15F
+    );
+  }
 
-    } else {
-      world.playSound(
-          null,
-          pos.getX() + 0.5f,
-          pos.getY() + 0.5f,
-          pos.getZ() + 0.5f,
-          SoundEvents.ITEM_BUCKET_FILL,
-          SoundCategory.BLOCKS,
-          (float) Math.random() * 0.25f + 0.75f,
-          (float) Math.random() + 0.5f
-      );
+  public static void playFluidEmptySoundServer(Fluid fluid, World world, BlockPos pos) {
+
+    if (world.isRemote) {
+      return;
     }
+
+    world.playSound(
+        null,
+        pos.getX() + 0.5f,
+        pos.getY() + 0.5f,
+        pos.getZ() + 0.5f,
+        fluid.getEmptySound(),
+        SoundCategory.BLOCKS,
+        0.2F + (float) Math.random() * 0.2F,
+        0.9F + (float) Math.random() * 0.15F
+    );
   }
 
   private FluidHelper() {
