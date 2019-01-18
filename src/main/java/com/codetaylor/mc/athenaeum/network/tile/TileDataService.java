@@ -17,15 +17,16 @@ public class TileDataService
   private final int serviceId;
   private final IPacketService packetService;
 
-  private final List<TileDataTracker> dataTrackerList;
-  private final Map<TileDataContainerBase, TileDataTracker> dataTrackerMap;
+  private final ThreadLocal<List<TileDataTracker>> dataTrackerList;
+  private final ThreadLocal<Map<TileDataContainerBase, TileDataTracker>> dataTrackerMap;
 
   public TileDataService(int serviceId, IPacketService packetService) {
 
     this.serviceId = serviceId;
     this.packetService = packetService;
-    this.dataTrackerList = new ArrayList<>();
-    this.dataTrackerMap = new IdentityHashMap<>();
+
+    this.dataTrackerList = ThreadLocal.withInitial(ArrayList::new);
+    this.dataTrackerMap = ThreadLocal.withInitial(IdentityHashMap::new);
   }
 
   @Override
@@ -38,20 +39,20 @@ public class TileDataService
   @Nullable
   public TileDataTracker getTracker(TileDataContainerBase tile) {
 
-    return this.dataTrackerMap.get(tile);
+    return this.dataTrackerMap.get().get(tile);
   }
 
   @Override
   public void register(TileDataContainerBase tile, ITileData[] data) {
 
     if (data.length > 0) {
-
-      TileDataTracker tracker = this.dataTrackerMap.get(tile);
+      Map<TileDataContainerBase, TileDataTracker> map = this.dataTrackerMap.get();
+      TileDataTracker tracker = map.get(tile);
 
       if (tracker == null) {
         tracker = new TileDataTracker(tile);
-        this.dataTrackerList.add(tracker);
-        this.dataTrackerMap.put(tile, tracker);
+        this.dataTrackerList.get().add(tracker);
+        map.put(tile, tracker);
       }
 
       tracker.addTileData(data);
@@ -61,9 +62,28 @@ public class TileDataService
   @Override
   public void update() {
 
-    for (int i = 0; i < this.dataTrackerList.size(); i++) {
+    List<TileDataTracker> trackers = this.dataTrackerList.get();
 
-      TileDataTracker tracker = this.dataTrackerList.get(i);
+    for (int i = 0; i < trackers.size(); i++) {
+
+      TileDataTracker tracker = trackers.get(i);
+
+      // TODO: Watch
+      // I'm disabling this to see if the ThreadLocal solves these issues.
+      /*
+      if (tracker == null) {
+
+        // TODO: How can this be null?
+
+        // When placing a Compacting Bin, the game crashed because this value
+        // was null. I don't yet understand how this can happen.
+
+        // Could it be a threading issue?
+
+        continue;
+      }
+      */
+
       TileDataContainerBase tile = tracker.getTile();
 
       // --- Bookkeeping ---
@@ -71,18 +91,22 @@ public class TileDataService
       if (tile.isInvalid()) {
         // Move the last element to this position, remove the last element,
         // decrement the iteration index.
-        this.dataTrackerList.set(i, this.dataTrackerList.get(this.dataTrackerList.size() - 1));
-        this.dataTrackerList.remove(this.dataTrackerList.size() - 1);
+        trackers.set(i, trackers.get(trackers.size() - 1));
+        trackers.remove(trackers.size() - 1);
         i -= 1;
         continue;
       }
 
+      // TODO: Watch
+      // I'm disabling this to see if the ThreadLocal solves these issues.
+      /*
       //noinspection ConstantConditions
       if (tile.getWorld() == null) {
         // Rarely does the tile not have a world yet when first placed.
         // This should postpone the initial update until the tile has a world.
         continue;
       }
+      */
 
       // --- Update Packet ---
 
