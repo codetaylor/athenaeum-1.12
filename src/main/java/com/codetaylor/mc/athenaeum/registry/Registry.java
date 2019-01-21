@@ -148,14 +148,24 @@ public class Registry {
     return this.registerItem(item, new ResourceLocation(this.getModId(), name));
   }
 
+  public Item registerItem(Item item, String name, boolean noCreativeTab) {
+
+    return this.registerItem(item, new ResourceLocation(this.getModId(), name), noCreativeTab);
+  }
+
   public Item registerItem(Item item, ResourceLocation registryName) {
+
+    return this.registerItem(item, registryName, false);
+  }
+
+  public Item registerItem(Item item, ResourceLocation registryName, boolean noCreativeTab) {
 
     String resourceDomain = registryName.getResourceDomain().replaceAll("_", ".");
     String resourcePath = registryName.getResourcePath().toLowerCase().replace("_", ".");
     item.setRegistryName(registryName);
     item.setUnlocalizedName(resourceDomain + "." + resourcePath);
 
-    if (this.creativeTabs != null) {
+    if (this.creativeTabs != null && !noCreativeTab) {
       item.setCreativeTab(this.creativeTabs);
     }
 
