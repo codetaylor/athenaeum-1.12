@@ -2,6 +2,7 @@ package com.codetaylor.mc.athenaeum.util;
 
 import java.lang.reflect.Array;
 import java.util.Arrays;
+import java.util.Random;
 
 public final class ArrayHelper {
 
@@ -85,6 +86,11 @@ public final class ArrayHelper {
     } else {
       return array[index];
     }
+  }
+
+  public static <T> T randomElement(T[] array, Random random) {
+
+    return array[random.nextInt(array.length)];
   }
 
   private ArrayHelper() {
