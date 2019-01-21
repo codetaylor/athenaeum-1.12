@@ -270,6 +270,18 @@ public class StackHelper {
     return itemStack;
   }
 
+  public static <T extends TileEntity> T readTileEntityFromItemStack(T tile, ItemStack itemStack) {
+
+    NBTTagCompound tagCompound = itemStack.getTagCompound();
+
+    if (tagCompound != null) {
+      NBTTagCompound teCompound = tagCompound.getCompoundTag(BLOCK_ENTITY_TAG);
+      tile.readFromNBT(teCompound);
+    }
+
+    return tile;
+  }
+
   public static ItemStack readLargeItemStack(NBTTagCompound compound) {
 
     ItemStack itemStack = new ItemStack(Preconditions.checkNotNull(compound));
