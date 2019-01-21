@@ -254,7 +254,15 @@ public class StackHelper {
    */
   public static ItemStack writeTileEntityToItemStack(TileEntity tileEntity, ItemStack itemStack) {
 
-    NBTTagCompound compound = new NBTTagCompound();
+    NBTTagCompound compound;
+
+    if (itemStack.getTagCompound() != null) {
+      compound = itemStack.getTagCompound();
+
+    } else {
+      compound = new NBTTagCompound();
+    }
+
     NBTTagCompound teCompound = new NBTTagCompound();
     tileEntity.writeToNBT(teCompound);
     compound.setTag(BLOCK_ENTITY_TAG, teCompound);
