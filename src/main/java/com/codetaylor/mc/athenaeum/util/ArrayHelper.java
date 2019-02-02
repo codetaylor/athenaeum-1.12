@@ -93,6 +93,16 @@ public final class ArrayHelper {
     }
   }
 
+  public static double getOrLast(double[] array, int index) {
+
+    if (index >= array.length) {
+      return array[array.length - 1];
+
+    } else {
+      return array[index];
+    }
+  }
+
   public static <T> T getOrLast(T[] array, int index) {
 
     if (index >= array.length) {
