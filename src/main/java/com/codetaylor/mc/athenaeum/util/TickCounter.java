@@ -16,6 +16,11 @@ public class TickCounter {
     this.count = count;
   }
 
+  public void reset() {
+
+    this.count = 0;
+  }
+
   public boolean increment() {
 
     return this.increment(1);
@@ -26,7 +31,7 @@ public class TickCounter {
     this.count += ticks;
 
     if (this.count >= this.max) {
-      this.count = 0;
+      this.reset();
       return true;
     }
 
