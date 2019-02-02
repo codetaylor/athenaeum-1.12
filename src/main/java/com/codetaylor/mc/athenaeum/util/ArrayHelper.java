@@ -6,6 +6,21 @@ import java.util.Random;
 
 public final class ArrayHelper {
 
+  public static <E> E combine(E[] a) {
+
+    if (a.length == 0) {
+      throw new IllegalArgumentException("Zero-length array");
+    }
+
+    E result = a[0];
+
+    for (int i = 1; i < a.length; i++) {
+      result = ArrayHelper.combine(result, a[i]);
+    }
+
+    return result;
+  }
+
   /**
    * Combines two arrays of the same or most general type and returns a new array.
    * <p>
