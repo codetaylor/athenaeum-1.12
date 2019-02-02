@@ -1,5 +1,6 @@
 package com.codetaylor.mc.athenaeum.registry;
 
+import com.codetaylor.mc.athenaeum.network.NetworkEntityIdSupplier;
 import com.codetaylor.mc.athenaeum.registry.strategy.IClientModelRegistrationStrategy;
 import com.codetaylor.mc.athenaeum.registry.strategy.IForgeRegistryEventRegistrationStrategy;
 import com.codetaylor.mc.athenaeum.registry.strategy.ITileEntityRegistrationStrategy;
@@ -44,7 +45,7 @@ public class Registry {
   private final List<IForgeRegistryEventRegistrationStrategy<PotionType>> potionTypeRegistrationStrategyList;
   private final List<IForgeRegistryEventRegistrationStrategy<EntityEntry>> entityEntryRegistrationStrategyList;
 
-  private int entityEntryIndex;
+  private NetworkEntityIdSupplier networkEntityIdSupplier;
 
   public Registry(String modId) {
 
@@ -64,8 +65,6 @@ public class Registry {
     this.potionRegistrationStrategyList = new ArrayList<>();
     this.potionTypeRegistrationStrategyList = new ArrayList<>();
     this.entityEntryRegistrationStrategyList = new ArrayList<>();
-
-    this.entityEntryIndex = 0;
   }
 
   public String getModId() {
@@ -335,10 +334,17 @@ public class Registry {
   public <E extends Entity> void createEntityEntry(String name, EntityEntryBuilder<E> builder) {
 
     ResourceLocation resourceLocation = new ResourceLocation(this.getModId(), name);
-    builder.id(resourceLocation, this.entityEntryIndex);
+    builder.id(resourceLocation, this.networkEntityIdSupplier.getAndIncrement());
     builder.name(name);
-    this.entityEntryIndex += 1;
     this.registerEntityEntry(builder.build());
   }
 
+  public void setNetworkEntityIdSupplier(NetworkEntityIdSupplier supplier) {
+
+    if (this.networkEntityIdSupplier != null) {
+      throw new IllegalStateException("Network entity id supplier has already been set");
+    }
+
+    this.networkEntityIdSupplier = supplier;
+  }
 }

@@ -50,10 +50,16 @@ public abstract class ModuleBase
    */
   private static Map<String, IPacketRegistry> PACKET_REGISTRY_MAP = new HashMap<>();
 
+  /**
+   * Stores a network entity id supplier for each mod id.
+   */
+  private static Map<String, NetworkEntityIdSupplier> NETWORK_ENTITY_ID_SUPPLIER_MAP = new HashMap<>();
+
   private ThreadedNetworkWrapper threadedNetworkWrapper;
   private IPacketRegistry packetRegistry;
   private IPacketService packetService;
   private ITileDataService tileDataService;
+  private NetworkEntityIdSupplier networkEntityIdSupplier;
 
   protected ModuleBase(int priority, String modId) {
 
@@ -90,6 +96,12 @@ public abstract class ModuleBase
     if (this.registry == null) {
       throw new IllegalStateException("Set module registry before enabling auto registry");
     }
+
+    this.networkEntityIdSupplier = NETWORK_ENTITY_ID_SUPPLIER_MAP.computeIfAbsent(
+        this.modId,
+        s -> new NetworkEntityIdSupplier()
+    );
+    this.registry.setNetworkEntityIdSupplier(this.networkEntityIdSupplier);
 
     if (this.registryEventHandler == RegistryEventHandlerNoOp.INSTANCE) {
       this.registryEventHandler = new RegistryEventHandler(this.registry);
