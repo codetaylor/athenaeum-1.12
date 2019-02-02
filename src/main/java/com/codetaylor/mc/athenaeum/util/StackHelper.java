@@ -4,14 +4,19 @@ import com.google.common.base.Preconditions;
 import net.minecraft.block.Block;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.SoundEvents;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityFurnace;
+import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.ItemHandlerHelper;
 import net.minecraftforge.items.ItemStackHandler;
+import net.minecraftforge.items.wrapper.PlayerMainInvWrapper;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -121,8 +126,37 @@ public class StackHelper {
 
   public static void addToInventoryOrSpawn(World world, EntityPlayer player, ItemStack itemStack, BlockPos pos, double offsetY) {
 
-    if (!player.addItemStackToInventory(itemStack)) {
-      StackHelper.spawnStackOnTop(world, itemStack, pos, offsetY);
+    StackHelper.addToInventoryOrSpawn(world, player, itemStack, pos, offsetY, false);
+  }
+
+  public static void addToInventoryOrSpawn(World world, EntityPlayer player, ItemStack itemStack, BlockPos pos, double offsetY, boolean preferActiveSlot) {
+
+    if (preferActiveSlot) {
+      IItemHandler inventory = new PlayerMainInvWrapper(player.inventory);
+
+      ItemStack remainder = inventory.insertItem(player.inventory.currentItem, itemStack, false);
+
+      if (!remainder.isEmpty()) {
+        remainder = ItemHandlerHelper.insertItemStacked(inventory, remainder, false);
+      }
+
+      if (remainder.isEmpty()
+          || remainder.getCount() != itemStack.getCount()) {
+
+        world.playSound(player, player.posX, player.posY, player.posZ,
+            SoundEvents.ENTITY_ITEM_PICKUP, SoundCategory.PLAYERS, 0.2F, ((world.rand.nextFloat() - world.rand.nextFloat()) * 0.7F + 1.0F) * 2.0F
+        );
+      }
+
+      if (!remainder.isEmpty() && !world.isRemote) {
+        StackHelper.spawnStackOnTop(world, itemStack, pos, offsetY);
+      }
+
+    } else {
+
+      if (!player.addItemStackToInventory(itemStack)) {
+        StackHelper.spawnStackOnTop(world, itemStack, pos, offsetY);
+      }
     }
   }
 
