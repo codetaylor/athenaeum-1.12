@@ -214,6 +214,25 @@ public class ModelRegistrationHelper {
   }
 
   /**
+   * The same as {@link #registerItemModels(Item...)}, but allows providing
+   * a model subfolder. The given subfolder string must not have a preceding or
+   * trailing slash.
+   *
+   * @param subfolder subfolder model location
+   * @param items     the items
+   * @see ModelRegistrationHelper#registerItemModels(Item...)
+   */
+  public static void registerItemModels(String subfolder, Item... items) {
+
+    for (Item item : items) {
+      ResourceLocation registryName = item.getRegistryName();
+      Preconditions.checkNotNull(registryName, "Item %s has null registry name", item);
+      String modelLocation = registryName.getResourceDomain() + ":" + subfolder + "/" + registryName.getResourcePath();
+      ModelRegistrationHelper.registerItemModel(item, modelLocation);
+    }
+  }
+
+  /**
    * Register a single model for the given item.
    * <p>
    * Uses a meta of 0.
