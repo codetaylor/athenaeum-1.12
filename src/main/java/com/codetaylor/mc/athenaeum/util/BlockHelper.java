@@ -5,6 +5,8 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class BlockHelper {
@@ -78,9 +80,45 @@ public class BlockHelper {
     }
   }
 
+  public static void forBlocksInCubeShuffled(World world, BlockPos pos, int rangeX, int rangeY, int rangeZ, IBlockAction action) {
+
+    ArrayList<BlockPos> blockList = new ArrayList<>();
+    BlockHelper.findBlocksInCube(world, pos, rangeX, rangeY, rangeZ, IBlockFilter.TRUE, blockList);
+    Collections.shuffle(blockList);
+
+    for (BlockPos blockPos : blockList) {
+      IBlockState blockState = world.getBlockState(blockPos);
+
+      if (!action.execute(world, blockPos, blockState)) {
+        break;
+      }
+    }
+  }
+
   public interface IBlockFilter {
 
+    IBlockFilter TRUE = (world, pos, blockState) -> true;
+
     boolean allow(World world, BlockPos pos, IBlockState blockState);
+  }
+
+  public static List<BlockPos> findBlocksInCube(World world, BlockPos pos, int rangeX, int rangeY, int rangeZ, IBlockFilter filter, List<BlockPos> result) {
+
+    for (int x = pos.getX() - rangeX; x <= pos.getX() + rangeX; x++) {
+      for (int y = pos.getY() - rangeY; y <= pos.getY() + rangeY; y++) {
+        for (int z = pos.getZ() - rangeZ; z <= pos.getZ() + rangeZ; z++) {
+
+          BlockPos candidatePos = new BlockPos(x, y, z);
+          IBlockState blockState = world.getBlockState(candidatePos);
+
+          if (filter.allow(world, candidatePos, blockState)) {
+            result.add(candidatePos);
+          }
+        }
+      }
+    }
+
+    return result;
   }
 
   public static List<BlockPos> findBlocksInRange(World world, BlockPos pos, int range, IBlockFilter filter, List<BlockPos> result) {
