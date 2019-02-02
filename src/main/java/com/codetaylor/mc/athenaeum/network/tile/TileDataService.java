@@ -99,6 +99,14 @@ public class TileDataService
 
       // TODO: Watch
       // I'm disabling this to see if the ThreadLocal solves these issues.
+
+      // 2019-01-21
+      // A null pointer exception occurred with the following commented out,
+      // even after switching to ThreadLocal. Could it be that creating the
+      // bloom tile and not adding it to the world caused this? I would think
+      // that if that were the case, the crash would have happened consistently
+      // after first creating that bloom logic.
+
       /*
       //noinspection ConstantConditions
       if (tile.getWorld() == null) {
