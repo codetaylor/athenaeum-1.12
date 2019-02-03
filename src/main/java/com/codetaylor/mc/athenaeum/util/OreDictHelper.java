@@ -5,6 +5,13 @@ import net.minecraftforge.oredict.OreDictionary;
 
 public final class OreDictHelper {
 
+  public static void register(String oreDict, ItemStack... itemStacks) {
+
+    for (ItemStack itemStack : itemStacks) {
+      OreDictionary.registerOre(oreDict, itemStack);
+    }
+  }
+
   public static boolean contains(String oreDict, ItemStack itemStack) {
 
     if (itemStack.isEmpty()) {
