@@ -16,6 +16,11 @@ public class TickCounter {
     this.count = count;
   }
 
+  public int getMax() {
+
+    return this.max;
+  }
+
   public void reset() {
 
     this.count = 0;
