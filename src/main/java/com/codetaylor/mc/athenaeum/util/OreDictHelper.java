@@ -7,6 +7,10 @@ public final class OreDictHelper {
 
   public static boolean contains(String oreDict, ItemStack itemStack) {
 
+    if (itemStack.isEmpty()) {
+      return false;
+    }
+
     int logWood = OreDictionary.getOreID(oreDict);
     int[] oreIDs = OreDictionary.getOreIDs(itemStack);
 
