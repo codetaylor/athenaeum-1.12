@@ -107,6 +107,11 @@ public class TileDataService
       // that if that were the case, the crash would have happened consistently
       // after first creating that bloom logic.
 
+      // 2019-02-05
+      // This could be caused by making tile data dirty during a call to the
+      // tile's readFromNBT method. I was able to consistently reproduce this
+      // crash when doing so.
+
       /*
       //noinspection ConstantConditions
       if (tile.getWorld() == null) {
