@@ -25,6 +25,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nonnull;
+import java.io.File;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -60,6 +61,7 @@ public abstract class ModuleBase
   private IPacketService packetService;
   private ITileDataService tileDataService;
   private NetworkEntityIdSupplier networkEntityIdSupplier;
+  private File configurationDirectory;
 
   protected ModuleBase(int priority, String modId) {
 
@@ -80,6 +82,16 @@ public abstract class ModuleBase
   public int getPriority() {
 
     return this.priority;
+  }
+
+  public File getConfigurationDirectory() {
+
+    return this.configurationDirectory;
+  }
+
+  protected void setConfigurationDirectory(File file) {
+
+    this.configurationDirectory = file;
   }
 
   protected void setRegistry(Registry registry) {
@@ -277,6 +289,8 @@ public abstract class ModuleBase
   }
 
   public void onPreInitializationEvent(FMLPreInitializationEvent event) {
+
+    this.setConfigurationDirectory(event.getModConfigurationDirectory());
 
     if (this.registry != null) {
       this.onRegister(this.registry);
