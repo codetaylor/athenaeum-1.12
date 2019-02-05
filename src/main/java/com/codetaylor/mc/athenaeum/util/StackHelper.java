@@ -188,12 +188,8 @@ public class StackHelper {
    */
   public static void spawnStackHandlerContentsOnTop(World world, ItemStackHandler stackHandler, BlockPos pos, double offsetY) {
 
-    for (int i = 0; i < stackHandler.getSlots(); i++) {
-      ItemStack itemStack = stackHandler.extractItem(i, stackHandler.getSlotLimit(i), false);
-
-      if (!itemStack.isEmpty()) {
-        StackHelper.spawnStackOnTop(world, itemStack, pos, offsetY);
-      }
+    for (int slot = 0; slot < stackHandler.getSlots(); slot++) {
+      StackHelper.spawnStackHandlerSlotContentsOnTop(world, stackHandler, slot, pos, offsetY);
     }
   }
 
@@ -204,9 +200,9 @@ public class StackHelper {
 
   public static void spawnStackHandlerSlotContentsOnTop(World world, ItemStackHandler stackHandler, int slot, BlockPos pos, double offsetY) {
 
-    ItemStack itemStack = stackHandler.extractItem(slot, stackHandler.getSlotLimit(slot), false);
+    ItemStack itemStack;
 
-    if (!itemStack.isEmpty()) {
+    while (!(itemStack = stackHandler.extractItem(slot, stackHandler.getSlotLimit(slot), false)).isEmpty()) {
       StackHelper.spawnStackOnTop(world, itemStack, pos, offsetY);
     }
   }
