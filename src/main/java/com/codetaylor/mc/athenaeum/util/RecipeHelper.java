@@ -12,8 +12,10 @@ import net.minecraftforge.registries.IForgeRegistryEntry;
 import net.minecraftforge.registries.IForgeRegistryModifiable;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import java.util.function.Function;
 
 public final class RecipeHelper {
 
@@ -82,6 +84,20 @@ public final class RecipeHelper {
 
     return !smeltingResult.isEmpty()
         && smeltingResult.getItem() instanceof ItemFood;
+  }
+
+  public static <E extends IForgeRegistryEntry<E>, F extends IForgeRegistryEntry<F>> void inherit(
+      IForgeRegistryModifiable<E> inheritFrom,
+      IForgeRegistryModifiable<F> inheritTo,
+      Function<E, F> transformer
+  ) {
+
+    Collection<E> valuesCollection = inheritFrom.getValuesCollection();
+    List<E> snapshot = new ArrayList<>(valuesCollection);
+
+    for (E recipe : snapshot) {
+      inheritTo.register(transformer.apply(recipe));
+    }
   }
 
   private RecipeHelper() {
