@@ -4,6 +4,22 @@ import net.minecraft.util.EnumFacing;
 
 public final class FacingHelper {
 
+  public static EnumFacing rotateFacingCW(EnumFacing facing) {
+
+    switch (facing) {
+      case NORTH:
+        return EnumFacing.EAST;
+      case EAST:
+        return EnumFacing.SOUTH;
+      case SOUTH:
+        return EnumFacing.WEST;
+      case WEST:
+        return EnumFacing.NORTH;
+      default:
+        return facing;
+    }
+  }
+
   /**
    * Translate and return the external facing based on the internal facing.
    *
