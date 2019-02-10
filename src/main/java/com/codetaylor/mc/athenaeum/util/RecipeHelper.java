@@ -87,6 +87,7 @@ public final class RecipeHelper {
   }
 
   public static <E extends IForgeRegistryEntry<E>, F extends IForgeRegistryEntry<F>> void inherit(
+      String parentPath,
       IForgeRegistryModifiable<E> inheritFrom,
       IForgeRegistryModifiable<F> inheritTo,
       Function<E, F> transformer
@@ -96,7 +97,12 @@ public final class RecipeHelper {
     List<E> snapshot = new ArrayList<>(valuesCollection);
 
     for (E recipe : snapshot) {
-      inheritTo.register(transformer.apply(recipe));
+      ResourceLocation registryName = recipe.getRegistryName();
+
+      if (registryName != null) {
+        ResourceLocation resourceLocation = new ResourceLocation(registryName.getResourceDomain(), parentPath + "/" + registryName.getResourcePath());
+        inheritTo.register(transformer.apply(recipe).setRegistryName(resourceLocation));
+      }
     }
   }
 
