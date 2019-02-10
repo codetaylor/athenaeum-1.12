@@ -119,17 +119,7 @@ public class StackHelper {
     return itemStack;
   }
 
-  public static void addToInventoryOrSpawn(World world, EntityPlayer player, ItemStack itemStack, BlockPos pos) {
-
-    StackHelper.addToInventoryOrSpawn(world, player, itemStack, pos, 1.0);
-  }
-
-  public static void addToInventoryOrSpawn(World world, EntityPlayer player, ItemStack itemStack, BlockPos pos, double offsetY) {
-
-    StackHelper.addToInventoryOrSpawn(world, player, itemStack, pos, offsetY, false);
-  }
-
-  public static void addToInventoryOrSpawn(World world, EntityPlayer player, ItemStack itemStack, BlockPos pos, double offsetY, boolean preferActiveSlot) {
+  public static void addToInventoryOrSpawn(World world, EntityPlayer player, ItemStack itemStack, BlockPos pos, double offsetY, boolean preferActiveSlot, boolean playPickupSound) {
 
     if (preferActiveSlot) {
       IItemHandler inventory = new PlayerMainInvWrapper(player.inventory);
@@ -140,7 +130,8 @@ public class StackHelper {
         remainder = ItemHandlerHelper.insertItemStacked(inventory, remainder, false);
       }
 
-      if (remainder.isEmpty()
+      if (playPickupSound
+          && remainder.isEmpty()
           || remainder.getCount() != itemStack.getCount()) {
 
         world.playSound(player, player.posX, player.posY, player.posZ,
@@ -154,8 +145,13 @@ public class StackHelper {
 
     } else {
 
-      if (!player.addItemStackToInventory(itemStack)) {
+      if (!player.inventory.addItemStackToInventory(itemStack)) {
         StackHelper.spawnStackOnTop(world, itemStack, pos, offsetY);
+
+      } else if (playPickupSound) {
+        world.playSound(player, player.posX, player.posY, player.posZ,
+            SoundEvents.ENTITY_ITEM_PICKUP, SoundCategory.PLAYERS, 0.2F, ((world.rand.nextFloat() - world.rand.nextFloat()) * 0.7F + 1.0F) * 2.0F
+        );
       }
     }
   }
