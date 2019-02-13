@@ -7,6 +7,8 @@ import javax.annotation.Nullable;
 
 public class RecipeItemParser {
 
+  public static final RecipeItemParser INSTANCE = new RecipeItemParser();
+
   @Nonnull
   public ParseResult parse(@Nullable String data) throws MalformedRecipeItemException {
 
