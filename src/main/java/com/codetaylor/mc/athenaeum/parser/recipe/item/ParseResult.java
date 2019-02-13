@@ -1,5 +1,11 @@
 package com.codetaylor.mc.athenaeum.parser.recipe.item;
 
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fml.common.registry.ForgeRegistries;
+import net.minecraftforge.oredict.OreDictionary;
+
 /**
  * Created by codetaylor on 11/17/2016.
  */
@@ -60,5 +66,21 @@ public class ParseResult {
     }
 
     return this.domain + ":" + this.path + (("ore".equals(this.domain)) ? "" : ":" + this.meta + ((this.quantity != 1) ? " * " + this.quantity : ""));
+  }
+
+  public boolean matches(ItemStack itemStack, boolean ignoreQuantity) {
+
+    Item item = ForgeRegistries.ITEMS.getValue(new ResourceLocation(this.getDomain(), this.getPath()));
+
+    if (itemStack.getItem() != item) {
+      return false;
+    }
+
+    if (this.getMeta() != OreDictionary.WILDCARD_VALUE
+        && this.getMeta() != itemStack.getMetadata()) {
+      return false;
+    }
+
+    return (ignoreQuantity) || (this.getQuantity() == itemStack.getCount());
   }
 }
