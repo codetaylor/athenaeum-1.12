@@ -127,7 +127,7 @@ public class DynamicStackHandler
     super.setStackInSlot(slot, stack);
   }
 
-  public void insertItem(ItemStack itemStack, boolean simulate) {
+  public ItemStack insertItem(ItemStack itemStack, boolean simulate) {
 
     ItemStack remaining = itemStack;
     int i = 0;
@@ -141,6 +141,8 @@ public class DynamicStackHandler
       remaining = super.insertItem(i, remaining, simulate);
       i += 1;
     }
+
+    return ItemStack.EMPTY;
   }
 
   public void clearStacks() {
