@@ -8,6 +8,7 @@ public class ModuleMaterials {
   // @formatter:off
   public static final Item.ToolMaterial FLINT = EnumHelper.addToolMaterial("athenaeum:FLINT", 1, 150, 3.8f, 1.0f, 5);
   public static final Item.ToolMaterial BONE = EnumHelper.addToolMaterial("athenaeum:BONE", 1, 150, 3.8f, 1.0f, 5);
+  public static final Item.ToolMaterial OBSIDIAN = EnumHelper.addToolMaterial("athenaeum:OBSIDIAN", 2, 1400, 6.0f, 2.0f, 18);
 
   // Thermal Foundation tool material stats
   // https://github.com/CoFH/ThermalFoundation/blob/master/src/main/java/cofh/thermalfoundation/init/TFEquipment.java
