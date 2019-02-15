@@ -83,6 +83,17 @@ public final class ArrayHelper {
     return Arrays.asList(array).contains(element);
   }
 
+  public static boolean containsInt(int[] array, int element) {
+
+    for (int i = 0; i < array.length; i++) {
+
+      if (array[i] == element) {
+        return true;
+      }
+    }
+    return false;
+  }
+
   public static int getOrLast(int[] array, int index) {
 
     if (index >= array.length) {
