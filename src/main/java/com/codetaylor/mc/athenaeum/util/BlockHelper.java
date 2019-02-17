@@ -30,12 +30,12 @@ public class BlockHelper {
     /**
      * Return false to stop processing, true to keep processing.
      *
-     * @param world
-     * @param pos
-     * @param blockState
+     * @param w
+     * @param p
+     * @param bs
      * @return
      */
-    boolean execute(World world, BlockPos pos, IBlockState blockState);
+    boolean execute(World w, BlockPos p, IBlockState bs);
   }
 
   public static void forBlocksInRange(World world, BlockPos pos, int range, IBlockAction action) {
