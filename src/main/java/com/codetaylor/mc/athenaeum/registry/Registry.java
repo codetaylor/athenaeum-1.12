@@ -200,6 +200,8 @@ public class Registry {
     this.registerTileEntityRegistrationStrategy(() -> GameRegistry.registerTileEntity(
         tileEntityClass,
         this.getModId() + ".tile." + tileEntityClass.getSimpleName()
+        // TODO: fixing this will break all existing TEs registered with this
+        // new ResourceLocation(this.getModId(), "tile." + tileEntityClass.getSimpleName())
     ));
   }
 
