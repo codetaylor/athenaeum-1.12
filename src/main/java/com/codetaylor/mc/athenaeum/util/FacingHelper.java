@@ -4,6 +4,15 @@ import net.minecraft.util.EnumFacing;
 
 public final class FacingHelper {
 
+  public static EnumFacing rotateFacingCW(EnumFacing facing, int rotations) {
+
+    for (int i = 0; i < rotations; i++) {
+      facing = FacingHelper.rotateFacingCW(facing);
+    }
+
+    return facing;
+  }
+
   public static EnumFacing rotateFacingCW(EnumFacing facing) {
 
     switch (facing) {
