@@ -112,14 +112,16 @@ public class TileDataService
       // tile's readFromNBT method. I was able to consistently reproduce this
       // crash when doing so.
 
-      /*
+      // 2019-02-21
+      // Crashed again with a null world in the sendToDimension call down below.
+
       //noinspection ConstantConditions
       if (tile.getWorld() == null) {
-        // Rarely does the tile not have a world yet when first placed.
+        // Rarely the game will crash because the TE has a null world in the call
+        // to sendToDimension below.
         // This should postpone the initial update until the tile has a world.
         continue;
       }
-      */
 
       // --- Update Packet ---
 
