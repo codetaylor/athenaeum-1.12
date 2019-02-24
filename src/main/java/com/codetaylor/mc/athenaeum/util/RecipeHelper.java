@@ -19,6 +19,11 @@ import java.util.function.Function;
 
 public final class RecipeHelper {
 
+  public static <R extends IForgeRegistryEntry<R>> void removeAllRecipes(IForgeRegistryModifiable<R> registry) {
+
+    registry.clear();
+  }
+
   /**
    * Removes all recipes from the given registry that have an output that
    * matches the given output.
