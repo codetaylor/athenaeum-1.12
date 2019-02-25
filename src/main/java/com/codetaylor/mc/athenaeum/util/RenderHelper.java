@@ -12,7 +12,6 @@ import net.minecraft.client.renderer.color.ItemColors;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.texture.TextureUtil;
-import net.minecraft.client.renderer.tileentity.TileEntityItemStackRenderer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
@@ -90,7 +89,7 @@ public final class RenderHelper {
       if (model.isBuiltInRenderer()) {
         GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
         GlStateManager.enableRescaleNormal();
-        TileEntityItemStackRenderer.instance.renderByItem(stack);
+        stack.getItem().getTileEntityItemStackRenderer().renderByItem(stack);
 
       } else {
         RenderHelper.renderModel(model, stack);
