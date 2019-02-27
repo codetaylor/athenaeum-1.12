@@ -18,6 +18,23 @@ public class ParseResult {
   private int meta;
   private int quantity;
 
+  public ParseResult() {
+    //
+  }
+
+  public ParseResult(String domain, String path, int meta) {
+
+    this(domain, path, meta, 1);
+  }
+
+  public ParseResult(String domain, String path, int meta, int quantity) {
+
+    this.domain = domain;
+    this.path = path;
+    this.meta = meta;
+    this.quantity = quantity;
+  }
+
   public void setDomain(String domain) {
 
     this.domain = domain;
