@@ -131,7 +131,7 @@ public class ZenDocExporter {
       throw new IllegalStateException("Wrong number of parameter names found for method: " + methodName);
     }
 
-    boolean expand = (types.length > 4);
+    boolean expand = (types.length > 0);
 
     if (expand) {
       out.append("\n");
@@ -179,17 +179,16 @@ public class ZenDocExporter {
     if (line.startsWith("@see")) {
       String[] links = line.substring(4).trim().split(" ");
 
-      StringBuilder sb = new StringBuilder("For more information, see:\n{: .zen-description }\n\n");
+      StringBuilder sb = new StringBuilder("For more information, see:\n");
 
       for (String link : links) {
         sb.append("  * [").append(link).append("](").append(link).append(")\n");
-        sb.append("{: .zen-description }\n\n");
       }
 
       return sb.toString();
     }
 
-    return line + "\n{: .zen-description }\n\n";
+    return line + "\n";
   }
 
   private List<MethodAnnotationPair> getSortedMethodList(Method[] methods) {
