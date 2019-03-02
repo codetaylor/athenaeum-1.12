@@ -1,6 +1,7 @@
 package com.codetaylor.mc.athenaeum.tools;
 
 import com.codetaylor.mc.athenaeum.util.StringHelper;
+import org.apache.commons.lang3.StringUtils;
 
 import java.io.IOException;
 import java.lang.reflect.Method;
@@ -125,38 +126,56 @@ public class ZenDocExporter {
     out.append(returnTypeString).append(" ").append(methodName).append("(");
 
     Class[] types = method.getParameterTypes();
-    String[] names = annotation.args();
+    ZenDocArg[] args = annotation.args();
 
-    if (types.length != names.length) {
+    if (types.length != args.length) {
       throw new IllegalStateException("Wrong number of parameter names found for method: " + methodName);
     }
 
-    boolean expand = (types.length > 0);
-
-    if (expand) {
+    if (args.length > 0) {
       out.append("\n");
+    }
+
+    int largest = 0;
+
+    for (int k = 0; k < types.length; k++) {
+      String typeString = this.getSimpleTypeString(types[k]);
+      String nameString = args[k].arg();
+
+      String s;
+
+      if (k < types.length - 1) {
+        s = "  " + typeString + " " + nameString + ",";
+
+      } else {
+        s = "  " + typeString + " " + nameString;
+      }
+
+      if (s.length() > largest) {
+        largest = s.length();
+      }
     }
 
     for (int k = 0; k < types.length; k++) {
       String typeString = this.getSimpleTypeString(types[k]);
-      String nameString = names[k];
+      String nameString = args[k].arg();
 
-      if (expand) {
-        out.append("  ");
-      }
-
-      out.append(typeString).append(" ").append(nameString);
+      String s;
 
       if (k < types.length - 1) {
-        out.append(", ");
+        s = "  " + typeString + " " + nameString + ",";
 
-        if (expand) {
-          out.append("\n");
-        }
+      } else {
+        s = "  " + typeString + " " + nameString;
       }
-    }
 
-    if (expand) {
+      s = StringUtils.rightPad(s, largest);
+      out.append(s);
+
+      if (!args[k].info().isEmpty()) {
+        out.append(" // ").append(args[k].info());
+      }
+
       out.append("\n");
     }
 
@@ -172,6 +191,8 @@ public class ZenDocExporter {
         out.append(this.parse(line));
       }
     }
+
+    out.append("\n---\n\n");
   }
 
   private String parse(String line) {

@@ -7,11 +7,10 @@ import java.lang.annotation.Target;
 
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface ZenDocMethod {
+public @interface ZenDocArg {
 
-  int order() default 0;
+  String arg();
 
-  String[] description() default {};
+  String info() default "";
 
-  ZenDocArg[] args() default {};
 }
