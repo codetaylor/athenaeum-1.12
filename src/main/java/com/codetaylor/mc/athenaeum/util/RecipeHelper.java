@@ -11,11 +11,13 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.registries.IForgeRegistryEntry;
 import net.minecraftforge.registries.IForgeRegistryModifiable;
 
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.function.Function;
+import java.util.function.Predicate;
 
 public final class RecipeHelper {
 
@@ -98,10 +100,26 @@ public final class RecipeHelper {
       Function<E, F> transformer
   ) {
 
+    RecipeHelper.inherit(parentPath, inheritFrom, inheritTo, transformer, null);
+  }
+
+  public static <E extends IForgeRegistryEntry<E>, F extends IForgeRegistryEntry<F>> void inherit(
+      String parentPath,
+      IForgeRegistryModifiable<E> inheritFrom,
+      IForgeRegistryModifiable<F> inheritTo,
+      Function<E, F> transformer,
+      @Nullable Predicate<E> filter
+  ) {
+
     Collection<E> valuesCollection = inheritFrom.getValuesCollection();
     List<E> snapshot = new ArrayList<>(valuesCollection);
 
     for (E recipe : snapshot) {
+
+      if (filter != null && !filter.test(recipe)) {
+        continue;
+      }
+
       ResourceLocation registryName = recipe.getRegistryName();
 
       if (registryName != null) {
