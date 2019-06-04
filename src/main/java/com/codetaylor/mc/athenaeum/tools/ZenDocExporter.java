@@ -2,8 +2,10 @@ package com.codetaylor.mc.athenaeum.tools;
 
 import com.codetaylor.mc.athenaeum.util.StringHelper;
 import org.apache.commons.lang3.StringUtils;
+import stanhebben.zenscript.annotations.Optional;
 
 import java.io.IOException;
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.nio.file.Files;
@@ -125,6 +127,7 @@ public class ZenDocExporter {
     // Method return type and name
     out.append(returnTypeString).append(" ").append(methodName).append("(");
 
+    Annotation[][] parameterAnnotations = method.getParameterAnnotations();
     Class[] types = method.getParameterTypes();
     ZenDocArg[] args = annotation.args();
 
@@ -137,40 +140,39 @@ public class ZenDocExporter {
     }
 
     int largest = 0;
+    String[] parameterStrings = new String[types.length];
 
+    // find the largest string
     for (int k = 0; k < types.length; k++) {
+
+      boolean optional = false;
+
+      for (Annotation parameterAnnotation : parameterAnnotations[k]) {
+
+        if (parameterAnnotation instanceof Optional) {
+          optional = true;
+        }
+      }
+
+      String optionalString = optional ? "@Optional " : "";
       String typeString = this.getSimpleTypeString(types[k]);
       String nameString = args[k].arg();
 
-      String s;
-
       if (k < types.length - 1) {
-        s = "  " + typeString + " " + nameString + ",";
+        parameterStrings[k] = "  " + optionalString + typeString + " " + nameString + ",";
 
       } else {
-        s = "  " + typeString + " " + nameString;
+        parameterStrings[k] = "  " + optionalString + typeString + " " + nameString;
       }
 
-      if (s.length() > largest) {
-        largest = s.length();
+      if (parameterStrings[k].length() > largest) {
+        largest = parameterStrings[k].length();
       }
     }
 
-    for (int k = 0; k < types.length; k++) {
-      String typeString = this.getSimpleTypeString(types[k]);
-      String nameString = args[k].arg();
-
-      String s;
-
-      if (k < types.length - 1) {
-        s = "  " + typeString + " " + nameString + ",";
-
-      } else {
-        s = "  " + typeString + " " + nameString;
-      }
-
-      s = StringUtils.rightPad(s, largest);
-      out.append(s);
+    for (int k = 0; k < parameterStrings.length; k++) {
+      parameterStrings[k] = StringUtils.rightPad(parameterStrings[k], largest);
+      out.append(parameterStrings[k]);
 
       if (!args[k].info().isEmpty()) {
         out.append(" // ").append(args[k].info());
