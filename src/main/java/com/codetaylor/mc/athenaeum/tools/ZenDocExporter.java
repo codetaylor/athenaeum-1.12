@@ -146,20 +146,26 @@ public class ZenDocExporter {
     for (int k = 0; k < types.length; k++) {
 
       boolean optional = false;
+      boolean nullable = false;
 
       for (Annotation parameterAnnotation : parameterAnnotations[k]) {
 
         if (parameterAnnotation instanceof Optional) {
           optional = true;
         }
+
+        if (parameterAnnotation instanceof ZenDocNullable) {
+          nullable = true;
+        }
       }
 
       String optionalString = optional ? "@Optional " : "";
+      String nullableString = nullable ? "@Nullable " : "";
       String typeString = this.getSimpleTypeString(types[k]);
       String nameString = args[k].arg();
 
       if (k < types.length - 1) {
-        parameterStrings[k] = "  " + optionalString + typeString + " " + nameString + ",";
+        parameterStrings[k] = "  " + optionalString + nullableString + typeString + " " + nameString + ",";
 
       } else {
         parameterStrings[k] = "  " + optionalString + typeString + " " + nameString;
