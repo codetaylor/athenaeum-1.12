@@ -10,6 +10,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -23,6 +24,7 @@ public class ZenDocExporter {
       StringBuilder out = new StringBuilder();
 
       ZenDocClass zenClass = (ZenDocClass) classes[i].getDeclaredAnnotation(ZenDocClass.class);
+      ZenDocAppend zenDocAppend = (ZenDocAppend) classes[i].getDeclaredAnnotation(ZenDocAppend.class);
 
       if (zenClass == null) {
         continue;
@@ -86,6 +88,29 @@ public class ZenDocExporter {
 
       if (!methodList.isEmpty()) {
         this.writeMethodList(out, methodList);
+      }
+
+      // --- Append
+
+      if (zenDocAppend != null) {
+        String[] toAppend = zenDocAppend.value();
+
+        out.append("\n");
+
+        for (String s : toAppend) {
+          Path p = Paths.get(s);
+
+          try {
+            List<String> lines = Files.readAllLines(p);
+
+            for (String line : lines) {
+              out.append(line).append("\n");
+            }
+
+          } catch (IOException e) {
+            e.printStackTrace();
+          }
+        }
       }
 
       // --- Output
