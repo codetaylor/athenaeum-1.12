@@ -44,7 +44,7 @@ public class ZenDocExporter {
       // --- Import
 
       out.append("```java").append("\n");
-      out.append("import ").append(zenClass.value()).append("\n");
+      out.append("import ").append(zenClass.value()).append(";").append("\n");
       out.append("```").append("\n");
       out.append("\n");
 
