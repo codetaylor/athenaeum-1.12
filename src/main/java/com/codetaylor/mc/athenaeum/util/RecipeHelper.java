@@ -120,13 +120,27 @@ public final class RecipeHelper {
         continue;
       }
 
-      ResourceLocation registryName = recipe.getRegistryName();
-
-      if (registryName != null) {
-        ResourceLocation resourceLocation = new ResourceLocation(registryName.getResourceDomain(), parentPath + "/" + registryName.getResourcePath());
-        inheritTo.register(transformer.apply(recipe).setRegistryName(resourceLocation));
-      }
+      RecipeHelper.inherit(parentPath, inheritTo, transformer, recipe);
     }
+  }
+
+  public static <E extends IForgeRegistryEntry<E>, F extends IForgeRegistryEntry<F>> F inherit(
+      String parentPath,
+      IForgeRegistryModifiable<F> inheritTo,
+      Function<E, F> transformer,
+      E recipe
+  ) {
+
+    ResourceLocation registryName = recipe.getRegistryName();
+
+    if (registryName == null) {
+      throw new RuntimeException("Null registry name");
+    }
+
+    ResourceLocation resourceLocation = new ResourceLocation(registryName.getResourceDomain(), parentPath + "/" + registryName.getResourcePath());
+    F result = transformer.apply(recipe);
+    inheritTo.register(result.setRegistryName(resourceLocation));
+    return result;
   }
 
   private RecipeHelper() {
