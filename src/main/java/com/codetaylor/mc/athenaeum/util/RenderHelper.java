@@ -19,11 +19,51 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.ForgeHooksClient;
 import org.lwjgl.opengl.GL11;
 
+import java.awt.*;
 import java.util.List;
 
 public final class RenderHelper {
 
   private static final ResourceLocation RES_ITEM_GLINT = new ResourceLocation("textures/misc/enchanted_item_glint.png");
+
+  public static void renderItemModelIntoGUI(ItemStack stack, int x, int y, IBakedModel bakedmodel, boolean renderEffect, float zLevel, float alpha) {
+
+    GlStateManager.pushMatrix();
+
+    // Use GlStateManager.enableNormalize() instead of GlStateManager.enableRescaleNormal() because it works with non-uniform scales.
+    GlStateManager.enableNormalize();
+
+    GlStateManager.enableAlpha();
+    GlStateManager.alphaFunc(516, 0.1F);
+    GlStateManager.enableBlend();
+    GlStateManager.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+
+    GlStateManager.color(1, 1, 1, 1);
+
+    RenderHelper.setupGuiTransform(x, y, bakedmodel.isGui3d(), zLevel);
+
+    RenderHelper.renderItemModelCustom(stack, bakedmodel, ItemCameraTransforms.TransformType.GUI, false, renderEffect, new Color(1f, 1f, 1f, alpha).getRGB());
+
+    GlStateManager.disableAlpha();
+    GlStateManager.disableRescaleNormal();
+    GlStateManager.disableLighting();
+    GlStateManager.popMatrix();
+  }
+
+  public static void setupGuiTransform(int xPosition, int yPosition, boolean isGui3d, float zLevel) {
+
+    GlStateManager.translate((float) xPosition, (float) yPosition, 100.0F + zLevel);
+    GlStateManager.translate(8.0F, 8.0F, 0.0F);
+    GlStateManager.scale(1.0F, -1.0F, 1.0F);
+    GlStateManager.scale(16.0F, 16.0F, 16.0F);
+
+    if (isGui3d) {
+      GlStateManager.enableLighting();
+
+    } else {
+      GlStateManager.disableLighting();
+    }
+  }
 
   public static void renderItemModel(
       ItemStack itemStack,
@@ -61,6 +101,18 @@ public final class RenderHelper {
       boolean renderEffect
   ) {
 
+    RenderHelper.renderItemModelCustom(itemStack, model, transform, leftHanded, renderEffect, -1);
+  }
+
+  public static void renderItemModelCustom(
+      ItemStack itemStack,
+      IBakedModel model,
+      ItemCameraTransforms.TransformType transform,
+      boolean leftHanded,
+      boolean renderEffect,
+      int color
+  ) {
+
     if (!itemStack.isEmpty()) {
 
       TextureManager textureManager = Minecraft.getMinecraft().getTextureManager();
@@ -71,7 +123,7 @@ public final class RenderHelper {
       GlStateManager.pushMatrix();
 
       model = ForgeHooksClient.handleCameraTransforms(model, transform, leftHanded);
-      RenderHelper.renderItem(itemStack, model, renderEffect);
+      RenderHelper.renderItem(itemStack, model, renderEffect, color);
 
       GlStateManager.popMatrix();
 
@@ -81,6 +133,11 @@ public final class RenderHelper {
   }
 
   public static void renderItem(ItemStack stack, IBakedModel model, boolean renderEffect) {
+
+    RenderHelper.renderItem(stack, model, renderEffect, -1);
+  }
+
+  public static void renderItem(ItemStack stack, IBakedModel model, boolean renderEffect, int color) {
 
     if (!stack.isEmpty()) {
       GlStateManager.pushMatrix();
@@ -92,7 +149,7 @@ public final class RenderHelper {
         stack.getItem().getTileEntityItemStackRenderer().renderByItem(stack);
 
       } else {
-        RenderHelper.renderModel(model, stack);
+        RenderHelper.renderModel(model, color, stack);
 
         if (renderEffect
             && stack.hasEffect()) {
