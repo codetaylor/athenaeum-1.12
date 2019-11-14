@@ -1,17 +1,19 @@
 package com.codetaylor.mc.athenaeum.gui.element;
 
 import com.codetaylor.mc.athenaeum.gui.GuiContainerBase;
-import com.codetaylor.mc.athenaeum.gui.element.GuiElementBase;
 import com.codetaylor.mc.athenaeum.util.RenderHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderItem;
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.ItemStack;
 
+import java.util.List;
 import java.util.function.Supplier;
 
 public class GuiElementItemStack
-    extends GuiElementBase {
+    extends GuiElementBase
+    implements IGuiElementTooltipProvider {
 
   private final Supplier<ItemStack> itemStackSupplier;
   private final float alpha;
@@ -55,5 +57,21 @@ public class GuiElementItemStack
   @Override
   public void drawForegroundLayer(int mouseX, int mouseY) {
     //
+  }
+
+  @Override
+  public List<String> tooltipTextGet(List<String> tooltip) {
+
+    ItemStack itemStack = this.itemStackSupplier.get();
+
+    if (!itemStack.isEmpty()) {
+      Minecraft minecraft = Minecraft.getMinecraft();
+      ITooltipFlag.TooltipFlags tooltipFlag = minecraft.gameSettings.advancedItemTooltips
+          ? ITooltipFlag.TooltipFlags.ADVANCED : ITooltipFlag.TooltipFlags.NORMAL;
+      List<String> itemStackTooltip = itemStack.getTooltip(minecraft.player, tooltipFlag);
+      tooltip.addAll(itemStackTooltip);
+    }
+
+    return tooltip;
   }
 }
