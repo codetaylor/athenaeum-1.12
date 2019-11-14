@@ -15,8 +15,8 @@ public class GuiElementItemStack
     extends GuiElementBase
     implements IGuiElementTooltipProvider {
 
-  private final Supplier<ItemStack> itemStackSupplier;
-  private final float alpha;
+  protected final Supplier<ItemStack> itemStackSupplier;
+  protected final float alpha;
 
   public GuiElementItemStack(
       Supplier<ItemStack> itemStackSupplier,
