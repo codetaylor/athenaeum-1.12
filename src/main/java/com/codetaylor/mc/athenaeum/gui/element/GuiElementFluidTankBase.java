@@ -8,33 +8,18 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
 
-public class GuiElementFluidTank
+public abstract class GuiElementFluidTankBase
     extends GuiElementTiledTextureAtlasSpriteBase {
 
   protected final FluidTank fluidTank;
   private TextureAtlasSprite fluidSprite;
 
-  public GuiElementFluidTank(
-      GuiContainerBase guiBase,
-      FluidTank fluidTank,
-      int elementX,
-      int elementY,
-      int elementWidth,
-      int elementHeight
-  ) {
+  public GuiElementFluidTankBase(GuiContainerBase guiBase, int elementX, int elementY, int elementWidth, int elementHeight, FluidTank fluidTank) {
 
-    super(
-        guiBase,
-        elementX,
-        elementY,
-        elementWidth,
-        elementHeight
-    );
-
+    super(guiBase, elementX, elementY, elementWidth, elementHeight);
     this.fluidTank = fluidTank;
   }
 
-  @Override
   protected float scalarPercentageGet() {
 
     int fluidAmount = this.fluidTank.getFluidAmount();

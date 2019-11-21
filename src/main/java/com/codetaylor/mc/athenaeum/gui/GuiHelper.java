@@ -224,6 +224,60 @@ public class GuiHelper {
 
   }
 
+  public static void drawScaledTexturedModalRectFromIconAnchorBottomLeft(
+      int x,
+      int y,
+      float z,
+      TextureAtlasSprite icon,
+      int width,
+      int height
+  ) {
+
+//    double scaledTime = (double) Minecraft.getMinecraft().world.getTotalWorldTime() * 0.05;
+//    height += (Math.sin(scaledTime) * 0.5 + 0.5) * 32;
+//    width += (Math.sin(scaledTime) * 0.5 + 0.5) * 32;
+
+    if (icon == null) {
+      return;
+    }
+
+    int iconHeight = icon.getIconHeight();
+    int iconWidth = icon.getIconWidth();
+
+    double minU = icon.getMinU();
+    double maxU = icon.getMaxU();
+    double minV = icon.getMinV();
+    double maxV = icon.getMaxV();
+
+    int verticalSections = height / iconHeight + 1;
+    int horizontalSections = width / iconWidth + 1;
+
+    BufferBuilder buffer = Tessellator.getInstance().getBuffer();
+    buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
+
+    for (int i = 0; i < verticalSections; i++) {
+      for (int j = 0; j < horizontalSections; j++) {
+
+        int px1 = x + (j * iconWidth);
+        int px2 = x + Math.min((j + 1) * iconWidth, width);
+        int py1 = y + height - (i * iconHeight);
+        int py2 = y + height - Math.min((i + 1) * iconHeight, height);
+
+        double tu2 = minU + (maxU - minU) * (((j + 1) * iconWidth > width)
+            ? (width - (j * iconWidth)) / (float) iconWidth : 1);
+        double tv2 = maxV - (maxV - minV) * (((i + 1) * iconHeight > height)
+            ? (height - (i * iconHeight)) / (float) iconHeight : 1);
+
+        buffer.pos(px1, py1, z).tex(minU, maxV).endVertex();
+        buffer.pos(px2, py1, z).tex(tu2, maxV).endVertex();
+        buffer.pos(px2, py2, z).tex(tu2, tv2).endVertex();
+        buffer.pos(px1, py2, z).tex(minU, tv2).endVertex();
+      }
+    }
+
+    Tessellator.getInstance().draw();
+  }
+
   public static int getFluidHeight(int fluidAmount, int fluidCapacity, int displayHeight) {
 
     float fluidHeightScalar = GuiHelper.getFluidHeightScalar(fluidAmount, fluidCapacity, displayHeight);

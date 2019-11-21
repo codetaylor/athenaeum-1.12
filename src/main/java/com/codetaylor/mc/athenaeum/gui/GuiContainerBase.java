@@ -190,7 +190,7 @@ public abstract class GuiContainerBase
       int height
   ) {
 
-    GuiHelper.drawVerticalScaledTexturedModalRectFromIconAnchorBottomLeft(x, y, this.zLevel, icon, width, height);
+    GuiHelper.drawScaledTexturedModalRectFromIconAnchorBottomLeft(x, y, this.zLevel, icon, width, height);
   }
 
   public void drawSizedModalRect(int x1, int y1, int x2, int y2, Color color) {

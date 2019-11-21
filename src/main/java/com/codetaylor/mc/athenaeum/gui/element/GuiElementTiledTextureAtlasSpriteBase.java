@@ -40,24 +40,5 @@ public abstract class GuiElementTiledTextureAtlasSpriteBase
     //
   }
 
-  @Override
-  protected int elementHeightModifiedGet() {
-
-    int elementHeightModified = (int) (this.scalarPercentageGet() * this.elementHeight);
-    int min = Math.min(elementHeightModified, this.elementHeight);
-    return Math.max(0, min);
-  }
-
-  @Override
-  protected int elementYModifiedGet() {
-
-    int elementHeightModified = (int) (this.scalarPercentageGet() * this.elementHeight);
-    int min = Math.min(elementHeightModified, this.elementHeight);
-    return this.elementHeight - Math.max(0, min) + super.elementYModifiedGet();
-  }
-
-  protected abstract float scalarPercentageGet();
-
   protected abstract TextureAtlasSprite textureAtlasSpriteGet();
-
 }
