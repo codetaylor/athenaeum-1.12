@@ -119,6 +119,17 @@ public class StackHelper {
     return itemStack;
   }
 
+  /**
+   * Must be called from both sides, client and server.
+   *
+   * @param world
+   * @param player
+   * @param itemStack
+   * @param pos
+   * @param offsetY
+   * @param preferActiveSlot
+   * @param playPickupSound
+   */
   public static void addToInventoryOrSpawn(World world, EntityPlayer player, ItemStack itemStack, BlockPos pos, double offsetY, boolean preferActiveSlot, boolean playPickupSound) {
 
     if (preferActiveSlot) {
@@ -146,7 +157,10 @@ public class StackHelper {
     } else {
 
       if (!player.inventory.addItemStackToInventory(itemStack)) {
-        StackHelper.spawnStackOnTop(world, itemStack, pos, offsetY);
+
+        if (!world.isRemote) {
+          StackHelper.spawnStackOnTop(world, itemStack, pos, offsetY);
+        }
 
       } else if (playPickupSound) {
         world.playSound(player, player.posX, player.posY, player.posZ,
