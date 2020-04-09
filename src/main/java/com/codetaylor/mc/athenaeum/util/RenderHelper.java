@@ -19,7 +19,6 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.ForgeHooksClient;
 import org.lwjgl.opengl.GL11;
 
-import java.awt.*;
 import java.util.List;
 
 public final class RenderHelper {
@@ -42,7 +41,7 @@ public final class RenderHelper {
 
     RenderHelper.setupGuiTransform(x, y, bakedmodel.isGui3d(), zLevel);
 
-    RenderHelper.renderItemModelCustom(stack, bakedmodel, ItemCameraTransforms.TransformType.GUI, false, renderEffect, new Color(1f, 1f, 1f, alpha).getRGB());
+    RenderHelper.renderItemModelCustom(stack, bakedmodel, ItemCameraTransforms.TransformType.GUI, false, renderEffect, alpha);
 
     GlStateManager.disableAlpha();
     GlStateManager.disableRescaleNormal();
@@ -101,7 +100,7 @@ public final class RenderHelper {
       boolean renderEffect
   ) {
 
-    RenderHelper.renderItemModelCustom(itemStack, model, transform, leftHanded, renderEffect, -1);
+    RenderHelper.renderItemModelCustom(itemStack, model, transform, leftHanded, renderEffect, 1);
   }
 
   public static void renderItemModelCustom(
@@ -110,7 +109,7 @@ public final class RenderHelper {
       ItemCameraTransforms.TransformType transform,
       boolean leftHanded,
       boolean renderEffect,
-      int color
+      float alpha
   ) {
 
     if (!itemStack.isEmpty()) {
@@ -123,7 +122,7 @@ public final class RenderHelper {
       GlStateManager.pushMatrix();
 
       model = ForgeHooksClient.handleCameraTransforms(model, transform, leftHanded);
-      RenderHelper.renderItem(itemStack, model, renderEffect, color);
+      RenderHelper.renderItem(itemStack, model, renderEffect, alpha);
 
       GlStateManager.popMatrix();
 
@@ -134,10 +133,10 @@ public final class RenderHelper {
 
   public static void renderItem(ItemStack stack, IBakedModel model, boolean renderEffect) {
 
-    RenderHelper.renderItem(stack, model, renderEffect, -1);
+    RenderHelper.renderItem(stack, model, renderEffect, 1);
   }
 
-  public static void renderItem(ItemStack stack, IBakedModel model, boolean renderEffect, int color) {
+  public static void renderItem(ItemStack stack, IBakedModel model, boolean renderEffect, float alpha) {
 
     if (!stack.isEmpty()) {
       GlStateManager.pushMatrix();
@@ -149,7 +148,7 @@ public final class RenderHelper {
         stack.getItem().getTileEntityItemStackRenderer().renderByItem(stack);
 
       } else {
-        RenderHelper.renderModel(model, color, stack);
+        RenderHelper.renderModel(model, -1, alpha, stack);
 
         if (renderEffect
             && stack.hasEffect()) {
@@ -163,15 +162,20 @@ public final class RenderHelper {
 
   public static void renderModel(IBakedModel model, ItemStack stack) {
 
-    RenderHelper.renderModel(model, -1, stack);
+    RenderHelper.renderModel(model, -1, 1, stack);
   }
 
   public static void renderModel(IBakedModel model, int color) {
 
-    RenderHelper.renderModel(model, color, ItemStack.EMPTY);
+    RenderHelper.renderModel(model, color, 1, ItemStack.EMPTY);
   }
 
-  public static void renderModel(IBakedModel model, int color, ItemStack stack) {
+  public static void renderModel(IBakedModel model, int color, float alpha) {
+
+    RenderHelper.renderModel(model, color, alpha, ItemStack.EMPTY);
+  }
+
+  public static void renderModel(IBakedModel model, int color, float alpha, ItemStack stack) {
 
     Tessellator tessellator = Tessellator.getInstance();
     BufferBuilder bufferbuilder = tessellator.getBuffer();
@@ -179,15 +183,15 @@ public final class RenderHelper {
 
     for (EnumFacing enumfacing : EnumFacing.values()) {
       List<BakedQuad> quads = model.getQuads(null, enumfacing, 0L);
-      RenderHelper.renderQuads(bufferbuilder, quads, color, stack);
+      RenderHelper.renderQuads(bufferbuilder, quads, color, alpha, stack);
     }
 
     List<BakedQuad> quads = model.getQuads(null, null, 0L);
-    RenderHelper.renderQuads(bufferbuilder, quads, color, stack);
+    RenderHelper.renderQuads(bufferbuilder, quads, color, alpha, stack);
     tessellator.draw();
   }
 
-  public static void renderQuads(BufferBuilder renderer, List<BakedQuad> quads, int color, ItemStack stack) {
+  public static void renderQuads(BufferBuilder renderer, List<BakedQuad> quads, int color, float alpha, ItemStack stack) {
 
     boolean flag = color == -1 && !stack.isEmpty();
     int i = 0;
@@ -206,7 +210,10 @@ public final class RenderHelper {
         k = k | -16777216;
       }
 
-      net.minecraftforge.client.model.pipeline.LightUtil.renderQuadColor(renderer, bakedquad, k);
+      int a = (int) (alpha * 255 + 0.5);
+      int c = (k & 0x00FFFFFF) | ((a & 0xFF) << 24);
+
+      net.minecraftforge.client.model.pipeline.LightUtil.renderQuadColor(renderer, bakedquad, c);
     }
   }
 
