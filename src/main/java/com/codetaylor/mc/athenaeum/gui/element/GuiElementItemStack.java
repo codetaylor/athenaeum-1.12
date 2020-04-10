@@ -63,9 +63,10 @@ public class GuiElementItemStack
   public List<String> tooltipTextGet(List<String> tooltip) {
 
     ItemStack itemStack = this.itemStackSupplier.get();
+    Minecraft minecraft = Minecraft.getMinecraft();
 
-    if (!itemStack.isEmpty()) {
-      Minecraft minecraft = Minecraft.getMinecraft();
+    if (!itemStack.isEmpty()
+        && minecraft.player.inventory.getItemStack().isEmpty()) {
       ITooltipFlag.TooltipFlags tooltipFlag = minecraft.gameSettings.advancedItemTooltips
           ? ITooltipFlag.TooltipFlags.ADVANCED : ITooltipFlag.TooltipFlags.NORMAL;
       List<String> itemStackTooltip = itemStack.getTooltip(minecraft.player, tooltipFlag);
