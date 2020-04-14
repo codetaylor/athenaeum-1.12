@@ -30,5 +30,9 @@ public class ModuleMaterials {
   public static final Item.ToolMaterial MANASTEEL = EnumHelper.addToolMaterial("athenaeum:MANASTEEL", 3, 300, 6.2F, 2F, 20);
   public static final Item.ToolMaterial ELEMENTIUM = EnumHelper.addToolMaterial("athenaeum:ELEMENTIUM", 3, 720, 6.2F, 2F, 20);
   public static final Item.ToolMaterial TERRASTEEL = EnumHelper.addToolMaterial("athenaeum:TERRASTEEL", 4, 2300, 9F, 3F, 26);
+
+  // Mekanism tool material stats
+  // https://github.com/mekanism/Mekanism/blob/1.12/src/main/java/mekanism/common/config/ToolsConfig.java
+  public static final Item.ToolMaterial OSMIUM = EnumHelper.addToolMaterial("athenaeum:OSMIUM", 2, 500, 10, 4, 12);
   // @formatter:on
 }

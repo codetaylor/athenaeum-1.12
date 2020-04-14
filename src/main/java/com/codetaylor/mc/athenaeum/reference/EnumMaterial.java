@@ -30,7 +30,9 @@ public enum EnumMaterial {
 
   MANASTEEL("manasteel", ModuleMaterials.MANASTEEL, new Color(0x3389ff), true, "ingotManasteel"),
   ELEMENTIUM("elementium", ModuleMaterials.ELEMENTIUM, new Color(0xf15cae), true, "ingotElvenElementium"),
-  TERRASTEEL("terrasteel", ModuleMaterials.TERRASTEEL, new Color(0x53f900), true, "ingotTerrasteel");
+  TERRASTEEL("terrasteel", ModuleMaterials.TERRASTEEL, new Color(0x53f900), true, "ingotTerrasteel"),
+
+  OSMIUM("osmium", ModuleMaterials.OSMIUM, new Color(0x9BA9B1), true, "ingotOsmium");
 
   private String name;
   private Item.ToolMaterial toolMaterial;
