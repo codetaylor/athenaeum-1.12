@@ -25,12 +25,32 @@ public class ZenDocExporter {
 
       ZenDocClass zenClass = (ZenDocClass) classes[i].getDeclaredAnnotation(ZenDocClass.class);
       ZenDocAppend zenDocAppend = (ZenDocAppend) classes[i].getDeclaredAnnotation(ZenDocAppend.class);
+      ZenDocPrepend zenDocPrepend = (ZenDocPrepend) classes[i].getDeclaredAnnotation(ZenDocPrepend.class);
 
       if (zenClass == null) {
         continue;
       }
 
-      if (i > 0) {
+      // --- Prepend
+
+      if (zenDocPrepend != null) {
+        String[] toPrepend = zenDocPrepend.value();
+
+        for (String s : toPrepend) {
+          Path p = Paths.get(s);
+
+          try {
+            List<String> lines = Files.readAllLines(p);
+
+            for (String line : lines) {
+              out.append(line).append("\n");
+            }
+
+          } catch (IOException e) {
+            e.printStackTrace();
+          }
+        }
+
         out.append("\n");
       }
 
