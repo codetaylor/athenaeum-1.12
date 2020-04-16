@@ -31,7 +31,7 @@ public class TickCounter {
     return this.increment(1);
   }
 
-  private boolean increment(int ticks) {
+  public boolean increment(int ticks) {
 
     this.count += ticks;
 
