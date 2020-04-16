@@ -68,7 +68,7 @@ public class RecipeItemParser {
           result.setMeta(Integer.valueOf(metaSplit[0].trim()));
 
         } catch (NumberFormatException e) {
-          throw new MalformedRecipeItemException(String.format("[PARSE] Expected integer, got [%s]", metaSplit[1].trim()));
+          throw new MalformedRecipeItemException(String.format("[PARSE] Expected integer, got [%s]", metaSplit[0].trim()));
         }
 
         if (metaSplit.length > 1) {
