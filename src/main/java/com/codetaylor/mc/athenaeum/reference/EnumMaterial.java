@@ -32,7 +32,12 @@ public enum EnumMaterial {
   ELEMENTIUM("elementium", ModuleMaterials.ELEMENTIUM, new Color(0xf15cae), true, "ingotElvenElementium"),
   TERRASTEEL("terrasteel", ModuleMaterials.TERRASTEEL, new Color(0x53f900), true, "ingotTerrasteel"),
 
-  OSMIUM("osmium", ModuleMaterials.OSMIUM, new Color(0x9BA9B1), true, "ingotOsmium");
+  OSMIUM("osmium", ModuleMaterials.OSMIUM, new Color(0x9BA9B1), true, "ingotOsmium"),
+
+  BORON("boron", ModuleMaterials.BORON, new Color(0x7D7D7D), true, "ingotBoron"),
+  TOUGHALLOY("toughalloy", ModuleMaterials.TOUGHALLOY, new Color(0x150F21), false, "ingotTough"),
+  HARDCARBON("hardcarbon", ModuleMaterials.HARDCARBON, new Color(0x195970), false, "ingotHardCarbon"),
+  BORONNITRIDE("boronnitride", ModuleMaterials.BORONNITRIDE, new Color(0x75B269), true, "gemBoronNitride");
 
   private String name;
   private Item.ToolMaterial toolMaterial;

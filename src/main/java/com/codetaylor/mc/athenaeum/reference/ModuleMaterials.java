@@ -34,5 +34,13 @@ public class ModuleMaterials {
   // Mekanism tool material stats
   // https://github.com/mekanism/Mekanism/blob/1.12/src/main/java/mekanism/common/config/ToolsConfig.java
   public static final Item.ToolMaterial OSMIUM = EnumHelper.addToolMaterial("athenaeum:OSMIUM", 2, 500, 10, 4, 12);
+
+  // NuclearCraft tool material stats
+  // https://github.com/codetaylor/artisan-worktables/issues/208
+  public static final Item.ToolMaterial BORON = EnumHelper.addToolMaterial("athenaeum:BORON", 2, 550, 8, 2.5f, 6);
+  public static final Item.ToolMaterial TOUGHALLOY = EnumHelper.addToolMaterial("athenaeum:TOUGHALLOY", 3, 950, 10, 3, 15);
+  public static final Item.ToolMaterial HARDCARBON = EnumHelper.addToolMaterial("athenaeum:HARDCARBON", 3, 1250, 11, 3, 12);
+  public static final Item.ToolMaterial BORONNITRIDE = EnumHelper.addToolMaterial("athenaeum:BORONNITRIDE", 4, 1950, 12, 2.5f, 20);
+
   // @formatter:on
 }
