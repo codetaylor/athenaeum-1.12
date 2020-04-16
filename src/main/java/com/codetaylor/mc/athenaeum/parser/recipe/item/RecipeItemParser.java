@@ -38,7 +38,7 @@ public class RecipeItemParser {
     if (pathSplit.length > 1) {
 
       try {
-        result.setQuantity(Integer.valueOf(pathSplit[1].trim()));
+        result.setQuantity(Integer.parseInt(pathSplit[1].trim()));
 
       } catch (NumberFormatException e) {
         throw new MalformedRecipeItemException(String.format("[PARSE] Expected integer, got [%s]", split[1].trim()));
@@ -54,7 +54,7 @@ public class RecipeItemParser {
 
         if (!quantity.isEmpty()) {
           try {
-            result.setQuantity(Integer.valueOf(quantity));
+            result.setQuantity(Integer.parseInt(quantity));
 
           } catch (NumberFormatException e) {
             throw new MalformedRecipeItemException(String.format("[PARSE] Expected integer, got [%s]", quantity));
@@ -65,7 +65,7 @@ public class RecipeItemParser {
         String[] metaSplit = meta.split("\\*");
 
         try {
-          result.setMeta(Integer.valueOf(metaSplit[0].trim()));
+          result.setMeta(Integer.parseInt(metaSplit[0].trim()));
 
         } catch (NumberFormatException e) {
           throw new MalformedRecipeItemException(String.format("[PARSE] Expected integer, got [%s]", metaSplit[0].trim()));
@@ -74,7 +74,7 @@ public class RecipeItemParser {
         if (metaSplit.length > 1) {
 
           try {
-            result.setQuantity(Integer.valueOf(metaSplit[1].trim()));
+            result.setQuantity(Integer.parseInt(metaSplit[1].trim()));
 
           } catch (NumberFormatException e) {
             throw new MalformedRecipeItemException(String.format("[PARSE] Expected integer, got [%s]", metaSplit[1].trim()));
