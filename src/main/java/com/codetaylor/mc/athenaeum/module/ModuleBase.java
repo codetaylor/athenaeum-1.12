@@ -1,11 +1,5 @@
 package com.codetaylor.mc.athenaeum.module;
 
-import com.codetaylor.mc.athenaeum.network.IPacketRegistry;
-import com.codetaylor.mc.athenaeum.network.IPacketService;
-import com.codetaylor.mc.athenaeum.network.PacketRegistry;
-import com.codetaylor.mc.athenaeum.network.PacketService;
-import com.codetaylor.mc.athenaeum.network.tile.ITileDataService;
-import com.codetaylor.mc.athenaeum.network.tile.TileDataServiceContainer;
 import com.codetaylor.mc.athenaeum.registry.IRegistryEventHandler;
 import com.codetaylor.mc.athenaeum.registry.Registry;
 import com.codetaylor.mc.athenaeum.registry.RegistryEventHandler;
@@ -19,7 +13,6 @@ import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.potion.Effect;
 import net.minecraft.potion.Potion;
 import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.world.biome.Biome;
 import net.minecraftforge.api.distmarker.Dist;
@@ -30,48 +23,25 @@ import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
 import net.minecraftforge.fml.event.server.*;
-import net.minecraftforge.fml.loading.FMLConfig;
-import net.minecraftforge.fml.loading.FMLPaths;
-import net.minecraftforge.fml.network.NetworkRegistry;
-import net.minecraftforge.fml.network.simple.SimpleChannel;
 
 import javax.annotation.Nonnull;
-import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import java.util.function.Supplier;
 
 public abstract class ModuleBase
     implements Comparable<ModuleBase> {
 
   private final String name;
   private final int priority;
-  private final String modId;
   private final Map<String, Set<String>> integrationPluginMap;
   private Registry registry;
   private IRegistryEventHandler registryEventHandler;
 
-  /**
-   * Stores a network wrapper for each mod id.
-   */
-  private static Map<String, PacketService> NETWORK_WRAPPER_MAP = new HashMap<>();
-
-  /**
-   * Stores a packet registry for each mod id.
-   */
-  private static Map<String, IPacketRegistry> PACKET_REGISTRY_MAP = new HashMap<>();
-
-  private IPacketRegistry packetRegistry;
-  private PacketService packetService;
-  private ITileDataService tileDataService;
-  private Path configurationDirectory;
-
-  protected ModuleBase(int priority, String modId) {
+  protected ModuleBase(int priority) {
 
     this.priority = priority;
-    this.modId = modId;
     this.name = this.getClass().getSimpleName();
     this.integrationPluginMap = new HashMap<>();
     this.registryEventHandler = RegistryEventHandlerNoOp.INSTANCE;
@@ -87,16 +57,6 @@ public abstract class ModuleBase
   public int getPriority() {
 
     return this.priority;
-  }
-
-  public Path getConfigurationDirectory() {
-
-    return this.configurationDirectory;
-  }
-
-  protected void setConfigurationDirectory(Path path) {
-
-    this.configurationDirectory = path;
   }
 
   protected void setRegistry(Registry registry) {
@@ -117,46 +77,6 @@ public abstract class ModuleBase
     if (this.registryEventHandler == RegistryEventHandlerNoOp.INSTANCE) {
       this.registryEventHandler = new RegistryEventHandler(this.registry);
     }
-  }
-
-  /**
-   * Call this in the constructor to enable network functionality for this module.
-   * <p>
-   * This will create a new network wrapper and packet registry for this module's
-   * mod id if they don't already exist. If they do already exist, the existing
-   * network wrapper and packet registry will be used.
-   *
-   * @return a reference to the module's packet service
-   */
-  protected IPacketService enableNetwork(String protocolVersion) {
-
-    if (this.packetService == null) {
-      this.packetService = NETWORK_WRAPPER_MAP.computeIfAbsent(
-          this.modId,
-          modId -> {
-            String channelName = modId; // can be exposed later
-            ResourceLocation name = new ResourceLocation(modId, channelName);
-            Supplier<String> protocolVersionSupplier = () -> protocolVersion;
-            SimpleChannel simpleChannel = NetworkRegistry.newSimpleChannel(name, protocolVersionSupplier, protocolVersion::equals, protocolVersion::equals);
-            return new PacketService(simpleChannel);
-          }
-      );
-      this.packetRegistry = PACKET_REGISTRY_MAP.computeIfAbsent(
-          this.modId,
-          s -> new PacketRegistry(this.packetService)
-      );
-    }
-
-    return this.packetService;
-  }
-
-  protected ITileDataService enableNetworkTileDataService(IPacketService packetService) {
-
-    if (this.tileDataService == null) {
-      this.tileDataService = TileDataServiceContainer.register(new ResourceLocation(this.modId, this.name), packetService);
-    }
-
-    return this.tileDataService;
   }
 
   // --------------------------------------------------------------------------
@@ -206,17 +126,6 @@ public abstract class ModuleBase
    * @param registry the registry
    */
   public void onClientRegister(Registry registry) {
-    // Override to use.
-  }
-
-  /**
-   * This is called to allow the module to register network packets.
-   * <p>
-   * Only called if {@link ModuleBase#enableNetwork(String)} has been called in the module's constructor.
-   *
-   * @param registry the packet registry
-   */
-  public void onNetworkRegister(IPacketRegistry registry) {
     // Override to use.
   }
 
@@ -286,14 +195,6 @@ public abstract class ModuleBase
   // --------------------------------------------------------------------------
 
   public void onCommonSetupEvent(FMLCommonSetupEvent event) {
-
-    if (this.packetRegistry != null) {
-      this.onNetworkRegister(this.packetRegistry);
-    }
-
-    Path gamePath = FMLPaths.GAMEDIR.get();
-    Path configPath = gamePath.resolve(FMLConfig.defaultConfigPath());
-    this.setConfigurationDirectory(configPath.resolve(this.modId));
 
     if (this.registry != null) {
       this.onRegister(this.registry);

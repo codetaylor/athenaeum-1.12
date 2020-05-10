@@ -1,6 +1,7 @@
 package com.codetaylor.mc.athenaeum.network;
 
 import com.codetaylor.mc.athenaeum.network.packet.IMessage;
+import com.codetaylor.mc.athenaeum.network.packet.IMessageHandler;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.tileentity.TileEntity;
@@ -9,6 +10,11 @@ import net.minecraft.world.dimension.DimensionType;
 import net.minecraftforge.fml.network.PacketDistributor;
 
 public interface IPacketService {
+
+  <Q extends IMessage, A extends IMessage> void registerMessage(
+      Class<? extends IMessageHandler<Q, A>> messageHandler,
+      Class<Q> requestMessageType
+  );
 
   void sendToTrackingChunk(TileEntity tileEntity, IMessage message);
 

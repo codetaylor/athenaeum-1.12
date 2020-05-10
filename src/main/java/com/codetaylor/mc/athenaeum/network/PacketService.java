@@ -6,11 +6,13 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.dimension.DimensionType;
 import net.minecraftforge.fml.network.NetworkEvent;
+import net.minecraftforge.fml.network.NetworkRegistry;
 import net.minecraftforge.fml.network.PacketDistributor;
 import net.minecraftforge.fml.network.simple.SimpleChannel;
 
@@ -23,22 +25,34 @@ public class PacketService
 
   private final SimpleChannel channel;
 
-  public PacketService(SimpleChannel channel) {
+  private int nextRegistrationIndex;
+
+  public static PacketService create(String modId, String channelName, String protocolVersion) {
+
+    ResourceLocation name = new ResourceLocation(modId, channelName);
+    Supplier<String> protocolVersionSupplier = () -> protocolVersion;
+    SimpleChannel simpleChannel = NetworkRegistry.newSimpleChannel(name, protocolVersionSupplier, protocolVersion::equals, protocolVersion::equals);
+    return new PacketService(simpleChannel);
+  }
+
+  private PacketService(SimpleChannel channel) {
 
     this.channel = channel;
   }
 
+  @Override
   public <Q extends IMessage, A extends IMessage> void registerMessage(
       Class<? extends IMessageHandler<Q, A>> messageHandler,
-      Class<Q> requestMessageType,
-      int id
+      Class<Q> requestMessageType
   ) {
 
     this.registerMessage(
         this.instantiateHandler(messageHandler),
         this.instantiateMessage(requestMessageType),
-        id
+        this.nextRegistrationIndex
     );
+
+    this.nextRegistrationIndex += 1;
   }
 
   private <Q extends IMessage> Q instantiateMessage(Class<Q> messageType) {

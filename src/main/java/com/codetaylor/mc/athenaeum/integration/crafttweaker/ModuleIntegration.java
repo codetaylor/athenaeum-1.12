@@ -1,6 +1,5 @@
 package com.codetaylor.mc.athenaeum.integration.crafttweaker;
 
-import com.codetaylor.mc.athenaeum.AthenaeumMod;
 import com.codetaylor.mc.athenaeum.module.ModuleBase;
 import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
 
@@ -9,7 +8,7 @@ public class ModuleIntegration
 
   public ModuleIntegration() {
 
-    super(Integer.MAX_VALUE, AthenaeumMod.ID);
+    super(Integer.MAX_VALUE);
 
     // We're going to try initializing in the constructor here to give the
     // plugin the opportunity to inject its zen classes into the CrT registry.
