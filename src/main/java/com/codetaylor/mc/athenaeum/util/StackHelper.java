@@ -23,7 +23,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
 
-public class StackHelper {
+public final class StackHelper {
 
   public static final String BLOCK_ENTITY_TAG = "BlockEntityTag";
 
