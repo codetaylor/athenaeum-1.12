@@ -29,36 +29,38 @@ ext {
 
 }
 
-repositories {
+if (!ext.early) {
+  repositories {
 
-  mavenCentral()
+    mavenCentral()
 
-  maven {
-    // location of the maven that hosts JEI files
-    url "http://dvs1.progwml6.com/files/maven"
+    maven {
+      // location of the maven that hosts JEI files
+      url "http://dvs1.progwml6.com/files/maven"
+    }
+
+    maven {
+      // CraftTweaker
+      url "http://maven.blamejared.com/"
+    }
+
+    maven {
+      // gamestages
+      // bookshelf (required by gamestages)
+      url "https://maven.mcmoddev.com"
+    }
+
+    /*flatDir {
+        dirs 'libs'
+    }*/
   }
 
-  maven {
-    // CraftTweaker
-    url "http://maven.blamejared.com/"
+  dependencies {
+
+    compile 'com.blamejared.crafttweaker:CraftTweaker-1.14.4:5.0.1.188'
+    compile 'mezz.jei:jei-1.14.4:6.0.0.27'
+    compile 'net.darkhax.gamestages:GameStages-1.14.4:4.2.15'
+    compile 'net.darkhax.bookshelf:Bookshelf-1.14.4:4.4.74'
+
   }
-
-  maven {
-    // gamestages
-    // bookshelf (required by gamestages)
-    url "https://maven.mcmoddev.com"
-  }
-
-  /*flatDir {
-      dirs 'libs'
-  }*/
-}
-
-dependencies {
-
-  compile fg.deobf('com.blamejared.crafttweaker:CraftTweaker-1.14.4:5.0.1.188')
-  compile fg.deobf('mezz.jei:jei-1.14.4:6.0.0.27')
-  compile fg.deobf('net.darkhax.gamestages:GameStages-1.14.4:4.2.15')
-  compile fg.deobf('net.darkhax.bookshelf:Bookshelf-1.14.4:4.4.74')
-
 }

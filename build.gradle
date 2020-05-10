@@ -10,6 +10,7 @@ buildscript {
 }
 apply plugin: 'net.minecraftforge.gradle'
 
+ext.early = true
 apply from: 'project.gradle'
 
 def getVersionName = { String workTree ->
@@ -28,14 +29,38 @@ archivesBaseName = project.ext.modid
 sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = '1.8' // Need this here so eclipse task generates correctly.
 
 println()
-println("Boilerplate: 1.14.4-1.0.0")
+println("-------------------------------------------------------------")
+println("- Boilerplate 1.14.4-1.0.0")
+println("-")
+println("- Mod Id: " + project.ext.modid)
+println("- Version: " + version)
+println("- Forge Version: " + project.ext.forge.version)
+println("- Mappings: " + project.ext.mappings.channel + " " + project.ext.mappings.version)
+println("-------------------------------------------------------------")
 println()
-println("Mod Id: " + project.ext.modid)
-println("Version: " + version)
-println()
-println("Forge Version: " + project.ext.forge.version)
-println("Mappings: " + project.ext.mappings.channel + " " + project.ext.mappings.version)
-println()
+
+compileJava.doFirst {
+    project.sourceSets.main.java.srcDirs.each { dir ->
+        copy {
+            from dir
+            into "${project.buildDir}/modifiedSrc"
+            include "**/*.java"
+            filter {
+                it.replaceAll('@@VERSION@@', project.version)
+            }
+            duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+        }
+        println "   [OK] Preprocessed [${dir}]"
+    }
+}
+compileJava.doFirst {
+    source = "${project.buildDir}/modifiedSrc"
+    classpath = project.sourceSets.main.compileClasspath
+    //destinationDir = file("${project.buildDir}/classes")
+}
+compileJava.doLast {
+    println "   [OK] Compiled [${project.name}]"
+}
 
 minecraft {
     mappings channel: project.ext.mappings.channel, version: project.ext.mappings.version
