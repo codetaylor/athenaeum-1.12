@@ -1,12 +1,12 @@
-package com.codetaylor.mc.athenaeum.network.spi.tiledata.service;
+package com.codetaylor.mc.athenaeum.network.spi.tile.data.service;
 
 import com.codetaylor.mc.athenaeum.network.spi.packet.CPacketTileEntityBase;
 import com.codetaylor.mc.athenaeum.network.spi.packet.IMessage;
-import com.codetaylor.mc.athenaeum.network.spi.tiledata.TileDataContainerBase;
-import com.codetaylor.mc.athenaeum.network.tile.TileDataServiceContainer;
-import com.codetaylor.mc.athenaeum.network.tile.TileDataServiceLogger;
-import com.codetaylor.mc.athenaeum.network.tile.TileDataTracker;
-import com.codetaylor.mc.athenaeum.network.tile.client.TileDataServiceClientMonitor;
+import com.codetaylor.mc.athenaeum.network.spi.tile.TileDataContainerBase;
+import com.codetaylor.mc.athenaeum.internal.network.tile.TileDataServiceContainer;
+import com.codetaylor.mc.athenaeum.internal.network.tile.TileDataServiceLogger;
+import com.codetaylor.mc.athenaeum.internal.network.tile.TileDataTracker;
+import com.codetaylor.mc.athenaeum.internal.network.tile.client.TileDataServiceClientMonitor;
 import io.netty.buffer.Unpooled;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;

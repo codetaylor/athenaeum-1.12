@@ -1,4 +1,4 @@
-package com.codetaylor.mc.athenaeum.inventory;
+package com.codetaylor.mc.athenaeum.inventory.spi;
 
 import com.codetaylor.mc.athenaeum.util.StackHelper;
 import net.minecraft.item.ItemStack;

@@ -1,6 +1,6 @@
-package com.codetaylor.mc.athenaeum.network.spi.tiledata.data;
+package com.codetaylor.mc.athenaeum.network.spi.tile.data;
 
-import com.codetaylor.mc.athenaeum.network.spi.tiledata.TileDataBase;
+import com.codetaylor.mc.athenaeum.network.spi.tile.TileDataBase;
 import net.minecraft.network.PacketBuffer;
 
 public class TileDataEnum<E extends Enum>

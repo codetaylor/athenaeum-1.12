@@ -1,6 +1,6 @@
-package com.codetaylor.mc.athenaeum.network.tile.client;
+package com.codetaylor.mc.athenaeum.internal.network.tile.client;
 
-import com.codetaylor.mc.athenaeum.network.spi.tiledata.ITileData;
+import com.codetaylor.mc.athenaeum.network.spi.tile.ITileData;
 import it.unimi.dsi.fastutil.objects.Object2IntArrayMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectArrayMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectMap;

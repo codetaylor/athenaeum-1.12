@@ -1,4 +1,4 @@
-package com.codetaylor.mc.athenaeum.network.tile.client;
+package com.codetaylor.mc.athenaeum.internal.network.tile.client;
 
 import com.codetaylor.mc.athenaeum.AthenaeumConfig;
 import com.mojang.blaze3d.platform.GlStateManager;

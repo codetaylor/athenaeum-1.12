@@ -1,9 +1,9 @@
-package com.codetaylor.mc.athenaeum.network.tile.client;
+package com.codetaylor.mc.athenaeum.internal.network.tile.client;
 
 import com.codetaylor.mc.athenaeum.AthenaeumConfig;
-import com.codetaylor.mc.athenaeum.network.tile.TileDataServiceLogger;
-import com.codetaylor.mc.athenaeum.network.tile.TileDataTracker;
-import com.codetaylor.mc.athenaeum.network.spi.tiledata.ITileData;
+import com.codetaylor.mc.athenaeum.internal.network.tile.TileDataServiceLogger;
+import com.codetaylor.mc.athenaeum.internal.network.tile.TileDataTracker;
+import com.codetaylor.mc.athenaeum.network.spi.tile.ITileData;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;

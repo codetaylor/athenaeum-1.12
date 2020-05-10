@@ -1,12 +1,12 @@
-package com.codetaylor.mc.athenaeum;
+package com.codetaylor.mc.athenaeum.network.api;
 
-import com.codetaylor.mc.athenaeum.network.IPacketService;
-import com.codetaylor.mc.athenaeum.network.PacketService;
-import com.codetaylor.mc.athenaeum.network.tile.ITileDataService;
-import com.codetaylor.mc.athenaeum.network.tile.TileDataServiceContainer;
+import com.codetaylor.mc.athenaeum.network.spi.packet.IPacketService;
+import com.codetaylor.mc.athenaeum.internal.network.packet.PacketService;
+import com.codetaylor.mc.athenaeum.network.spi.tile.data.service.ITileDataService;
+import com.codetaylor.mc.athenaeum.internal.network.tile.TileDataServiceContainer;
 import net.minecraft.util.ResourceLocation;
 
-public final class AthenaeumAPI {
+public final class NetworkAPI {
 
   public static IPacketService createPacketService(String modId, String channelName, String protocolVersion) {
 
