@@ -28,4 +28,20 @@ public class ModAthenaeumConfig {
 
   }
 
+  public static InteractionClient INTERACTION_CLIENT = new InteractionClient();
+
+  public static class InteractionClient {
+
+    @Config.Comment({
+        "Set to true to render the interaction bounds for debugging."
+    })
+    public boolean SHOW_INTERACTION_BOUNDS = false;
+
+    @Config.Comment({
+        "If true, the quantities shown when sneaking and looking at a block",
+        "will always be shown, regardless of sneaking."
+    })
+    public boolean ALWAYS_SHOW_QUANTITIES = false;
+  }
+
 }
