@@ -1,7 +1,7 @@
 package com.codetaylor.mc.athenaeum.network.tile;
 
 import com.codetaylor.mc.athenaeum.network.tile.client.TileDataServiceClientMonitor;
-import com.codetaylor.mc.athenaeum.network.tile.spi.TileDataContainerBase;
+import com.codetaylor.mc.athenaeum.network.tile.spi.TileEntityDataContainerBase;
 import com.codetaylor.mc.athenaeum.spi.packet.CPacketTileEntityBase;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -56,12 +56,12 @@ public class SCPacketTileData
   @Override
   protected IMessage onMessage(SCPacketTileData message, MessageContext ctx, TileEntity tileEntity) {
 
-    if (tileEntity instanceof TileDataContainerBase) {
+    if (tileEntity instanceof TileEntityDataContainerBase) {
 
       ITileDataService dataService = TileDataServiceContainer.find(message.serviceId);
 
       if (dataService != null) {
-        TileDataContainerBase tile = (TileDataContainerBase) tileEntity;
+        TileEntityDataContainerBase tile = (TileEntityDataContainerBase) tileEntity;
         TileDataTracker tracker = dataService.getTracker(tile);
 
         if (tracker != null) {

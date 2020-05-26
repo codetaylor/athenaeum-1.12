@@ -2,7 +2,7 @@ package com.codetaylor.mc.athenaeum.network.tile;
 
 import com.codetaylor.mc.athenaeum.network.tile.client.TileDataServiceClientMonitor;
 import com.codetaylor.mc.athenaeum.network.tile.spi.ITileData;
-import com.codetaylor.mc.athenaeum.network.tile.spi.TileDataContainerBase;
+import com.codetaylor.mc.athenaeum.network.tile.spi.TileEntityDataContainerBase;
 import io.netty.buffer.Unpooled;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.fml.relauncher.Side;
@@ -15,7 +15,7 @@ import java.util.List;
 
 public class TileDataTracker {
 
-  private final TileDataContainerBase tile;
+  private final TileEntityDataContainerBase tile;
   private final PacketBuffer packetBuffer;
 
   private ArrayList<ITileData> data;
@@ -25,7 +25,7 @@ public class TileDataTracker {
    */
   private List<ITileData> toUpdate;
 
-  /* package */ TileDataTracker(TileDataContainerBase tile) {
+  /* package */ TileDataTracker(TileEntityDataContainerBase tile) {
 
     this.tile = tile;
     this.packetBuffer = new PacketBuffer(Unpooled.buffer());
@@ -41,7 +41,7 @@ public class TileDataTracker {
     this.toUpdate = new ArrayList<>(this.data.size());
   }
 
-  public TileDataContainerBase getTile() {
+  public TileEntityDataContainerBase getTile() {
 
     return this.tile;
   }

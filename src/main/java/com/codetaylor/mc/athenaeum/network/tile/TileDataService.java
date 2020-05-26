@@ -2,7 +2,7 @@ package com.codetaylor.mc.athenaeum.network.tile;
 
 import com.codetaylor.mc.athenaeum.network.IPacketService;
 import com.codetaylor.mc.athenaeum.network.tile.spi.ITileData;
-import com.codetaylor.mc.athenaeum.network.tile.spi.TileDataContainerBase;
+import com.codetaylor.mc.athenaeum.network.tile.spi.TileEntityDataContainerBase;
 import net.minecraft.network.PacketBuffer;
 
 import javax.annotation.Nullable;
@@ -18,7 +18,7 @@ public class TileDataService
   private final IPacketService packetService;
 
   private final ThreadLocal<List<TileDataTracker>> dataTrackerList;
-  private final ThreadLocal<Map<TileDataContainerBase, TileDataTracker>> dataTrackerMap;
+  private final ThreadLocal<Map<TileEntityDataContainerBase, TileDataTracker>> dataTrackerMap;
 
   public TileDataService(int serviceId, IPacketService packetService) {
 
@@ -37,16 +37,16 @@ public class TileDataService
 
   @Override
   @Nullable
-  public TileDataTracker getTracker(TileDataContainerBase tile) {
+  public TileDataTracker getTracker(TileEntityDataContainerBase tile) {
 
     return this.dataTrackerMap.get().get(tile);
   }
 
   @Override
-  public void register(TileDataContainerBase tile, ITileData[] data) {
+  public void register(TileEntityDataContainerBase tile, ITileData[] data) {
 
     if (data.length > 0) {
-      Map<TileDataContainerBase, TileDataTracker> map = this.dataTrackerMap.get();
+      Map<TileEntityDataContainerBase, TileDataTracker> map = this.dataTrackerMap.get();
       TileDataTracker tracker = map.get(tile);
 
       if (tracker == null) {
@@ -84,7 +84,7 @@ public class TileDataService
       }
       */
 
-      TileDataContainerBase tile = tracker.getTile();
+      TileEntityDataContainerBase tile = tracker.getTile();
 
       // --- Bookkeeping ---
 
