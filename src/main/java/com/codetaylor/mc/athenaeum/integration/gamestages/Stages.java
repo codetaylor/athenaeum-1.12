@@ -14,6 +14,7 @@ public class Stages {
   private Stages(Mode mode, List<Object> list) {
 
     this.mode = mode;
+    // Game stages are all lowercase
     this.list = Collections.unmodifiableList(this.toLowercase(list));
   }
 
