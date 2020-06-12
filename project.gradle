@@ -3,7 +3,7 @@ ext {
   modid = 'athenaeum'
 
   forge = [
-    version: '1.12.2-14.23.5.2854'
+    version: '1.12.2-14.23.5.2847'
   ]
 
   mappings = [
