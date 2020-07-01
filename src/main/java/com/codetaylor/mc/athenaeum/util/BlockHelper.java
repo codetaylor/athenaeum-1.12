@@ -62,6 +62,28 @@ public class BlockHelper {
     }
   }
 
+  public static void forBlocksInRangeShuffled(World world, BlockPos pos, int range, IBlockAction action) {
+
+    ArrayList<BlockPos> blockList = new ArrayList<>();
+    BlockHelper.findBlocksInCube(world, pos, range, range, range, IBlockFilter.TRUE, blockList);
+    Collections.shuffle(blockList);
+    int rangeSq = range * range;
+    BlockPos.MutableBlockPos mutableBlockPos = new BlockPos.MutableBlockPos();
+
+    for (BlockPos blockPos : blockList) {
+      double distanceSq = pos.distanceSq(blockPos.getX(), blockPos.getY(), blockPos.getZ());
+
+      if (distanceSq <= rangeSq) {
+        mutableBlockPos.setPos(blockPos);
+        IBlockState blockState = world.getBlockState(mutableBlockPos);
+
+        if (!action.execute(world, mutableBlockPos, blockState)) {
+          break;
+        }
+      }
+    }
+  }
+
   public static void forBlocksInCube(World world, BlockPos pos, int rangeX, int rangeY, int rangeZ, IBlockAction action) {
 
     complete:
