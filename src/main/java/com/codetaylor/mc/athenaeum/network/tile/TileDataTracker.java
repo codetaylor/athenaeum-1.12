@@ -20,17 +20,11 @@ public class TileDataTracker {
 
   private ArrayList<ITileData> data;
 
-  /**
-   * Temporarily stores data entries to pass to the tile's update method.
-   */
-  private List<ITileData> toUpdate;
-
   /* package */ TileDataTracker(TileEntityDataContainerBase tile) {
 
     this.tile = tile;
     this.packetBuffer = new PacketBuffer(Unpooled.buffer());
     this.data = new ArrayList<>(1);
-    this.toUpdate = new ArrayList<>(1);
   }
 
   /* package */ void addTileData(ITileData[] toAdd) {
@@ -38,7 +32,6 @@ public class TileDataTracker {
     //noinspection unchecked
     this.data.addAll(Arrays.asList(toAdd));
     this.data.trimToSize();
-    this.toUpdate = new ArrayList<>(this.data.size());
   }
 
   public TileEntityDataContainerBase getTile() {
@@ -86,6 +79,14 @@ public class TileDataTracker {
   /**
    * Called when an update packet arrives on the client.
    *
+   * 2020-07-04
+   * This method has been modified to clear the dirty flag on all the data
+   * elements that a TE has instead of only clearing data elements that have
+   * arrived on the client from the server. This prevents a case in which a
+   * client reads a TE from NBT and triggers the dirty flag on something like
+   * an item stack handler, then the flag never gets cleared and any code that
+   * is meant to run only in the event of a change gets run every tick instead.
+   *
    * @param buffer the update buffer
    */
   @SideOnly(Side.CLIENT)
@@ -100,7 +101,6 @@ public class TileDataTracker {
         ITileData data = this.data.get(buffer.readInt());
         data.read(buffer);
         data.setDirty(true);
-        this.toUpdate.add(data);
         TileDataServiceClientMonitor.onClientTrackerUpdateReceived(this.tile.getPos(), data.getClass());
       }
 
@@ -108,8 +108,8 @@ public class TileDataTracker {
       this.tile.onTileDataUpdate();
 
       // Clear the dirty flag on updated data; clear the stash at the same time.
-      for (int i = this.toUpdate.size() - 1; i >= 0; i--) {
-        this.toUpdate.remove(i).setDirty(false);
+      for (int i = this.data.size() - 1; i >= 0; i--) {
+        this.data.get(i).setDirty(false);
       }
     }
   }
