@@ -7,8 +7,6 @@ import net.minecraft.util.NonNullList;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
-import java.util.BitSet;
-import java.util.List;
 import java.util.Random;
 
 /**
@@ -104,13 +102,7 @@ public class DynamicStackHandler
     for (int i = this.getSlots() - 1; i >= 0; i--) {
 
       if (!this.getStackInSlot(i).isEmpty()) {
-        ItemStack extractItem = super.extractItem(i, 1, true);
-
-        if (!simulate) {
-          super.extractItem(i, 1, false);
-        }
-
-        return extractItem;
+        return this.extractItem(i, 1, simulate);
       }
     }
 
