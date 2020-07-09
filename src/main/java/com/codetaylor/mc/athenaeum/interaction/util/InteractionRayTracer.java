@@ -78,8 +78,9 @@ public final class InteractionRayTracer {
       if (candidateTrace != null
           && interactions[i].allowInteractionWithSide(candidateTrace.sideHit)) {
 
-        double distanceSq = blockStart.squareDistanceTo(candidateTrace.hitVec);
-        resultDataList.add(new InteractionRayTraceData(distanceSq, candidateTrace, interactions[i]));
+        RayTraceResult trace = new RayTraceResult(candidateTrace.typeOfHit, candidateTrace.hitVec, candidateTrace.sideHit, pos);
+        double distanceSq = blockStart.squareDistanceTo(trace.hitVec);
+        resultDataList.add(new InteractionRayTraceData(distanceSq, trace, interactions[i]));
       }
     }
 
