@@ -47,7 +47,7 @@ public class DynamicStackHandler
   public ItemStack getFirstNonEmptyItemStack() {
 
     for (int i = 0; i < this.getSlots(); i++) {
-      ItemStack stackInSlot = this.getStackInSlot(0);
+      ItemStack stackInSlot = this.getStackInSlot(i);
 
       if (!stackInSlot.isEmpty()) {
         return stackInSlot;
