@@ -14,4 +14,10 @@ public interface IPacketRegistry {
       Class<Q> requestMessageType,
       Side side
   );
+
+  <Q extends IMessage, A extends IMessage> IPacketRegistry register(
+      IMessageHandler<Q, A> messageHandler,
+      Class<Q> requestMessageType,
+      Side side
+  );
 }

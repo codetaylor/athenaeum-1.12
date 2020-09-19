@@ -30,6 +30,17 @@ public class PacketRegistry
     return this;
   }
 
+  @Override
+  public <Q extends IMessage, A extends IMessage> IPacketRegistry register(
+      IMessageHandler<Q, A> messageHandler,
+      Class<Q> requestMessageType,
+      Side side
+  ) {
+
+    this.threadedNetworkWrapper.registerMessage(messageHandler, requestMessageType, this.nextId(), side);
+    return this;
+  }
+
   private int nextId() {
 
     return this.id++;
