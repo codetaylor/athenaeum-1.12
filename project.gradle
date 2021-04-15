@@ -40,12 +40,6 @@ repositories {
     url 'http://maven.blamejared.com/'
   }
 
-  maven {
-    // Game Stages
-    // Bookshelf (required by Game Stages)
-    url 'https://maven.mcmoddev.com'
-  }
-
   flatDir {
     dirs 'libs'
   }
@@ -55,9 +49,9 @@ dependencies {
   deobfCompile 'CraftTweaker2:CraftTweaker2-MC1120-Main:1.12-4.1.20.576'
   deobfCompile 'CraftTweaker2:CraftTweaker2-API:4.1.20.576'
   deobfCompile 'CraftTweaker2:ZenScript:4.1.20.576'
-  deobfCompile 'mezz.jei:jei_1.12.2:4.14.4.264'
-  deobfCompile 'net.darkhax.gamestages:GameStages-1.12.2:2.0.108'
-  deobfCompile 'net.darkhax.bookshelf:Bookshelf-1.12.2:2.3.566'
+  deobfCompile 'mezz.jei:jei_1.12.2:4.16.1.302'
+  compile files('Bookshelf-1.12.2-2.3.590.jar')
+  compile files('GameStages-1.12.2-2.0.123.jar')
   
   testCompile 'junit:junit:4.12'
 }
