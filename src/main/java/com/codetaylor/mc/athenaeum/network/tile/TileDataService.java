@@ -93,6 +93,8 @@ public class TileDataService
         // decrement the iteration index.
         trackers.set(i, trackers.get(trackers.size() - 1));
         trackers.remove(trackers.size() - 1);
+        // Also remove the tile and tracker from the map.
+        this.dataTrackerMap.get().remove(tile);
         i -= 1;
         continue;
       }
