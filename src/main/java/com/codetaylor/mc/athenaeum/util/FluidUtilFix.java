@@ -1,16 +1,23 @@
 package com.codetaylor.mc.athenaeum.util;
 
 import com.google.common.base.Preconditions;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockLiquid;
+import net.minecraft.block.material.Material;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
-import net.minecraftforge.fluids.FluidActionResult;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidUtil;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
+import net.minecraftforge.fluids.*;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandlerItem;
+import net.minecraftforge.fluids.capability.wrappers.BlockLiquidWrapper;
+import net.minecraftforge.fluids.capability.wrappers.BlockWrapper;
+import net.minecraftforge.fluids.capability.wrappers.FluidBlockWrapper;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
@@ -19,7 +26,9 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 /**
- * This is a workaround for https://github.com/codetaylor/artisan-worktables/issues/236
+ * This is a workaround for:
+ * https://github.com/codetaylor/artisan-worktables/issues/236
+ * https://github.com/codetaylor/pyrotech-1.12/issues/375
  */
 public final class FluidUtilFix {
 
@@ -144,6 +153,89 @@ public final class FluidUtilFix {
       }
     }
     return FluidActionResult.FAILURE;
+  }
+
+  @Nonnull
+  public static FluidActionResult tryPlaceFluid(@Nullable EntityPlayer player, World world, BlockPos pos, @Nonnull ItemStack container, FluidStack resource) {
+
+    ItemStack containerCopy = ItemHandlerHelper.copyStackWithSize(container, 1); // do not modify the input
+    IFluidHandlerItem containerFluidHandler = FluidUtil.getFluidHandler(containerCopy);
+    if (containerFluidHandler != null && tryPlaceFluid(player, world, pos, containerFluidHandler, resource)) {
+      return new FluidActionResult(containerFluidHandler.getContainer());
+    }
+    return FluidActionResult.FAILURE;
+  }
+
+  public static boolean tryPlaceFluid(@Nullable EntityPlayer player, World world, BlockPos pos, IFluidHandler fluidSource, FluidStack resource) {
+
+    if (world == null || resource == null || pos == null) {
+      return false;
+    }
+
+    Fluid fluid = resource.getFluid();
+    if (fluid == null || !fluid.canBePlacedInWorld()) {
+      return false;
+    }
+
+    if (fluidSource.drain(resource, false) == null) {
+      return false;
+    }
+
+    // check that we can place the fluid at the destination
+    IBlockState destBlockState = world.getBlockState(pos);
+    Material destMaterial = destBlockState.getMaterial();
+    boolean isDestNonSolid = !destMaterial.isSolid();
+    boolean isDestReplaceable = destBlockState.getBlock().isReplaceable(world, pos);
+
+    if (!world.isAirBlock(pos) && !isDestNonSolid && !isDestReplaceable) {
+      return false; // Non-air, solid, unreplacable block. We can't put fluid here.
+    }
+
+    if (world.provider.doesWaterVaporize() && fluid.doesVaporize(resource)) {
+      FluidStack result = fluidSource.drain(resource, true);
+
+      if (result != null) {
+        result.getFluid().vaporize(player, world, pos, result);
+        return true;
+      }
+    } else {
+      // This fluid handler places the fluid block when filled
+      IFluidHandler handler = getFluidBlockHandler(fluid, world, pos);
+
+      // Fix for https://github.com/codetaylor/pyrotech-1.12/issues/375
+      if (isDestReplaceable && !destMaterial.isLiquid() && !(destBlockState.getBlock() instanceof BlockFluidBase)) {
+        // Simulate the test first and break the block if it passes.
+        FluidStack resultTest = FluidUtil.tryFluidTransfer(handler, fluidSource, resource, false);
+
+        if (resultTest != null) {
+          world.destroyBlock(pos, true);
+        }
+      }
+      // End fix
+
+      FluidStack result = FluidUtil.tryFluidTransfer(handler, fluidSource, resource, true);
+
+      if (result != null) {
+        SoundEvent soundevent = resource.getFluid().getEmptySound(resource);
+        world.playSound(player, pos, soundevent, SoundCategory.BLOCKS, 1.0F, 1.0F);
+        return true;
+      }
+    }
+    return false;
+  }
+
+  private static IFluidHandler getFluidBlockHandler(Fluid fluid, World world, BlockPos pos) {
+
+    Block block = fluid.getBlock();
+    if (block instanceof IFluidBlock) {
+      return new FluidBlockWrapper((IFluidBlock) block, world, pos);
+
+    } else if (block instanceof BlockLiquid) {
+      return new BlockLiquidWrapper((BlockLiquid) block, world, pos);
+
+    } else {
+      return new BlockWrapper(block, world, pos);
+    }
   }
 
   private FluidUtilFix() {
