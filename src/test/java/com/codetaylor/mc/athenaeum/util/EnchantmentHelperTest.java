@@ -51,6 +51,15 @@ public class EnchantmentHelperTest {
     testExperienceConversion(2727, 39);
     testExperienceConversion(2920, 40);
 
+    int level = 21863; // max level is 2147407943 xp
+    System.out.println(EnchantmentHelper.getExperienceFromLevel(level));
+
+    int xp = 0;
+    for (int i = 0; i < level; i++) {
+      xp += EnchantmentHelper.xpBarCap(i);
+    }
+
+    System.out.println(xp);
   }
 
   private void testExperienceConversion(int experience, int level) {

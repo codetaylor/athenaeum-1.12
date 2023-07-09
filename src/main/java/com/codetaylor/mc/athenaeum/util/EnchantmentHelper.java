@@ -44,9 +44,9 @@ public class EnchantmentHelper {
     return 7 + level * 2;
   }
 
-  private static int sum(int n, int a0, int d) {
+  private static int sum(long n, long a0, long d) {
 
-    return n * (2 * a0 + (n - 1) * d) / 2;
+    return (int) (n * (2 * a0 + (n - 1) * d) / 2);
   }
 
   public static int getExperienceFromLevel(int level) {
@@ -64,6 +64,20 @@ public class EnchantmentHelper {
     }
 
     return 1395 + EnchantmentHelper.sum(level - 30, 112, 9);
+  }
+
+  /**
+   * Taken from EntityPlayer class and used to test the accuracy of the
+   * {@link EnchantmentHelper#getExperienceFromLevel(int)} method.
+   */
+  public static int xpBarCap(int level) {
+
+    if (level >= 30) {
+      return 112 + (level - 30) * 9;
+
+    } else {
+      return level >= 15 ? 37 + (level - 15) * 5 : 7 + level * 2;
+    }
   }
 
   public static int getExperienceToNextLevel(int currentLevel) {
