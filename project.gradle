@@ -46,10 +46,10 @@ repositories {
 }
 
 dependencies {
-  deobfCompile 'CraftTweaker2:CraftTweaker2-MC1120-Main:1.12-4.1.20.576'
-  deobfCompile 'CraftTweaker2:CraftTweaker2-API:4.1.20.576'
-  deobfCompile 'CraftTweaker2:ZenScript:4.1.20.576'
-  deobfCompile 'mezz.jei:jei_1.12.2:4.16.1.302'
+  deobfCompile 'CraftTweaker2:CraftTweaker2-MC1120-Main:1.12-4.1.20.698'
+  deobfCompile 'CraftTweaker2:CraftTweaker2-API:4.1.20.698'
+  deobfCompile 'CraftTweaker2:ZenScript:4.1.20.698'
+  deobfCompile 'mezz.jei:jei_1.12.2:4.16.1.1012'
   compile files('Bookshelf-1.12.2-2.3.590.jar')
   compile files('GameStages-1.12.2-2.0.123.jar')
   
